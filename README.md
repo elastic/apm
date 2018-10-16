@@ -3,7 +3,6 @@
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
 
 ## What we do…
-https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
 
 | Project              | Repo                  | Docs                                    |
 | :-                   | :-                    | :-                                      |
