@@ -3,10 +3,12 @@
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
 
 ## What we do…
+https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
 
 | Project              | Repo                  | Docs                                    |
 | :-                   | :-                    | :-                                      |
 | APM Server           | [apm-server][]        | [📘 elastic.co][apm-server-docs]        |
+| APM UI               | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            |
 | Go Agent (🚧 Beta)   | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      |
 | Java Agent (🚧 Beta) | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    |
 | JavaScript RUM Agent | [apm-agent-js-base][] | [📘 elastic.co][apm-agent-js-base-docs] |
@@ -16,6 +18,8 @@
 
 
 [apm-server]: https://github.com/elastic/apm-server
+[apm-ui]: https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
+[apm-ui-docs]: https://www.elastic.co/guide/en/kibana/current/xpack-apm.html
 [apm-server-docs]: https://www.elastic.co/guide/en/apm/server/current/index.html
 [apm-agent-go-docs]: https://www.elastic.co/guide/en/apm/agent/go/current/index.html
 [apm-agent-go]: https://github.com/elastic/apm-agent-go
