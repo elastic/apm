@@ -8,8 +8,8 @@
 | :-                   | :-                    | :-                                      |
 | APM Server           | [apm-server][]        | [📘 elastic.co][apm-server-docs]        |
 | APM UI               | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            |
-| Go Agent (🚧 Beta)   | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      |
-| Java Agent (🚧 Beta) | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    |
+| Go Agent             | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      |
+| Java Agent           | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    |
 | JavaScript RUM Agent | [apm-agent-js-base][] | [📘 elastic.co][apm-agent-js-base-docs] |
 | Node.js Agent        | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  |
 | Python Agent         | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  |
