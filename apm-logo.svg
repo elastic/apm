@@ -1,1 +1,13 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.cls-1{fill:#00bfb3;}.cls-2{fill:#07a5de;}</style></defs><title>apm-logo</title><rect class="cls-1" x="14" y="16.88" width="36" height="10.08" rx="5.04" ry="5.04"/><rect class="cls-1" x="21.2" y="54.32" width="36" height="10.08" rx="5.04" ry="5.04"/><rect class="cls-2" x="21.2" y="35.6" width="57.6" height="10.08" rx="5.04" ry="5.04"/><rect class="cls-2" x="57.2" y="73.04" width="28.8" height="10.08" rx="5.04" ry="5.04"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g fill="none" fill-rule="evenodd" transform="translate(-392 -260)">
+    <rect width="1159" height="518" fill="#FFF"/>
+    <g transform="translate(348 35)">
+      <path fill="#FFF" stroke="#0096CC" stroke-width="2" d="M4,1 C2.34314575,1 1,2.34314575 1,4 L1,476 C1,477.656854 2.34314575,479 4,479 L236,479 C237.656854,479 239,477.656854 239,476 L239,4 C239,2.34314575 237.656854,1 236,1 L4,1 Z"/>
+      <g transform="translate(44 224)">
+        <polygon fill="#F04E98" points="0 11 24 11 24 .999 0 .999"/>
+        <path fill="#343741" d="M32,21 L20,21 C14.478,21 10,16.522 10,11 L32,11 L32,21 Z"/>
+        <polygon fill="#0080D5" points="20 33 32 33 32 24 20 24"/>
+      </g>
+    </g>
+  </g>
+</svg>
