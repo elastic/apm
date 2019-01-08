@@ -1,4 +1,4 @@
-<h1 align='center'><img src='https://s3.brnbw.com/icon-apm-bb-hVa5dfgvZw.svg' alt='APM' width='48' valign='middle' /> Elastic APM</h1>
+<h1 align='center'><img src='https://github.com/elastic/apm/blob/master/apm-logo.svg' alt='Elastic APM' width='32' valign='middle' /> Elastic APM</h1>
 
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
 
