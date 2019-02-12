@@ -4,31 +4,51 @@
 
 ## What we do…
 
-| Project              | Repo                  | Docs                                    |
-| :-                   | :-                    | :-                                      |
-| APM Server           | [apm-server][]        | [📘 elastic.co][apm-server-docs]        |
-| APM UI               | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            |
-| Go Agent             | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      |
-| Java Agent           | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    |
-| JavaScript RUM Agent | [apm-agent-js-base][] | [📘 elastic.co][apm-agent-js-base-docs] |
-| Node.js Agent        | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  |
-| Python Agent         | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  |
-| Ruby Agent           | [apm-agent-ruby][]    | [📘 elastic.co][apm-agent-ruby-docs]    |
+| Project                   | Repo                  | Docs                                    | Contrib
+| :-                        | :-                    | :-                                      | :-
+| APM Server                | [apm-server][]        | [📘 elastic.co][apm-server-docs]        | [📂 contrib][apm-server-contrib]
+| APM UI                    | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            | [📂 contrib][apm-ui-contrib]
+| Go Agent                  | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      | [📂 contrib][apm-agent-go-contrib]
+| Java Agent                | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    | [📂 contrib][apm-agent-java-contrib]
+| JavaScript RUM Agent      | [apm-agent-js-base][] | [📘 elastic.co][apm-agent-js-base-docs] | [📂 contrib][apm-agent-js-base-contrib]
+| Node.js Agent             | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  | [📂 contrib][apm-agent-nodejs-contrib]
+| Python Agent              | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  | [📂 contrib][apm-agent-python-contrib]
+| Ruby Agent                | [apm-agent-ruby][]    | [📘 elastic.co][apm-agent-ruby-docs]    | [📂 contrib][apm-agent-ruby-contrib]
+| .NET Agent (🚧 Prototype) | [apm-agent-dotnet][]  | [📘 elastic.co][apm-agent-dotnet-docs]  | [📂 contrib][apm-agent-dotnet-contrib]
 
 
-[apm-server]: https://github.com/elastic/apm-server
-[apm-ui]: https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
-[apm-ui-docs]: https://www.elastic.co/guide/en/kibana/current/xpack-apm.html
+[apm-server-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-server
 [apm-server-docs]: https://www.elastic.co/guide/en/apm/server/current/index.html
+[apm-server]: https://github.com/elastic/apm-server
+
+[apm-ui-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-ui
+[apm-ui-docs]: https://www.elastic.co/guide/en/kibana/current/xpack-apm.html
+[apm-ui]: https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
+
+[apm-agent-go-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-go
 [apm-agent-go-docs]: https://www.elastic.co/guide/en/apm/agent/go/current/index.html
 [apm-agent-go]: https://github.com/elastic/apm-agent-go
+
+[apm-agent-java-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-java
 [apm-agent-java-docs]: https://www.elastic.co/guide/en/apm/agent/java/current/index.html
 [apm-agent-java]: https://github.com/elastic/apm-agent-java
+
+[apm-agent-js-base-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-js-base
 [apm-agent-js-base-docs]: https://www.elastic.co/guide/en/apm/agent/js-base/current/index.html
 [apm-agent-js-base]: https://github.com/elastic/apm-agent-js-base
+
+[apm-agent-nodejs-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-nodejs
 [apm-agent-nodejs-docs]: https://www.elastic.co/guide/en/apm/agent/nodejs/current/index.html
 [apm-agent-nodejs]: https://github.com/elastic/apm-agent-nodejs
+
+[apm-agent-python-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-python
 [apm-agent-python-docs]: https://www.elastic.co/guide/en/apm/agent/python/current/index.html
 [apm-agent-python]: https://github.com/elastic/apm-agent-python
+
+[apm-agent-ruby-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-ruby
 [apm-agent-ruby-docs]: https://www.elastic.co/guide/en/apm/agent/ruby/current/index.html
 [apm-agent-ruby]: https://github.com/elastic/apm-agent-ruby
+
+[apm-agent-dotnet-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-dotnet
+[apm-agent-dotnet-docs]: https://www.elastic.co/guide/en/apm/agent/dotnet/current/index.html
+[apm-agent-dotnet]: https://github.com/elastic/apm-agent-dotnet
