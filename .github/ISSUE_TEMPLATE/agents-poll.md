@@ -10,10 +10,12 @@ labels: agents, poll
 
 ## Vote
 
-* [ ] .NET 
-* [ ] Go 
-* [ ] Java
-* [ ] Node.js
-* [ ] Python
-* [ ] Ruby 
-* [ ] RUM
+| Agent   |          Yes           |          No           |     Indifferent
+| --------|:----------------------:|:---------------------:|:----------------------:|
+| .NET    | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| Go      | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| Java    | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| Node.js | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| Python  | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| Ruby    | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
+| RUM     | <ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul>|<ul><li> [ ] </li></ul> |
