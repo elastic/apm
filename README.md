@@ -10,7 +10,7 @@
 | APM UI                    | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            | [📂 contrib][apm-ui-contrib]
 | Go Agent                  | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      | [📂 contrib][apm-agent-go-contrib]
 | Java Agent                | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    | [📂 contrib][apm-agent-java-contrib]
-| JavaScript RUM Agent      | [apm-agent-js-base][] | [📘 elastic.co][apm-agent-js-base-docs] | [📂 contrib][apm-agent-js-base-contrib]
+| JavaScript RUM Agent      | [apm-agent-rum-js][]  | [📘 elastic.co][apm-agent-js-base-docs] | [📂 contrib][apm-agent-rum-js-contrib]
 | Node.js Agent             | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  | [📂 contrib][apm-agent-nodejs-contrib]
 | Python Agent              | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  | [📂 contrib][apm-agent-python-contrib]
 | Ruby Agent                | [apm-agent-ruby][]    | [📘 elastic.co][apm-agent-ruby-docs]    | [📂 contrib][apm-agent-ruby-contrib]
@@ -33,9 +33,9 @@
 [apm-agent-java-docs]: https://www.elastic.co/guide/en/apm/agent/java/current/index.html
 [apm-agent-java]: https://github.com/elastic/apm-agent-java
 
-[apm-agent-js-base-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-js-base
+[apm-agent-rum-js-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-rum-js
 [apm-agent-js-base-docs]: https://www.elastic.co/guide/en/apm/agent/js-base/current/index.html
-[apm-agent-js-base]: https://github.com/elastic/apm-agent-js-base
+[apm-agent-rum-js]: https://github.com/elastic/apm-agent-rum-js
 
 [apm-agent-nodejs-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-nodejs
 [apm-agent-nodejs-docs]: https://www.elastic.co/guide/en/apm/agent/nodejs/current/index.html
