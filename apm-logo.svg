@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <g fill="none" fill-rule="evenodd" transform="translate(-392 -260)">
-    <rect width="1159" height="518" fill="#FFF"/>
-    <g transform="translate(348 35)">
-      <path fill="#FFF" stroke="#0096CC" stroke-width="2" d="M4,1 C2.34314575,1 1,2.34314575 1,4 L1,476 C1,477.656854 2.34314575,479 4,479 L236,479 C237.656854,479 239,477.656854 239,476 L239,4 C239,2.34314575 237.656854,1 236,1 L4,1 Z"/>
-      <g transform="translate(44 224)">
-        <polygon fill="#F04E98" points="0 11 24 11 24 .999 0 .999"/>
-        <path fill="#343741" d="M32,21 L20,21 C14.478,21 10,16.522 10,11 L32,11 L32,21 Z"/>
-        <polygon fill="#0080D5" points="20 33 32 33 32 24 20 24"/>
-      </g>
-    </g>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><style>.cls-1{fill:#f04e98;}.cls-2{fill:#343741;}.cls-3{fill:#07c;}</style></defs><title>apm-color</title><g id="Layer_2" data-name="Layer 2"><rect class="cls-1" x="8" y="8" width="64" height="20"/><path class="cls-2" d="M28,28H72a0,0,0,0,1,0,0v0A20,20,0,0,1,52,48H28a0,0,0,0,1,0,0V28A0,0,0,0,1,28,28Z"/><rect class="cls-3" x="46" y="54" width="26" height="18"/></g></svg>
