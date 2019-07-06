@@ -60,9 +60,9 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Distributed Tracing](#Distributed-Tracing)
 - [Error/exception tracking](#Errorexception-tracking)
 - [Metrics](#Metrics)
-  - [System/process CPU/Heap (HOWTO)](#Systemprocess-CPUHeap-HOWTO)
-  - [Transaction and span breakdown](#Transaction-and-span-breakdown)
+  - [System/process CPU/Heap](#Systemprocess-CPUHeap)
   - [Runtime](#Runtime)
+  - [Transaction and span breakdown](#Transaction-and-span-breakdown)
 - [Logging Correlation](#Logging-Correlation)
 - [Agent Configuration](#Agent-Configuration)
 
@@ -104,7 +104,9 @@ When a request fails, the agent has no way of knowing exactly what data was succ
 
 The agent should therefore drop the entire compressed buffer: both the internal zlib buffer, and potentially the already compressed data if such data is also buffered. Data subsequently written to the compression library can be directed to a new HTTP request.
 
-The new HTTP request should not necessarily be started immediately after the previous HTTP request fails, as the reason for the failure might not have been resolved up-stream. Instead an incremental back-off algorithm SHOULD be used to delay new requests. The grace period should be calculated in seconds using the algorithm “min(reconnectCount++, 6) ** 2 ± 10%”, where reconnectCount starts at zero. So the delay after the first error is 0 seconds, then circa 1, 4, 9, 16, 25 and finally 36 seconds. We add ±10% jitter to the calculated grace period in case multiple agents entered the grace period simultaneously. This way they will not all try to reconnect at the same time.
+The new HTTP request should not necessarily be started immediately after the previous HTTP request fails, as the reason for the failure might not have been resolved up-stream. Instead an incremental back-off algorithm SHOULD be used to delay new requests. The grace period should be calculated in seconds using the algorithm `min(reconnectCount++, 6) ** 2 ± 10%`, where `reconnectCount` starts at zero. So the delay after the first error is 0 seconds, then circa 1, 4, 9, 16, 25 and finally 36 seconds. We add ±10% jitter to the calculated grace period in case multiple agents entered the grace period simultaneously. This way they will not all try to reconnect at the same time.
+
+Agents should support specifying multiple server URLs. When a transport error occurs, the agent should switch to another server URL at the same time as backing off.
 
 While the grace period is in effect, the agent may buffer the data that was supposed to be sent if the grace period wasn’t in effect. If buffering, the agent must ensure the memory used to buffer data data does not grow indefinitely.
 
@@ -323,7 +325,7 @@ All agents must provide an API to enable developers to instrument their applicat
 - [Ruby Agent](https://www.elastic.co/guide/en/apm/agent/ruby/current/api.html)
 - [RUM JS Agent](https://www.elastic.co/guide/en/apm/agent/js-base/current/api.html)
 
-In addition to each agent having a "native" API for instrumentation, they also implement the [OpenTracing APIs](https://opentracing.io).
+In addition to each agent having a "native" API for instrumentation, they also implement the [OpenTracing APIs](https://opentracing.io). Agents should align implementations according to https://github.com/elastic/apm/issues/32.
 
 ### Distributed Tracing
 
@@ -342,9 +344,28 @@ Errors may or may not occur within the context of a transaction or span. If they
 
 ## Metrics
 
-### System/process CPU/Heap (HOWTO)
-### Transaction and span breakdown
+Agents periodically collect and report various metrics, described below.
+
+### System/process CPU/Heap
+
+All agents (excluding JavaScript RUM) should record the following basic system/process metrics:
+
+ - `system.cpu.total.norm.pct`: system CPU usage since the last report, in the range `[0,1]` (0-100%)
+ - `system.process.cpu.total.norm.pct`: process CPU usage since the last report, in the range `[0,1]` (0-100%)
+ - `system.memory.total`: total usable (but not necessarily available) memory on the system, in bytes
+ - `system.memory.actual.free`: total available memory on the system, in bytes
+ - `system.process.memory.size`: process virtual memory size, in bytes
+ - `system.process.memory.rss.bytes`: process resident set size, in bytes
+
 ### Runtime
+
+Agent should record runtime-specific metrics, such as garbage collection pauses. Due to their runtime-specific nature, these will differ for each agent.
+
+When capturing runtime metrics, keep in mind the end use-case: how will they be used? Is the format in which they are recorded appropriate for visualisation in Kibana? Do not record metrics just because it is easy; record them because they are useful.
+
+### Transaction and span breakdown
+
+Agents should record "breakdown metrics", which is a summarisation of how much time is spent per span type/subtype in each transaction group. This is described in detail in the [Breakdown Graphs](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt) document, so we do not repeat it here.
 
 ## Logging Correlation
 
