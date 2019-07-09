@@ -65,6 +65,9 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Transaction and span breakdown](#Transaction-and-span-breakdown)
 - [Logging Correlation](#Logging-Correlation)
 - [Agent Configuration](#Agent-Configuration)
+  - [Agent Configuration via Kibana](#Agent-Configuration-via-Kibana)
+    - [Caching](#Caching)
+    - [Dealing with errors](#Dealing-with-errors)
 
 <!-- tocstop -->
 
@@ -384,3 +387,55 @@ Here's a list of the config options across all agents, their types, default valu
 - [APM Backend Agent Config Comparison](https://docs.google.com/spreadsheets/d/1JJjZotapacA3FkHc2sv_0wiChILi3uKnkwLTjtBmxwU/edit)
 
 They are provided as environment variables but depending on the language there might be several feasible ways to let the user tweak them. For example besides the environment variable `ELASTIC_APM_SERVER_URL`, the Node.js Agent might also allow the user to configure the server URL via a config option named `serverUrl`, while the Python Agent might also allow the user to configure it via a config option named `server_url`.
+
+### Agent Configuration via Kibana
+
+Also known as "central configuration". Agents can query the APM Server for configuration updates; the server proxies and caches requests to Kibana.
+
+Agents should poll the APM Server for config periodically by sending an HTTP request to the `/config/v1/agents` endpoint. Agents must specify their service name, and optionally environment. The server will use these to filter the configuration down to the relevant service and environment. There are two methods for sending these parameters:
+
+1. Using the `GET` method, pass them as query parameters: `http://localhost:8200/config/v1/agents?service.name=opbeans&service.environment=production`
+2. Using the `POST` method, encode the parameters as a JSON object in the body, e.g. `{"service": {"name": "opbeans", "environment": "production"}}`
+
+The server will respond with a JSON object, where each key maps a config attribute to a string value. The string value should be interpreted the same as if it were passed in via an environment variable. Upon receiving these config changes, the agent will update its configuration dynamically, overriding any config previously specified. That is, config via Kibana takes highest precedence.
+
+To minimise the amount of work required by users, agents should aim to enable this feature by default. This excludes RUM, where there is a performance penalty.
+
+#### Caching
+
+As mentioned above, the server will cache config for each unique `service.name`, `service.environment` pair. The server will respond to config requests with two related response headers: [Etag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) and [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
+
+Agents should keep a record of the `Etag` value returned by the most successful config request, and then present it to future requests via the [If-None-Match](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header. If the config has not changed, the server will respond with 304 (Not Modified).
+
+The `Cache-Control` header should contain a `max-age` directive, specifying the amount of time (in seconds) the response should be considered "fresh". Agents should use this to decide how long to wait before requesting config again. The server will respond with a `Cache-Control` header even if the request fails.
+
+#### Dealing with errors
+
+Agents must deal with various error scenarios, including:
+
+ - 7.3 servers where the Kibana connection is not enabled (server responds with 403)
+ - 7.3 servers where the Kibana connection is enabled, but unavailable (server responds with 503)
+ - any other error (server responds with 5xx)
+ - pre-7.3 servers that don't support the config endpoint (server responds with 404)
+
+If the server responds with 403, agents should log the response at info level.
+
+If the server responds with any 5xx, agents should log at error level. In any case, the server _should_ respond with a Cache-Control header, as described in the section above, and agents should retry after the specified interval. If for whatever reason the server does not respond with that header, or it is invalid, agents should retry after 5 minutes.
+
+If the server responds with 404 (i.e. it's a pre-7.3 server that lacks the config endpoint), agents may choose to treat it the same as 403, or may choose to log only once and mark that server as not having support for config, and then never retry. Bear in mind that this would mean the application must be restarted if the server is upgraded to 7.3.
+
+If the agent does not recognise a config attribute, then it should log a warning such as:
+
+```
+Remote config failure. Unsupported config names: unknown_option, other_unknown_option
+```
+
+Note that in the initial implementation of this feature, not all config attributes will be supported by the APM UI or APM Server. Agents may choose to support only the attributes supported by the UI/server, or they may choose to accept additional attributes. This will enable them to work without change once additional config attributes are supported by the UI/server.
+
+If the agent receives a known but invalid config attribute, it should log a warning such as:
+
+```
+Remote config failure. Invalid value for transactionSampleRate: 1.2 (out of range [0,1.0])
+```
+
+Failure to process one config attribute should not affect processing of others.
