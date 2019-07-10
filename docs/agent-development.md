@@ -427,7 +427,7 @@ If the server responds with 404 (i.e. it's a pre-7.3 server that lacks the confi
 If the agent does not recognise a config attribute, then it should log a warning such as:
 
 ```
-Remote config failure. Unsupported config names: unknown_option, other_unknown_option
+Central config failure. Unsupported config names: unknown_option, other_unknown_option
 ```
 
 Note that in the initial implementation of this feature, not all config attributes will be supported by the APM UI or APM Server. Agents may choose to support only the attributes supported by the UI/server, or they may choose to accept additional attributes. This will enable them to work without change once additional config attributes are supported by the UI/server.
