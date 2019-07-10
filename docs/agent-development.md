@@ -65,7 +65,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Transaction and span breakdown](#Transaction-and-span-breakdown)
 - [Logging Correlation](#Logging-Correlation)
 - [Agent Configuration](#Agent-Configuration)
-  - [Agent Configuration via Kibana](#Agent-Configuration-via-Kibana)
+  - [APM Agent Configuration via Kibana](#APM-Agent-Configuration-via-Kibana)
     - [Caching](#Caching)
     - [Dealing with errors](#Dealing-with-errors)
 
@@ -388,7 +388,7 @@ Here's a list of the config options across all agents, their types, default valu
 
 They are provided as environment variables but depending on the language there might be several feasible ways to let the user tweak them. For example besides the environment variable `ELASTIC_APM_SERVER_URL`, the Node.js Agent might also allow the user to configure the server URL via a config option named `serverUrl`, while the Python Agent might also allow the user to configure it via a config option named `server_url`.
 
-### Agent Configuration via Kibana
+### APM Agent Configuration via Kibana
 
 Also known as "central configuration". Agents can query the APM Server for configuration updates; the server proxies and caches requests to Kibana.
 
@@ -415,19 +415,18 @@ Agents must deal with various error scenarios, including:
 
  - 7.3 servers where the Kibana connection is not enabled (server responds with 403)
  - 7.3 servers where the Kibana connection is enabled, but unavailable (server responds with 503)
- - any other error (server responds with 5xx)
+ - 7.3 servers where the Kibana connection is enabled, available, but there is no matching agent config (server responds with 404)
  - pre-7.3 servers that don't support the config endpoint (server responds with 404)
+ - any other error (server responds with 5xx)
 
-If the server responds with 403, agents should log the response at info level.
+If the server responds with any 5xx, agents should log at error level. If the server responds with 4xx, agents are not required to log the response. Either central config is not available, not enabled, or there is no agent config to update. In all of these cases, there is no expectation that the agent should do anything, so logging is not useful.
 
-If the server responds with any 5xx, agents should log at error level. In any case, the server _should_ respond with a Cache-Control header, as described in the section above, and agents should retry after the specified interval. If for whatever reason the server does not respond with that header, or it is invalid, agents should retry after 5 minutes.
+In any case, a 7.3+ server _should_ respond with a Cache-Control header, as described in the section above, and agents should retry after the specified interval. For older servers, or for whatever reason a 7.3+ server does not respond with that header (or it is invalid), agents should retry after 5 minutes. We include this behaviour for older servers so that the agent will start polling after server upgrade without restarting the application.
 
-If the server responds with 404 (i.e. it's a pre-7.3 server that lacks the config endpoint), agents may choose to treat it the same as 403, or may choose to log only once and mark that server as not having support for config, and then never retry. Bear in mind that this would mean the application must be restarted if the server is upgraded to 7.3.
-
-If the agent does not recognise a config attribute, then it should log a warning such as:
+If the agent does not recognise a config attribute, or does not support dynamically updating it, then it should log a warning such as:
 
 ```
-Central config failure. Unsupported config names: unknown_option, other_unknown_option
+Central config failure. Unsupported config names: unknown_option, disable_metrics, capture_headers
 ```
 
 Note that in the initial implementation of this feature, not all config attributes will be supported by the APM UI or APM Server. Agents may choose to support only the attributes supported by the UI/server, or they may choose to accept additional attributes. The latter will enable them to work without change once additional config attributes are supported by the UI/server.
