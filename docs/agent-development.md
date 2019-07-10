@@ -435,7 +435,7 @@ Note that in the initial implementation of this feature, not all config attribut
 If the agent receives a known but invalid config attribute, it should log a warning such as:
 
 ```
-Remote config failure. Invalid value for transactionSampleRate: 1.2 (out of range [0,1.0])
+Central config failure. Invalid value for transactionSampleRate: 1.2 (out of range [0,1.0])
 ```
 
 Failure to process one config attribute should not affect processing of others.
