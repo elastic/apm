@@ -405,7 +405,7 @@ To minimise the amount of work required by users, agents should aim to enable th
 
 As mentioned above, the server will cache config for each unique `service.name`, `service.environment` pair. The server will respond to config requests with two related response headers: [Etag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag) and [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
 
-Agents should keep a record of the `Etag` value returned by the most successful config request, and then present it to future requests via the [If-None-Match](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header. If the config has not changed, the server will respond with 304 (Not Modified).
+Agents should keep a record of the `Etag` value returned by the most recent successful config request, and then present it to future requests via the [If-None-Match](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header. If the config has not changed, the server will respond with 304 (Not Modified).
 
 The `Cache-Control` header should contain a `max-age` directive, specifying the amount of time (in seconds) the response should be considered "fresh". Agents should use this to decide how long to wait before requesting config again. The server will respond with a `Cache-Control` header even if the request fails.
 
