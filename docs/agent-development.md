@@ -425,9 +425,7 @@ Agents must deal with various error scenarios, including:
  - pre-7.3 servers that don't support the config endpoint (server responds with 404)
  - any other error (server responds with 5xx)
 
-Agents may treat all 404 responses to mean that there is no configuration, which is not an error.
-
-If the server responds with any 5xx, agents should log at error level. If the server responds with 4xx, agents are not required to log the response, but may choose to log it at debug level; either central config is not available, not enabled, or there is no agent config to update. In all of these cases, there is no expectation that the agent should take any action, so logging is not necessary.
+If the server responds with any 5xx, agents should log at error level. If the server responds with 4xx, agents are not required to log the response, but may choose to log it at debug level; either the central config feature is not available, or is not enabled. In either case, there is no expectation that the agent should take any action, so logging is not necessary.
 
 In any case, a 7.3+ server _should_ respond with a Cache-Control header, as described in the section above, and agents should retry after the specified interval. For older servers, or for whatever reason a 7.3+ server does not respond with that header (or it is invalid), agents should retry after 5 minutes. We include this behaviour for older servers so that the agent will start polling after server upgrade without restarting the application.
 
