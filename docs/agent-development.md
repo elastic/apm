@@ -444,3 +444,7 @@ Central config failure. Invalid value for transactionSampleRate: 1.2 (out of ran
 ```
 
 Failure to process one config attribute should not affect processing of others.
+
+#### Feature flag
+
+Agents should implement a [configuration option](https://docs.google.com/spreadsheets/d/1JJjZotapacA3FkHc2sv_0wiChILi3uKnkwLTjtBmxwU), (`CENTRAL_CONFIG`) which lets users disable the central configuration polling.
