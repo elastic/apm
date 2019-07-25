@@ -88,17 +88,17 @@ With the exception of the RUM agent (which does not maintain long-lived connecti
 
 Agents should implement one of two methods for sending events to the server:
 
- - batch events together and send after a given size is reached, or amount of time has elapsed
- - start streaming events immediately to the server, and flush the connection after a given size is reached, or amount of time has elapsed
+ - batch events together and send a complete request after a given size is reached, or amount of time has elapsed
+ - start streaming events immediately to the server using a chunked-encoding request, and end the request after a given amount of data has been sent, or amount of time has elapsed
 
-All events can be streamed, as described in the [Intake API](https://www.elastic.co/guide/en/apm/server/current/intake-api.html) documentation. Each line encodes a single event, with the first line in a stream encoding the special metadata "event" which is folded into all following events. This metadata "event" is used to describe static properties of the system, process, agent, etc.
-
-Unhandled exceptions/unexpected errors should typically be sent immediately, to avoid data loss due to process termination.
-
-There are two configuration variables that agents should implement to control when data is sent:
+The streaming approach is preferred. There are two configuration options that agents should implement to control when data is sent:
 
  - [ELASTIC_APM_API_REQUEST_TIME](https://www.elastic.co/guide/en/apm/agent/python/current/configuration.html#config-api-request-time)
  - [ELASTIC_APM_API_REQUEST_SIZE](https://www.elastic.co/guide/en/apm/agent/python/current/configuration.html#config-api-request-size)
+
+All events can be streamed as described in the [Intake API](https://www.elastic.co/guide/en/apm/server/current/intake-api.html) documentation. Each line encodes a single event, with the first line in a stream encoding the special metadata "event" which is folded into all following events. This metadata "event" is used to describe static properties of the system, process, agent, etc.
+
+When the batching approach is employed, unhandled exceptions/unexpected errors should typically be sent immediately to ensure timely error visibility, and to avoid data loss due to process termination. Even when using streaming there may be circumstances in which the agent should block the application until events are sent, but this should be both rare and configurable, to avoid interrupting normal program operation. For example, an application may terminate itself after logging a message at "fatal" level. In such a scenario, it may be useful for the agent to optionally block until enqueued events are sent prior to process termination.
 
 ### Transport errors
 
