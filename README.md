@@ -23,7 +23,7 @@
 
 [apm-ui-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-ui
 [apm-ui-docs]: https://www.elastic.co/guide/en/kibana/current/xpack-apm.html
-[apm-ui]: https://github.com/elastic/kibana/tree/master/x-pack/plugins/apm
+[apm-ui]: https://github.com/elastic/kibana/tree/master/x-pack/legacy/plugins/apm
 
 [apm-agent-go-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-go
 [apm-agent-go-docs]: https://www.elastic.co/guide/en/apm/agent/go/current/index.html
