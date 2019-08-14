@@ -10,7 +10,7 @@ Application Performance Monitoring is the concept of profiling and monitoring sy
 Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/master/apm-ui)
 
 #### APM UI
-The curated UI in Kibana. This is part of the Elastic Basic License.
+The curated UI in Kibana. This is only available with an Elastic Basic License.
 [Further reading](https://www.elastic.co/guide/en/kibana/7.3/xpack-apm.html)
 
 #### Agent 
@@ -22,10 +22,10 @@ The APM Server receives data from the Elastic APM agents and stores the data int
 [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_server)
 
 #### Instrumentation
-To be able to monitor an application it needs to be _instrumented_. Instrumentation can happen automatically (the Elastic APM agents intrument many things automatically) or manually.
+To be able to monitor an application it needs to be _instrumented_. Instrumentation can happen automatically (the Elastic APM agents instrument many things automatically) or manually.
 
 #### Service
-The application/service being instrumented by APM. A service can be separated by environment.
+The application/service being instrumented by APM. A service is uniquely identified by name + environment.
 
 #### Library frames vs App frames
 We distinguish between the users own code, and the code of the users dependencies. Often the user is more interested in stack frames from their own code, so these are highlighted.
