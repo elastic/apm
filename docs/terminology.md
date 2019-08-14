@@ -15,7 +15,7 @@ The curated UI in Kibana. This is part of the Elastic Basic License.
 
 #### Agent 
 An APM agent lives inside an application and will automatically collect APM data (transactions, spans, metrics and errors) and send it to the APM Server.
-[Further reading]](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents)
+[Further reading](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents)
 
 #### APM Server
 The APM Server receives data from the Elastic APM agents and stores the data into Elasticsearch.
