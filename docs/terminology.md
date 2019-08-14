@@ -64,7 +64,7 @@ Deciding whether to sample a trace after it has ended. This makes it possible to
 The time from an event occurs in an application until it is visible to the user in the APM UI
 
 #### Real User Monitoring (RUM)
-Real User Monitoring (RUM) tries to capture the real user’s experience with the application. Generally this means monitoring the application on the users’ machine e.g. their browsers or mobile devices.
+Real User Monitoring (RUM) tries to capture the real user’s experience with the application. Generally this means monitoring the application on the users’ machine e.g. their browsers or mobile devices. The APM agent used in the browser is called [RUM agent](https://www.elastic.co/guide/en/apm/agent/rum-js/4.x/intro.html)
 
 #### Distributed Tracing
 Distributed tracing is a method for monitoring how applications interact with each other, especially in a microservice architecture.
