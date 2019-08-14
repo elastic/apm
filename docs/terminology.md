@@ -30,7 +30,7 @@ A stack frame is a frame of data that gets pushed onto the stack. In the case of
 #### Time to glass
 The time from an event occurs in an application until it is visible to the user in the APM UI
 
-### Elastic APM Architecture
+## Elastic APM Architecture
 
 The Elastic APM offering consists of APM Agents, APM Server, APM UI and Kibana dashboards.
 
