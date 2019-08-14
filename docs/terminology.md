@@ -7,7 +7,7 @@ This document describes terms and concepts often used within the APM ecossystem
 Application Performance Monitoring is the concept of profiling and monitoring systems
 
 #### APM dashboards
-Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/master/apm-ui)
+Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana)
 
 #### APM UI
 The curated UI in Kibana. This is only available with an Elastic Basic License.
