@@ -34,7 +34,7 @@ The time from an event occurs in an application until it is visible to the user 
 
 The Elastic APM offering consists of APM Agents, APM Server, APM UI and Kibana dashboards.
 
-#### APM dashboards
+#### Kibana dashboards (aka APM dashboards)
 Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana)
 
 #### APM UI
