@@ -45,7 +45,7 @@ APM UI is a Kibana plugin which reads captured APM data from Elasticsearch, and 
 [Further reading](https://www.elastic.co/guide/en/kibana/7.3/xpack-apm.html)
 
 #### Kibana dashboards (aka APM dashboards)
-Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana). This UI is available without an Elastic license.
+Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana). The dashboards are available without an Elastic license.
 
 ## APM documents
 
