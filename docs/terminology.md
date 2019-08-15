@@ -1,6 +1,6 @@
 # Terminology
 
-This document describes terms and concepts often used within the APM ecossystem
+This document describes terms and concepts often used within the APM ecosystem.
 
 #### APM
 Application Performance Monitoring is the concept of profiling and monitoring services and applications. For instance, it accounts for things like requests per second, but not how much free space is on a disk.
@@ -68,8 +68,8 @@ To reduce processing and storage overhead, transactions may be "sampled". Sampli
 TODO
 
 #### Head based sampling
-Deciding whether to sample a trace before it has started. The decision to sample will often be very simplistic eg. sample 1% of traces.
+Deciding whether to sample a trace before it has started. The decision to sample will often be very simplistic e.g. sample 1% of traces.
 
 #### Tail-based sampling
-Deciding whether to sample a trace after it has ended. This makes it possible to sample based on _interesting_ events like error occurence, latency etc.
+Deciding whether to sample a trace after it has ended. This makes it possible to sample based on _interesting_ events like error occurrence, latency etc.
 
