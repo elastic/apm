@@ -19,7 +19,7 @@ We distinguish between the users own code, and the code of the users dependencie
 [Further reading](https://www.elastic.co/guide/en/apm/agent/nodejs/master/performance-tuning.html#performance-source-lines)
 
 #### Real User Monitoring (RUM)
-Real User Monitoring (RUM) tries to capture the real user’s experience with the application. Generally this means monitoring the application on the users’ machine e.g. their browsers or mobile devices. The APM agent used in the browser is called [RUM agent](https://www.elastic.co/guide/en/apm/agent/rum-js/4.x/intro.html)
+Real User Monitoring (RUM) tries to capture the real user’s experience with the application. Generally this means monitoring the application on the user’s machine e.g. their browsers or mobile devices. The APM agent used in the browser is called [RUM agent](https://www.elastic.co/guide/en/apm/agent/rum-js/4.x/intro.html)
 
 #### Service
 The application/service being instrumented by APM. A service is uniquely identified by name + environment.
