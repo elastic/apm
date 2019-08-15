@@ -12,7 +12,8 @@ Distributed tracing is a method for monitoring how applications interact with ea
 [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/distributed-tracing.html)
 
 #### Instrumentation
-To be able to monitor an application it needs to be _instrumented_. Instrumentation can happen automatically (the Elastic APM agents instrument many things automatically) or manually.
+To be able to monitor an application it needs to be _instrumented_ by an APM Agent. 
+Usually not everything is instrumented because that would incur a very large overhead. We are interested only in performance-sensitive activities, like database queries or web requests. Instrumentation can happen automatically (the Elastic APM Agents instrument many frameworks and databases automatically), or manually with a programmatic API.
 
 #### Library frames vs App frames
 We distinguish between the users own code, and the code of the users dependencies. Often the user is more interested in stack frames from their own code, so these are highlighted.
