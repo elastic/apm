@@ -8,8 +8,7 @@ This document describes terms and concepts often used within the APM ecossystem
 Application Performance Monitoring is the concept of profiling and monitoring services and applications. For instance, it accounts for things like requests per second, but not how much free space is on a disk.
 
 #### Distributed Tracing
-Distributed tracing is a method for monitoring how applications interact with each other, especially in a microservice architecture.
-[Further reading](https://www.elastic.co/guide/en/apm/get-started/current/distributed-tracing.html)
+Distributed tracing makes it possible to analyze performance throughout a microservice architecture all in one view. This is accomplished by tracing all of the requests - from the initial web request in the front-end service - to queries made through multiple back-end services. [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/distributed-tracing.html)
 
 #### Instrumentation
 To be able to monitor an application it needs to be _instrumented_ by an APM Agent. 
