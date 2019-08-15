@@ -15,6 +15,9 @@ To be able to monitor an application it needs to be _instrumented_ by an APM Age
 Usually not everything is instrumented because that would incur a very large overhead. We are interested only in performance-sensitive activities, like database queries or web requests. Instrumentation can happen automatically (the Elastic APM Agents instrument many frameworks and databases automatically), or manually with a programmatic API.
 
 #### Library frames vs App frames
+
+ > A **stack frame** is a frame of data that gets pushed onto the stack. In the case of a call stack, a stack frame would represent a function call and its argument data ([Source](https://stackoverflow.com/a/10057535/434980))
+
 We distinguish between the users own code, and the code of the users dependencies. Often the user is more interested in stack frames from their own code, so these are highlighted.
 [Further reading](https://www.elastic.co/guide/en/apm/agent/nodejs/master/performance-tuning.html#performance-source-lines)
 
@@ -23,9 +26,6 @@ Real User Monitoring (RUM) tries to capture the real user’s experience with th
 
 #### Service
 The application/service being instrumented by APM. A service is uniquely identified by name + environment.
-
-#### Stack frame
-A stack frame is a frame of data that gets pushed onto the stack. In the case of a call stack, a stack frame would represent a function call and its argument data. [Source](https://stackoverflow.com/a/10057535/434980)
 
 #### Time to glass
 The time from an event occurs in an application until it is visible to the user in the APM UI
