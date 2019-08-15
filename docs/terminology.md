@@ -2,8 +2,6 @@
 
 This document describes terms and concepts often used within the APM ecossystem
 
-
-
 #### APM
 Application Performance Monitoring is the concept of profiling and monitoring services and applications. For instance, it accounts for things like requests per second, but not how much free space is on a disk.
 
@@ -34,20 +32,20 @@ The time from an event occurs in an application until it is visible to the user 
 
 The Elastic APM offering consists of APM Agents, APM Server, APM UI and Kibana dashboards.
 
-#### Kibana dashboards (aka APM dashboards)
-Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana)
-
-#### APM UI
-The curated UI in Kibana. This is only available with an Elastic Basic License.
-[Further reading](https://www.elastic.co/guide/en/kibana/7.3/xpack-apm.html)
+#### APM Agent 
+An APM agent lives inside an application and will automatically collect APM data (transactions, spans, metrics and errors) and send it to the APM Server.
+[Further reading](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents)
 
 #### APM Server
 The APM Server receives data from the Elastic APM agents and stores the data into Elasticsearch.
 [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_server)
 
-#### Agent 
-An APM agent lives inside an application and will automatically collect APM data (transactions, spans, metrics and errors) and send it to the APM Server.
-[Further reading](https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents)
+#### APM UI
+APM UI is a Kibana plugin which reads captured APM data from Elasticsearch, and displays it in curated charts and tables that allow the user to easily compare and debug their applications. This UI is only available with an Elastic Basic License.
+[Further reading](https://www.elastic.co/guide/en/kibana/7.3/xpack-apm.html)
+
+#### Kibana dashboards (aka APM dashboards)
+Custom Kibana dashboards made for APM. These used to be bundled with Kibana but are now located in the [apm-contrib repo](https://github.com/elastic/apm-contrib/tree/471ef577fe6ae583d49ced4b2047a3763fac7a7b/kibana). This UI is available without an Elastic license.
 
 ## APM documents
 
@@ -55,12 +53,12 @@ An APM agent lives inside an application and will automatically collect APM data
 Spans contain information about a specific code path that has been executed. They measure from the start to end of an activity, and they can have a parent/child relationship with other spans.
 [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/transaction-spans.html)
 
-#### Trace
-A trace is a grouping of spans and transactions that all share the same `trace.id`
-
 #### Transaction
 Transactions are a special kind of span that have additional attributes associated with them. They describe an event captured by an Elastic APM agent instrumenting a service. You can think of transactions as the highest level of work you’re measuring within a service
 [Further reading](https://www.elastic.co/guide/en/apm/get-started/current/transactions.html)
+
+#### Trace
+A trace is a grouping of spans and transactions that all share the same `trace.id`
 
 ## Sampling
 
