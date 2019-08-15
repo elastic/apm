@@ -16,7 +16,7 @@ Usually not everything is instrumented because that would incur a very large ove
 
  > A **stack frame** is a frame of data that gets pushed onto the stack. In the case of a call stack, a stack frame would represent a function call and its argument data ([Source](https://stackoverflow.com/a/10057535/434980))
 
-We distinguish between the users own code, and the code of the users dependencies. Often the user is more interested in stack frames from their own code, so these are highlighted.
+We distinguish between the user's own code, and the code of the user's dependencies. Often the user is more interested in stack frames from their own code, so these are highlighted.
 [Further reading](https://www.elastic.co/guide/en/apm/agent/nodejs/master/performance-tuning.html#performance-source-lines)
 
 #### Real User Monitoring (RUM)
