@@ -5,7 +5,7 @@ This document describes terms and concepts often used within the APM ecossystem
 
 
 #### APM
-Application Performance Monitoring is the concept of profiling and monitoring systems
+Application Performance Monitoring is the concept of profiling and monitoring services and applications. For instance, it accounts for things like requests per second, but not how much free space is on a disk.
 
 #### Distributed Tracing
 Distributed tracing is a method for monitoring how applications interact with each other, especially in a microservice architecture.
