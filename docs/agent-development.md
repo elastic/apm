@@ -20,7 +20,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 
 # Guiding Philosophy  <!-- omit in toc -->
 
-1. Agents try to be as good citizens as possible in the programming language they are written for. Even though every langauge ends up reporting to the same server API with the same JSON format, the agents should try to make as much sense in the context of the relevant language as possible. We want to both streamline the agents to work the same in every context **but** also make them feel like they were built specifically for each language. It's up to you to figure out how this looks in the language you are writing your agent for.
+1. Agents try to be as good citizens as possible in the programming language they are written for. Even though every language ends up reporting to the same server API with the same JSON format, the agents should try to make as much sense in the context of the relevant language as possible. We want to both streamline the agents to work the same in every context **but** also make them feel like they were built specifically for each language. It's up to you to figure out how this looks in the language you are writing your agent for.
 
 2. Agents should be as close to zero configuration as possible.
 
