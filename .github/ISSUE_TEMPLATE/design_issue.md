@@ -1,5 +1,6 @@
 ---
 name: Design issue
+labels: design
 about: Request UI/UX help for this project
 ---
 
@@ -17,7 +18,7 @@ For example: link to other solutions for further investigation
 
 - Refer to any related/depending issues
 - If this is already scheduled add the appropriate version label
-- Add the `design` label
+- Make sure the `design` label is added
 
 
 If in doubt, don’t hesitate to reach out to the `#observability-design` Slack channel.
