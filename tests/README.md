@@ -11,4 +11,4 @@ To get similar results across agents a set of `input -> expected output` example
 Using or complying to these isn't a requirement.
 
 - Reference issue: [elastic/apm#12](https://github.com/elastic/apm/issues/12).
-- Rererence doc: [RFC: SQL parsing](https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA/)
+- Reference doc: [RFC: SQL parsing](https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA/)
