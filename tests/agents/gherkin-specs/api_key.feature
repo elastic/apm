@@ -5,7 +5,7 @@ Feature: Api Key
     When an api key is set to 'RTNxMjlXNEJt' in the config
     Then the Authorization header is 'ApiKey RTNxMjlXNEJt'
 
-  Scenario: An configured api key takes precedence over a secret token
+  Scenario: A configured api key takes precedence over a secret token
     Given an agent
     When an api key is set in the config
     And a secret_token is set in the config
