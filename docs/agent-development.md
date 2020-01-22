@@ -334,7 +334,12 @@ In addition to each agent having a "native" API for instrumentation, they also i
 
 ### Distributed Tracing
 
-We implement the [W3C Trace Context](https://w3c.github.io/trace-context/) standard, with the exceptions that we currently use the header name "elastic-apm-traceparent" and we do not currently support "tracestate". Both of these exceptions will be removed as Trace Context nears finalisation; we are tracking this in https://github.com/elastic/apm/issues/71.
+We implement W3C standards, both for the HTTP headers and the binary format.
+
+
+
+We implement the [W3C Trace Context](https://www.w3.org/TR/trace-context-1/) standard.
+Until this standard became final, we used the header name "elastic-apm-traceparent" and we did not support "tracestate". Soon after the standard became official, we started to fully align with it. For most agents, that was around the 7.6 stack release (we track that through https://github.com/elastic/apm/issues/71).
 
 ## Error/exception tracking
 
