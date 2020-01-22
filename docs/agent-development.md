@@ -58,6 +58,8 @@ You can find details about each of these in the [APM Data Model](https://www.ela
       - [Database span type/subtype](#Database-span-typesubtype)
   - [Manual APIs](#Manual-APIs)
   - [Distributed Tracing](#Distributed-Tracing)
+    - [HTTP Headers](#Distributed-Tracing-Http)
+    - [Binary Fields](#Distributed-Tracing-Binary)
 - [Error/exception tracking](#Errorexception-tracking)
 - [Metrics](#Metrics)
   - [System/process CPU/Heap](#Systemprocess-CPUHeap)
@@ -334,7 +336,60 @@ In addition to each agent having a "native" API for instrumentation, they also i
 
 ### Distributed Tracing
 
-We implement the [W3C Trace Context](https://w3c.github.io/trace-context/) standard, with the exceptions that we currently use the header name "elastic-apm-traceparent" and we do not currently support "tracestate". Both of these exceptions will be removed as Trace Context nears finalisation; we are tracking this in https://github.com/elastic/apm/issues/71.
+We implement the W3C standards, both for HTTP headers and binary fields.
+
+#### Http Headers
+
+Our implementation relies on the [W3C Trace Context](https://www.w3.org/TR/trace-context-1/) standard. Until this standard became final
+, we used the header name "elastic-apm-traceparent" and we did not support "tracestate". Soon after the standard became official, we
+started to fully align with it. For backward compatibility reasons, this was done in phases, so that the first step was to look for both
+traceparent headers in incoming requests and sending both traceparent headers in outgoing requests (with the exception of the RUM agent
+, due to CORS). [Issue #71](https://github.com/elastic/apm/issues/71) describes this in more detail, as well as tracking implementation
+in the different agents.
+New agents may decide whether to support both traceparent headers (so to be compatible with older agent versions) or only the formal W3C
+header.
+
+#### Binary Fields
+
+Our implementation relies on the [W3C Binary Trace Context](https://w3c.github.io/trace-context-binary/) standard. Since we started
+implementing it when this was still a draft, we named the field "elasticapmtraceparent" instead of "traceparent", and we decided to
+wait with the implementation of the tracestate field. In order to make sure we are fully aligned, we took the following "snapshot" of the
+ draft which is followed by all agents implementing it:
+
+**_elasticapmtraceparent binary format_**
+
+The field traceparent encodes the version of the protocol and fields trace-id, parent-id and trace-flags. Each field starts with the one byte field identifier with the field value following immediately after it. Field identifiers are used as markers for additional verification of the value consistency and may be used in future for the versioning of the traceparent field.
+
+traceparent     = version version_format  
+version         = 1BYTE                   ; version is 0 in the current spec
+version_format  = "{ 0x0 }" trace-id "{ 0x1 }" parent-id "{ 0x2 }" trace-flags
+trace-id        = 16BYTES
+parent-id       = 8BYTES
+trace-flags     = 1BYTE  ; only the least significant bit is used
+
+Unknown field identifier (anything beyond 0, 1 and 2) should be treated as invalid traceparent. All zeroes in trace-id and parent-id invalidates the traceparent as well.
+
+**_Serialization of elasticapmtraceparent_**
+
+Implementation MUST serialize fields into the field ordering sequence. In other words, trace-id field should be serialized first, parent-id second and trace-flags - third.
+
+Field identifiers should be treated as unsigned byte numbers and should be encoded in big-endian bit order.
+
+Fields trace-id and parent-id are defined as a byte arrays, NOT a long numbers. First element of an array MUST be copied first. When array is represented as a memory block of 16 bytes - serialization of trace-id would be identical to memcpy method call on that memory block. This may be a concern for implementations casting these fields to integers - protocol is NOT defining whether those byte arrays are ordered as big endian or little endian and have a sign bit.
+
+If padding of the field is required (traceparent needs to be serialized into the bigger buffer) - any number of bytes can be appended to the end of the serialized value.
+
+**_elasticapmtraceparent example_**
+
+{0,
+0, 75, 249, 47, 53, 119, 179, 77, 166, 163, 206, 146, 157, 0, 14, 71, 54,
+1, 52, 240, 103, 170, 11, 169, 2, 183,
+2, 1}
+This corresponds to:
+
+trace-id is {75, 249, 47, 53, 119, 179, 77, 166, 163, 206, 146, 157, 0, 14, 71, 54} or 4bf92f3577b34da6a3ce929d000e4736.
+parent-id is {52, 240, 103, 170, 11, 169, 2, 183} or 34f067aa0ba902b7.
+trace-flags is 1 with the meaning recorded is true.
 
 ## Error/exception tracking
 
