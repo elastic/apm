@@ -343,7 +343,7 @@ We implement the W3C standards, both for HTTP headers and binary fields.
 Our implementation relies on the [W3C Trace Context](https://www.w3.org/TR/trace-context-1/) standard. Until this standard became final, 
 we used the header name `elastic-apm-traceparent` and we did not support `tracestate`. Soon after the standard became official, we
 started to fully align with it. For backward compatibility reasons, this was done in phases, so that the first step was to look for both
-`traceparent` headers in incoming requests and sending both `traceparent` headers in outgoing requests (with the exception of the RUM agent, 
+`traceparent` headers in incoming requests (meaning - both `elastic-apm-traceparent` and `traceparent`) and sending both `traceparent` headers in outgoing requests (with the exception of the RUM agent, 
 due to CORS). [Issue #71](https://github.com/elastic/apm/issues/71) describes this in more detail, as well as tracking implementation
 in the different agents.
 New agents may decide whether to support both `traceparent` headers (so to be compatible with older agent versions) or only the formal W3C
