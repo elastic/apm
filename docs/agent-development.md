@@ -353,7 +353,8 @@ header.
 
 Our implementation relies on the [W3C Binary Trace Context](https://w3c.github.io/trace-context-binary/) standard. Since we started
 implementing it when this was still a draft, we named the field `elasticapmtraceparent` instead of `traceparent`, and we decided to
-wait with the implementation of the `tracestate` field. In order to make sure we are fully aligned, all agents are implementing the
+wait with the implementation of the `tracestate` field. We chose to avoid hyphens in the field name in order to reduce risk of breaking field name limitations, such as we encountered with some JMS clients. 
+In order to make sure we are fully aligned, all agents are implementing the
 specification described in [this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
 
 ## Error/exception tracking
