@@ -9,12 +9,11 @@ The value format of the header is text, as other vendors use text and there's no
 The header key names are `elastic-apm-traceparent` (for backwards compatibility with older agents) and `traceparent`.
 
 ## Instrumented calls
-Server and Client Unary request/response calls are instrumented. Support for other calls may be added later (i.e. streaming, bidirectional streaming).
+Server and Client Unary request/response calls are instrumented. Support for other calls may be added later (i.e. client/server streaming, bidirectional streaming).
 
 ## Transaction/Span context schemas
 
 ### Transaction context
-
 
 * **Name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
 * **Type**: `request`
