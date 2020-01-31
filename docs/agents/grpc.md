@@ -15,13 +15,22 @@ Server and Client Unary request/response calls are instrumented. Support for oth
 
 ### Transaction context
 
-* **Name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
-* **Type**: `request`
-* **Trace_context**: \<trace-context\>
-* **Result**: [\<a-valid-result-value\>](https://github.com/grpc/grpc/blob/master/doc/statuscodes.md#status-codes-and-their-use-in-grpc), ex: `OK`
+* **name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
+* **type**: `request`
+* **trace_context**: \<trace-context\>
+* **result**: [\<a-valid-result-value\>](https://github.com/grpc/grpc/blob/master/doc/statuscodes.md#status-codes-and-their-use-in-grpc), ex: `OK`
 
 ### Span context
 
-* **Name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
-* **Type**: `external`
-* **Subtype**: `grpc`
+See [apm#180](https://github.com/elastic/apm/issues/180) and [apm#115](https://github.com/elastic/apm/issues/115) for details on `destination` fields.
+
+* **name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
+* **type**: `external`
+* **subtype**: `grpc`
+* **destination**:
+  * **address**: Either an IP (v4 or v6) or a host/domain name.
+  * **port**: A port number; Should report default ports.
+  * **service**:
+    * **resource**: Capture host, and port.
+    * **name**: Capture the scheme, host, and non-default port.
+    * **type**: Same as `span.type`
