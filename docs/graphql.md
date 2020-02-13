@@ -2,18 +2,21 @@
 
 **NB:** This document is a work in progress.
 
-Our current approach of splitting and grouping transaction by HTTP method and path fits perfectly for REST-style APIs and the like.
+## Problems with our current approach
 
-With a GraphQL approach, the client always requests the same endpoint. This means wildly different queries and mutations all will end up in the same transaction group.
+Grouping transactions by HTTP method and path fits perfectly for REST-style APIs and the like.
 
-To better support GraphQL servers we need to find another way to tell the queries apart.
+With a GraphQL API, the client always requests the same endpoint.
+This means queries and mutations with very different costs and consequences all end up in the same transaction group.
+Spans are likewise impossible to tell apart.
+
+This document describes and explains a common approach to better support GraphQL.
 
 Example GraphQL query:
 
 ```graphql
 {
-  user {
-    id
+  user(id: "99") {
     name
     comments {
       body
@@ -22,7 +25,26 @@ Example GraphQL query:
 }
 ```
 
-**Note:** The Node.js agent already supports GraphQL. This spec is written with that in mind but not necessarily with its implementation as a target result.
+Turns into an HTTP POST request like so:
+
+```plain
+POST /graphql
+Content-Type: application/json
+
+{
+  "query": "query ($id: ID!) {
+    user(id: $id) {
+      name
+      comments {
+        body
+      }
+    }
+  }",
+  "variables": { "id": "99" }
+}
+```
+
+**Sidenote:** The Node.js agent already supports GraphQL. This document is written with that in mind but not necessarily with its implementation as a target result.
 
 ## Prefix
 
@@ -58,31 +80,44 @@ An app may serve multiple GraphQL endpoints. To tell them apart we can include t
 
 - `GraphQL:UserWithComments (/api/graphql)`
 
-I'm not sure this is a common thing to do, so perhaps this could be an opt-in option, like `graphql_postfix_path: true`.
+This does not seem very common, so adding this is an opt-in option, like `graphql_postfix_path: true`.
 
 ## Anonymous queries
 
 An Operation Name isn't required. When one isn't provided it's hard for us to tell apart the queries.
 
-Some clients generate `id`s from hashing the contents of the query (see [apollo-tooling](https://github.com/apollographql/apollo-tooling/blob/1dfd737eaf85b89b2cfb13913342e091e3c03d18/packages/apollo-codegen-core/src/compiler/visitors/generateOperationId.ts#L5)). We could choose to do something similar.
+1. Some clients generate `id`s from hashing the contents of the query (see [apollo-tooling](https://github.com/apollographql/apollo-tooling/blob/1dfd737eaf85b89b2cfb13913342e091e3c03d18/packages/apollo-codegen-core/src/compiler/visitors/generateOperationId.ts#L5)). This would split the anonymous queries into separate buckets.
 
-A problem with this approach is that the user of the APM UI has no way to recognise queries in the transactions list before clicking through.
+    A problem with this approach is that a user of the APM UI has no way to recognise queries in the transactions list before clicking through.
 
-Another approach is to simply label them `[anonymous query]` or something similar.
+    Using just the `id` will not reveal the true culprit since there can be variables associated with the query. Different values for the variables can lead to very different workloads and response times.
 
-A problem with _that_ approach is that the contents and thereby the relevant db queries and other sub-span actions that the server might do while resolving these queries may be wildly different making it hard to provide a _true_ sample waterfall.
- These two examples for example will look the same for the top-level GraphQL spans but will represent significantly different workloads.
+2. Another approach is to simply label them `[anonymous]` or something similar.
 
+    A problem with _that_ approach is that the contents and thereby the relevant db queries and other sub-span actions that the server might do while resolving these queries may be wildly different making it hard to provide a _true_ sample waterfall.
+
+    These two examples for example will look the same for the top-level GraphQL spans but will represent significantly different workloads.
+
+    ```
+    [- anonymous graphql span --------------]
+      [- 1,000x SELECT * ---------------]
+        [- 1,000 more SELECT * -]
+
+    [- anonymous graphql span --------------]
+      [- SELECT id FROM users WHERE id=? -]
+    ```
+
+    We could consider _muting_ or ignoring all sub-spans to anonymous GraphQL queries and choose to rather show nothing than potentially wrong information.
+
+No one of these are perfect. Because the benefits of using `id`s in the worst case could be misleading anyway, we're going with option 2.
+
+To further help and nudge developers to use Operation Names for their queries, we could log a warning when coming across anonymous queries.
+
+```plain
+[DEBUG] Traced anonymous GraphQL query. Use Operation Names for your queries to better distinguish them in the APM UI.
 ```
-[- anonymous graphql span --------------]
-  [- 1,000x SELECT * ---------------]
-    [- 1,000 more SELECT * -]
 
-[- anonymous graphql span --------------]
-  [- SELECT id FROM users WHERE id=? -]
-```
-
-We could consider _muting_ or ignoring all sub-spans to anonymous GraphQL queries and choose to rather show nothing than potentially wrong information.
+This could also be a tooltip in the UI instead of a log message.
 
 Span name examples:
 - `GraphQL:ka8kadf8233kxcsc2929384384kdkdkc8383…`
@@ -90,7 +125,7 @@ Span name examples:
 
 ## Batching/Multiplexing queries
 
-Some clients allow batching queries (see for example [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/#gatsby-focus-wrapper)
+Some clients allow batching queries (see for example [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/#gatsby-focus-wrapper) or [dataloader](https://github.com/graphql/dataloader#batching).)
 
 So far it makes sense to update transaction names based on the span names. Essentially, in the best case, let the transactions be named after the Operation Names.
 
@@ -98,5 +133,9 @@ However with multiple queries per HTTP request this wont work.
 
 Combining span names with `+` could work.
 
-Span name examples:
+Transaction name examples:
 - `GraphQL:UserWithComments+PostWithSiblings+MoreThings`
+
+## Transaction names
+
+Because the GraphQL HTTP request transactions are likely only concerned with resolving the GraphQL queries, it makes sense to update the transaction names by the queries they run, as described in _Batching/Multiplexing_ above.
