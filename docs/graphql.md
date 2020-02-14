@@ -74,13 +74,11 @@ Span name examples:
 - `GraphQL:UserWithComments`
 - `GraphQL:UpdateUser`
 
-## Multiple endpoints
+### Sidenote: Multiple endpoints
 
-An app may serve multiple GraphQL endpoints. To tell them apart we can include the path in the transaction name.
+The Node.js implementation adds the request path to the GraphQL span names.
 
-- `GraphQL:UserWithComments (/api/graphql)`
-
-This does not seem very common, so adding this is an opt-in option, like `graphql_postfix_path: true`.
+We do not find serving multiple endpoints and using them with the same Operation Names likely enough to add it to this document.
 
 ## Anonymous queries
 
