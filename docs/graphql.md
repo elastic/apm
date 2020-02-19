@@ -52,7 +52,7 @@ To distinguish GraphQL spans from others we prefix them with `GraphQL:`. A span 
 
 ## Operation Name
 
-It is common (and [recommended](https://graphql.org/learn/queries/#operation-name)) to provide an _Operation Name_ for queries. Here for example `UserWithName`:
+It is common (and [recommended](https://graphql.org/learn/queries/#operation-name)) to provide an _Operation Name_ for queries. Here for example `UserWithComments`:
 
 ```graphql
 query UserWithComments {
