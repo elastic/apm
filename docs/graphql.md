@@ -46,11 +46,13 @@ Content-Type: application/json
 
 **Sidenote:** The Node.js agent already supports GraphQL. This document is written with that in mind but not necessarily with its implementation as a target result.
 
-## Prefix
+## Transactions
 
-To distinguish GraphQL spans from others we prefix them with `GraphQL:`. A span with just the name `User` will be hard to recognise from just that name, whereas `GraphQL:User` is easy to recognise.
+### Prefix
 
-## Operation Name
+To distinguish GraphQL transactions from others we prefix them with `GraphQL:`.
+
+### Operation Name
 
 It is common (and [recommended](https://graphql.org/learn/queries/#operation-name)) to provide an _Operation Name_ for queries. Here for example `UserWithComments`:
 
@@ -70,19 +72,25 @@ The point of these are to provide an easy way for the developers, when things go
 
 This name is available on the server too and serves as a great distinguishing key.
 
-Span name examples:
-- `GraphQL:UserWithComments`
-- `GraphQL:UpdateUser`
+Transaction name examples:
+- `GraphQL: UserWithComments`
+- `GraphQL: UpdateUser`
 
-### Sidenote: Multiple endpoints
+#### Sidenote: Multiple endpoints
 
 The Node.js implementation adds the request path to the GraphQL span names.
 
 We do not find serving multiple endpoints and using them with the same Operation Names likely enough to add it to this document.
 
-## Anonymous queries
+### Anonymous queries
 
 An Operation Name isn't required. When one isn't provided it's hard for us to tell apart the queries.
+
+We considered hashing queries to tell them apart, but decided against it.
+Instead we will just consider all unnamed queries _unnamed_ and consequently put them in the same bucket.
+
+<details>
+<summary>Rationale:</summary>
 
 1. Some clients generate `id`s from hashing the contents of the query (see [apollo-tooling](https://github.com/apollographql/apollo-tooling/blob/1dfd737eaf85b89b2cfb13913342e091e3c03d18/packages/apollo-codegen-core/src/compiler/visitors/generateOperationId.ts#L5)). This would split the anonymous queries into separate buckets.
 
@@ -90,7 +98,7 @@ An Operation Name isn't required. When one isn't provided it's hard for us to te
 
     Using just the `id` will not reveal the true culprit since there can be variables associated with the query. Different values for the variables can lead to very different workloads and response times.
 
-2. Another approach is to simply label them `[anonymous]` or something similar.
+2. Another approach is to simply label them `[unnamed]`.
 
     A problem with _that_ approach is that the contents and thereby the relevant db queries and other sub-span actions that the server might do while resolving these queries may be wildly different making it hard to provide a _true_ sample waterfall.
 
@@ -105,35 +113,41 @@ An Operation Name isn't required. When one isn't provided it's hard for us to te
       [- SELECT id FROM users WHERE id=? -]
     ```
 
-    We could consider _muting_ or ignoring all sub-spans to anonymous GraphQL queries and choose to rather show nothing than potentially wrong information.
-
 No one of these are perfect. Because the benefits of using `id`s in the worst case could be misleading anyway, we're going with option 2.
+</details>
 
-To further help and nudge developers to use Operation Names for their queries, we could log a warning when coming across anonymous queries.
-
-```plain
-[DEBUG] Traced anonymous GraphQL query. Use Operation Names for your queries to better distinguish them in the APM UI.
-```
-
-This could also be a tooltip in the UI instead of a log message.
-
-Span name examples:
-- `GraphQL:ka8kadf8233kxcsc2929384384kdkdkc8383…`
-- `GraphQL:[anonymous]`
-
-## Batching/Multiplexing queries
-
-Some clients allow batching queries (see for example [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/#gatsby-focus-wrapper) or [dataloader](https://github.com/graphql/dataloader#batching).)
-
-So far it makes sense to update transaction names based on the span names. Essentially, in the best case, let the transactions be named after the Operation Names.
-
-However with multiple queries per HTTP request this wont work.
-
-Combining span names with `+` could work.
+To further help and nudge developers to use Operation Names for their queries, a tooltip will be shown in the Kibana UI, suggesting to use Operation Names.
 
 Transaction name examples:
-- `GraphQL:UserWithComments+PostWithSiblings+MoreThings`
+- `GraphQL: [unnamed]`
 
-## Transaction names
+### Batching/Multiplexing queries
 
-Because the GraphQL HTTP request transactions are likely only concerned with resolving the GraphQL queries, it makes sense to update the transaction names by the queries they run, as described in _Batching/Multiplexing_ above.
+Some clients and servers allow batching/multiplexing queries (see for example [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/#gatsby-focus-wrapper) or [dataloader](https://github.com/graphql/dataloader#batching)) allowing multiple queries to be run from the same HTTP request.
+
+If multiple queries are run from the same request, we join their operation names in the transaction name with a `+`.
+
+Transaction name examples:
+- `GraphQL: UserWithComments+PostWithSiblings+MoreThings+[unnamed]`
+
+To avoid very long transaction names, if a request has more than five queries, we abbreviate it to `[more-than-five-queries]`.
+
+Transaction name examples:
+- `GraphQL: [more-than-five-queries]`
+
+## Spans
+
+The life cycle of responding to a GraphQL query is mostly split in two parts. First, the quer(y/ies) are read, parsed and analyzed. Second, they are executed.
+
+![Example GraphQL waterfall](graphql-example.png)
+
+This example shows the server responding to one request, with two named queries, `SKUs` and `Names`.
+
+As each language's server implementation can vary slightly in phases and their names, these might be named differently between agents.
+
+GraphQL spans have the following parameters:
+
+- `name: graphql.[action]`
+- `type: "app"`
+- `subtype: "graphql"`
+- `action: [action]`
