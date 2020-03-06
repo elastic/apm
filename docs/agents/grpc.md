@@ -22,6 +22,7 @@ Server and Client Unary request/response calls are instrumented. Support for oth
 
 ### Span context
 
+Note that the destination fields are optional as some gRPC libraries don't expose host and port information.
 See [apm#180](https://github.com/elastic/apm/issues/180) and [apm#115](https://github.com/elastic/apm/issues/115) for details on `destination` fields.
 
 * **name**: \<method\>, ex: `/helloworld.Greeter/SayHello`
