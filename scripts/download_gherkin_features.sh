@@ -23,8 +23,8 @@ download_gherkin()
 
 # parent directory
 basedir=$(dirname "$0")/..
+targetdir="${1:-"bdd/features"}"
 
-
-download_gherkin ${basedir}/bdd/features master
+download_gherkin ${basedir}/${targetdir} master
 
 echo "Done."
