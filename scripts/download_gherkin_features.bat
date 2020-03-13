@@ -1,7 +1,8 @@
 : Adding gherkin feature download for windows
 @echo off
 SET TMP_FOLDER=.\tests\tempFeatures
-SET FOLDER=.\tests\bdd\features
+SET "FOLDER=%1"
+IF "%FOLDER%"=="" SET /P "FOLDER=.\tests\bdd\features"
 SET APM_BRANCH=master
 
 mkdir %TMP_FOLDER%
