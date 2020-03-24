@@ -8,9 +8,9 @@ download_gherkin()
     for run in 1 2 3 4 5
     do
         if [ -x "$(command -v gtar)" ]; then
-            curl --silent --fail https://codeload.github.com/elastic/apm/tar.gz/${2} | gtar xzvf - --directory=${1} --strip-components=4 "*/tests/agents/gherkin-specs*"
+            curl --silent --fail https://codeload.github.com/elastic/apm/tar.gz/${2} | gtar xzvf - --wildcards --directory=${1} --strip-components=4 "*/tests/agents/gherkin-specs*"
         else
-            curl --silent --fail https://codeload.github.com/elastic/apm/tar.gz/${2} | tar xzvf - --directory=${1} --strip-components=4 "*tests/agents/gherkin-specs*"
+            curl --silent --fail https://codeload.github.com/elastic/apm/tar.gz/${2} | tar xzvf - --wildcards --directory=${1} --strip-components=4 "*tests/agents/gherkin-specs*"
         fi
         result=$?
         if [ $result -eq 0 ]; then break; fi
