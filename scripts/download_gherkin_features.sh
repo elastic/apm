@@ -22,7 +22,7 @@ download_gherkin()
 }
 
 # parent directory
-basedir=$(dirname "$0")/..
+basedir=$(dirname "$0")
 targetdir="${1:-"bdd/features"}"
 branch="${2:-"master"}"
 
