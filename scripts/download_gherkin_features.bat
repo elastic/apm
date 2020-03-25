@@ -3,7 +3,8 @@
 SET TMP_FOLDER=.\tests\tempFeatures
 SET "FOLDER=%1"
 IF "%FOLDER%"=="" SET /P "FOLDER=.\tests\bdd\features"
-SET APM_BRANCH=master
+SET "APM_BRANCH=%2%"
+IF "%APM_BRANCH%"=="" SET /P "APM_BRANCH=master"
 
 mkdir %TMP_FOLDER%
 curl -s https://codeload.github.com/elastic/apm/zip/%APM_BRANCH% -o %TMP_FOLDER%\features.zip
