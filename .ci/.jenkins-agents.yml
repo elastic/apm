@@ -1,0 +1,6 @@
+---
+agents:
+  - NAME: "python"
+    FEATURES_PATH: "tests/bdd/features"
+  - NAME: "ruby"
+    FEATURES_PATH: "features"

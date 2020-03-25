@@ -39,17 +39,45 @@ pipeline {
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
   stages {
-    stage('Send Pull Request with APM specs to the APM Agents'){
-      agent { label 'immutable && docker' }
-      options {
-        skipDefaultCheckout()
-        warnError('Pull Requests to APM agents failed')
+    stage('Initializing'){
+      agent { label 'linux && immutable' }
+      options { skipDefaultCheckout() }
+      environment {
+        HOME = "${env.WORKSPACE}"
+        PATH = "${env.PATH}:${env.WORKSPACE}/bin:${env.WORKSPACE}/${env.BASE_DIR}/.ci/scripts"
       }
-      steps {
-        deleteDir()
-        dir("${BASE_DIR}"){
-          checkout scm
-          sh(label: 'Send Pull Request', script: '.ci/scripts/send-pr.sh python')
+      stages {
+        stage('Checkout'){
+          agent { label 'immutable && docker' }
+          options { skipDefaultCheckout() }
+          steps {
+            deleteDir()
+            dir("${BASE_DIR}"){
+              checkout scm
+              stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+            }
+          }
+        }
+        stage('Send Pull Request with APM specs to the APM Agents'){
+          agent { label 'immutable && docker' }
+          options {
+            skipDefaultCheckout()
+            warnError('Pull Requests to APM agents failed')
+          }
+          steps {
+            unstash 'source'
+            dir("${BASE_DIR}"){
+              script {
+                def agents = readYaml(file: '.ci/.jenkins-agents.yml')
+                def parallelTasks = [:]
+                agents['agents'].each { agent ->
+                  parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
+                }
+
+                parallel(parallelTasks)
+              }
+            }
+          }
         }
       }
     }
@@ -57,6 +85,25 @@ pipeline {
   post {
     cleanup {
       notifyBuildResult()
+    }
+  }
+}
+
+def generateStepForAgent(Map params = [:]){
+  def agent = params.get('agent')
+  def featuresPath = params.get('featuresPath')
+  log(level: 'INFO', text: "agent=${agent} featuresPath=${featuresPath}")
+  return {
+    node('linux && immutable') {
+      try {
+        deleteDir()
+        dir("${BASE_DIR}"){
+          unstash 'source'
+          sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" """, label: "Send Pull Request for apm-agent-${agent}"
+        }
+      } catch(e) {
+        error(e.toString())
+      }
     }
   }
 }
