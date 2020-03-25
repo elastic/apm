@@ -22,7 +22,7 @@ import groovy.transform.Field
 @Field def results = [:]
 
 pipeline {
-  agent { label 'immutable && docker' }
+  agent none
   environment {
     REPO = 'apm'
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
@@ -40,6 +40,7 @@ pipeline {
   }
   stages {
     stage('Send Pull Request with APM specs to the APM Agents'){
+      agent { label 'immutable && docker' }
       options {
         skipDefaultCheckout()
         warnError('Pull Requests to APM agents failed')
