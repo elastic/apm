@@ -47,9 +47,9 @@ pipeline {
       }
       steps {
         deleteDir()
-        checkout scm
         dir("${BASE_DIR}"){
-          sh(label: 'Test Docker containers', script: '.ci/scripts/send-pr.sh python')
+          checkout scm
+          sh(label: 'Send Pull Request', script: '.ci/scripts/send-pr.sh python')
         }
       }
     }
