@@ -45,9 +45,6 @@ pipeline {
         skipDefaultCheckout()
         warnError('Pull Requests to APM agents failed')
       }
-      when{
-        beforeAgent true
-      }
       steps {
         deleteDir()
         checkout scm
