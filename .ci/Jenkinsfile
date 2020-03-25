@@ -15,11 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import groovy.transform.Field
-
 @Library('apm@current') _
-
-@Field def results = [:]
 
 pipeline {
   agent none
