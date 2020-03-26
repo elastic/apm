@@ -5,14 +5,16 @@ set -uexo pipefail
 readonly APM_AGENT=${1}
 readonly APM_AGENT_SPECS_DIR=${2}
 readonly APM_AGENT_REPO_NAME="apm-agent-${APM_AGENT}"
+readonly GIT_DIR=.ci/git
+readonly APM_AGENT_REPO_DIR=${GIT_DIR/${APM_AGENT_REPO_NAME}
 
 mkdir -p .ci/git
-git clone https://github.com/elastic/${APM_AGENT_REPO_NAME} .ci/git/${APM_AGENT_REPO_NAME}
+git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
 
-mkdir -p .ci/git/${APM_AGENT_REPO_NAME}/${APM_AGENT_SPECS_DIR}
-cp tests/agents/gherkin-specs/*.feature .ci/git/${APM_AGENT_REPO_NAME}/${APM_AGENT_SPECS_DIR}
+mkdir -p "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
+cp tests/agents/gherkin-specs/*.feature "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
 
-cd .ci/git/${APM_AGENT_REPO_NAME}
+cd ${APM_AGENT_REPO_DIR}
 git checkout -b update-feature-files-$(date "+%Y%m%d%H%M%S")
 echo "Copying feature files to the ${APM_AGENT_REPO_NAME} repo"
 git status
