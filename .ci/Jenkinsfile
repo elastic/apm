@@ -53,6 +53,14 @@ pipeline {
               credentialsId: "${JOB_GIT_CREDENTIALS}"
             )
             stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+            script {
+              dir("${BASE_DIR}"){
+                def regexps =[
+                  "^tests/agents/gherkin-specs/"
+                ]
+                env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(patterns: regexps)
+              }
+            }
           }
         }
         stage('Send Pull Request'){
@@ -62,6 +70,10 @@ pipeline {
           }
           environment {
             DO_SEND_PR = "${params.Do_Send_PR}"
+          }
+          when {
+            beforeAgent true
+            expression { return env.GHERKIN_SPECS_UPDATED != "false" }
           }
           steps {
             unstash 'source'
