@@ -18,7 +18,7 @@ git checkout -b update-feature-files-$(date "+%Y%m%d%H%M%S")
 echo "Copying feature files to the ${APM_AGENT_REPO_NAME} repo"
 git status
 git add ${APM_AGENT_SPECS_DIR}
-git commit -m "ci: Synchronized BDD specs"
+git commit -m "test: synchronizing bdd specs"
 
 if [[ "${DO_SEND_PR}" == "true" ]]; then
     hub pull-request \ 
@@ -26,7 +26,7 @@ if [[ "${DO_SEND_PR}" == "true" ]]; then
         -b master \                           # target branch 
         --labels automation \                 # comma-separated list of tags
         --reviewer @elastic/apm-agents \      # set agents as reviewer of the PR
-        -m ":robot: Synchronizing BDD specs"  # PR message
+        -m "test: synchronizing bdd specs"  # PR message
 else 
     echo "PR sent to ${APM_AGENT_REPO_NAME}"
 fi
