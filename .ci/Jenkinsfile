@@ -18,7 +18,7 @@
 @Library('apm@current') _
 
 pipeline {
-  agent none
+   agent { label 'linux && immutable' }
   environment {
     REPO = 'apm'
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
@@ -36,7 +36,6 @@ pipeline {
   }
   stages {
     stage('Initializing'){
-      agent { label 'linux && immutable' }
       options { skipDefaultCheckout() }
       environment {
         HOME = "${env.WORKSPACE}"
@@ -44,7 +43,6 @@ pipeline {
       }
       stages {
         stage('Checkout'){
-          agent { label 'immutable && docker' }
           options { skipDefaultCheckout() }
           steps {
             deleteDir()
@@ -55,7 +53,6 @@ pipeline {
           }
         }
         stage('Send Pull Request with APM specs to the APM Agents'){
-          agent { label 'immutable && docker' }
           options {
             skipDefaultCheckout()
             warnError('Pull Requests to APM agents failed')
