@@ -96,6 +96,8 @@ def generateStepForAgent(Map params = [:]){
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
           deleteDir()
+          gitCmd(cmd: "config", credentialsId: '', args: '--global user.name elasticmachine')
+          gitCmd(cmd: "config", credentialsId: '', args: '--global user.email infra-root-elasticmachine@elastic.co')
           unstash 'source'
             dir("${BASE_DIR}"){
               sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
