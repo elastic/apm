@@ -2,7 +2,6 @@
 
 set -uexo pipefail
 
-HOME=${HOME}
 readonly HUB_VERSION="2.14.2"
 readonly HUB_CMD="${HOME}/bin/hub"
 
