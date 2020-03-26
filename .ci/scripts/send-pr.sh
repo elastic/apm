@@ -6,7 +6,7 @@ readonly APM_AGENT=${1}
 readonly APM_AGENT_SPECS_DIR=${2}
 readonly APM_AGENT_REPO_NAME="apm-agent-${APM_AGENT}"
 readonly GIT_DIR=.ci/git
-readonly APM_AGENT_REPO_DIR=${GIT_DIR/${APM_AGENT_REPO_NAME}
+readonly APM_AGENT_REPO_DIR=${GIT_DIR}/${APM_AGENT_REPO_NAME}
 
 mkdir -p .ci/git
 git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
