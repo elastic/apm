@@ -45,7 +45,6 @@ pipeline {
       options { skipDefaultCheckout() }
       stages {
         stage('Checkout'){
-          options { skipDefaultCheckout() }
           steps {
             deleteDir()
             gitCheckout(basedir: "${BASE_DIR}",
@@ -95,16 +94,14 @@ def generateStepForAgent(Map params = [:]){
   log(level: 'INFO', text: "agent=${agent} featuresPath=${featuresPath}")
   return {
     node('linux && immutable') {
-      try {
-        deleteDir()
-        unstash 'source'
-        dir("${BASE_DIR}"){
-          sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
-          sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" """, label: "Send Pull Request for apm-agent-${agent}"
-        }
-      } catch(e) {
-        error(e.toString())
-      }
+      catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+          deleteDir()
+          unstash 'source'
+            dir("${BASE_DIR}"){
+              sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
+              sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" """, label: "Send Pull Request for apm-agent-${agent}"
+            }
+          }
     }
   }
 }
