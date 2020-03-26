@@ -24,6 +24,7 @@ pipeline {
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
     NOTIFY_TO = credentials('notify-to')
     JOB_GCS_BUCKET = credentials('gcs-bucket')
+    JOB_GIT_CREDENTIALS = "f6c7695a-671e-4f4f-a331-acdce44ff9ba"
     PIPELINE_LOG_LEVEL='INFO'
   }
   options {
@@ -46,10 +47,12 @@ pipeline {
           options { skipDefaultCheckout() }
           steps {
             deleteDir()
-            dir("${BASE_DIR}"){
-              checkout scm
-              stash allowEmpty: true, name: 'source', useDefaultExcludes: false
-            }
+            gitCheckout(basedir: "${BASE_DIR}",
+              branch: "master",
+              repo: "git@github.com:elastic/${REPO}.git",
+              credentialsId: "${JOB_GIT_CREDENTIALS}"
+            )
+            stash allowEmpty: true, name: 'source', useDefaultExcludes: false
           }
         }
         stage('Send Pull Request with APM specs to the APM Agents'){
