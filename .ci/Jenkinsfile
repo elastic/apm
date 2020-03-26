@@ -93,8 +93,8 @@ def generateStepForAgent(Map params = [:]){
     node('linux && immutable') {
       try {
         deleteDir()
+        unstash 'source'
         dir("${BASE_DIR}"){
-          unstash 'source'
           sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
           sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" """, label: "Send Pull Request for apm-agent-${agent}"
         }
