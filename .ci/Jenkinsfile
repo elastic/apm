@@ -55,7 +55,7 @@ pipeline {
             stash allowEmpty: true, name: 'source', useDefaultExcludes: false
           }
         }
-        stage('Send Pull Request with APM specs to the APM Agents'){
+        stage('Send Pull Request'){
           options {
             skipDefaultCheckout()
             warnError('Pull Requests to APM agents failed')
