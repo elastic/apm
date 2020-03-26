@@ -23,7 +23,6 @@ git commit -m "test: synchronizing bdd specs"
 if [[ "${DO_SEND_PR}" == "true" ]]; then
     hub pull-request \ 
         -p \                                  # push the branch to the remote
-        -b master \                           # target branch 
         --labels automation \                 # comma-separated list of tags
         --reviewer @elastic/apm-agents \      # set agents as reviewer of the PR
         -m "test: synchronizing bdd specs"  # PR message
