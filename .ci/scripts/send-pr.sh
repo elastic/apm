@@ -23,7 +23,7 @@ if [[ "${DO_SEND_PR}" == "true" ]]; then
     hub pull-request \ 
         -p \                                  # push the branch to the remote
         --labels automation \                 # comma-separated list of tags
-        --reviewer @elastic/apm-agents \      # set agents as reviewer of the PR
+        --reviewer @elastic/apm-agent-devs \  # set agents as reviewer of the PR
         -m "test: synchronizing bdd specs"  # PR message
 else 
     echo "PR sent to ${APM_AGENT_REPO_NAME}"
