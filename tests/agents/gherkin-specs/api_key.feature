@@ -1,4 +1,4 @@
-Feature: Api Key
+Feature: API Key
 
   Scenario: A configured api key is sent in the Authorization header
     Given an agent
