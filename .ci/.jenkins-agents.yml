@@ -1,0 +1,12 @@
+---
+agents:
+  - NAME: "dotnet"
+    FEATURES_PATH: "test/Elastic.Apm.Feature.Tests/Features"
+  - NAME: "go"
+    FEATURES_PATH: "features"
+  - NAME: "java"
+    FEATURES_PATH: "apm-agent-core/src/test/resources/specs"
+  - NAME: "python"
+    FEATURES_PATH: "tests/bdd/features"
+  - NAME: "ruby"
+    FEATURES_PATH: "features"

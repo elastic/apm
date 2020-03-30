@@ -1,0 +1,121 @@
+// Licensed to Elasticsearch B.V. under one or more contributor
+// license agreements. See the NOTICE file distributed with
+// this work for additional information regarding copyright
+// ownership. Elasticsearch B.V. licenses this file to you under
+// the Apache License, Version 2.0 (the "License"); you may
+// not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+@Library('apm@current') _
+
+pipeline {
+   agent { label 'linux && immutable' }
+  environment {
+    REPO = 'apm'
+    BASE_DIR = "src/github.com/elastic/${env.REPO}"
+    HOME = "${env.WORKSPACE}"
+    NOTIFY_TO = credentials('notify-to')
+    JOB_GCS_BUCKET = credentials('gcs-bucket')
+    JOB_GIT_CREDENTIALS = "f6c7695a-671e-4f4f-a331-acdce44ff9ba"
+    PATH = "${env.PATH}:${env.WORKSPACE}/bin"
+    PIPELINE_LOG_LEVEL='INFO'
+  }
+  options {
+    timeout(time: 3, unit: 'HOURS')
+    buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+    timestamps()
+    ansiColor('xterm')
+    disableResume()
+    durabilityHint('PERFORMANCE_OPTIMIZED')
+  }
+  parameters {
+    booleanParam(name: 'Do_Send_PR', defaultValue: false, description: 'Allows to execute this pipeline in dry run mode, without sending a PR.')
+  }
+  stages {
+    stage('Initializing'){
+      options { skipDefaultCheckout() }
+      stages {
+        stage('Checkout'){
+          steps {
+            deleteDir()
+            gitCheckout(basedir: "${BASE_DIR}",
+              branch: "master",
+              repo: "git@github.com:elastic/${REPO}.git",
+              credentialsId: "${JOB_GIT_CREDENTIALS}"
+            )
+            stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+            script {
+              dir("${BASE_DIR}"){
+                def regexps =[
+                  "^tests/agents/gherkin-specs/"
+                ]
+                env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(patterns: regexps)
+              }
+            }
+          }
+        }
+        stage('Send Pull Request'){
+          options {
+            skipDefaultCheckout()
+            warnError('Pull Requests to APM agents failed')
+          }
+          environment {
+            DO_SEND_PR = "${params.Do_Send_PR}"
+          }
+          when {
+            beforeAgent true
+            expression { return env.GHERKIN_SPECS_UPDATED != "false" }
+          }
+          steps {
+            unstash 'source'
+            dir("${BASE_DIR}"){
+              script {
+                def agents = readYaml(file: '.ci/.jenkins-agents.yml')
+                def parallelTasks = [:]
+                agents['agents'].each { agent ->
+                  parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
+                }
+
+                parallel(parallelTasks)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  post {
+    cleanup {
+      notifyBuildResult()
+    }
+  }
+}
+
+def generateStepForAgent(Map params = [:]){
+  def agent = params.get('agent')
+  def featuresPath = params.get('featuresPath')
+  log(level: 'INFO', text: "agent=${agent} featuresPath=${featuresPath}")
+  return {
+    node('linux && immutable') {
+      catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+        deleteDir()
+        gitCmd(cmd: "config", credentialsId: '', args: '--global user.name elasticmachine')
+        gitCmd(cmd: "config", credentialsId: '', args: '--global user.email infra-root-elasticmachine@elastic.co')
+        unstash 'source'
+        dir("${BASE_DIR}"){
+          sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
+          sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" """, label: "Send Pull Request for apm-agent-${agent}"
+        }
+      }
+    }
+  }
+}
