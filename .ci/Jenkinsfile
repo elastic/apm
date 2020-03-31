@@ -38,7 +38,7 @@ pipeline {
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
   parameters {
-    booleanParam(name: 'Do_Send_PR', defaultValue: false, description: 'Allows to execute this pipeline in dry run mode, without sending a PR.')
+    booleanParam(name: 'Do_Send_PR', defaultValue: true, description: 'If false, allows to execute this pipeline in dry run mode, without sending a PR.')
   }
   stages {
     stage('Initializing'){
@@ -53,14 +53,6 @@ pipeline {
               credentialsId: "${JOB_GIT_CREDENTIALS}"
             )
             stash allowEmpty: true, name: 'source', useDefaultExcludes: false
-            script {
-              dir("${BASE_DIR}"){
-                def regexps =[
-                  "^tests/agents/gherkin-specs/"
-                ]
-                env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(patterns: regexps)
-              }
-            }
           }
         }
         stage('Send Pull Request'){
@@ -73,7 +65,7 @@ pipeline {
           }
           when {
             beforeAgent true
-            expression { return env.GHERKIN_SPECS_UPDATED != "false" }
+            changeset pattern: "^tests/agents/gherkin-specs/", comparator: "REGEXP"
           }
           steps {
             unstash 'source'
