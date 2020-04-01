@@ -41,45 +41,49 @@ pipeline {
     booleanParam(name: 'Do_Send_PR', defaultValue: true, description: 'If false, allows to execute this pipeline in dry run mode, without sending a PR.')
   }
   stages {
-    stage('Initializing'){
-      options { skipDefaultCheckout() }
-      stages {
-        stage('Checkout'){
-          steps {
-            deleteDir()
-            gitCheckout(basedir: "${BASE_DIR}",
-              branch: "master",
-              repo: "git@github.com:elastic/${REPO}.git",
-              credentialsId: "${JOB_GIT_CREDENTIALS}"
-            )
-            stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+    stage('Checkout'){
+      steps {
+        deleteDir()
+        gitCheckout(basedir: "${BASE_DIR}",
+          branch: "master",
+          repo: "git@github.com:elastic/${REPO}.git",
+          credentialsId: "${JOB_GIT_CREDENTIALS}"
+        )
+        // make sure the GIT variables are properly set for the isGitRegionMatch step
+        setEnvVar('GIT_PREVIOUS_COMMIT', "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}")
+        script {
+          dir("${BASE_DIR}"){
+            def regexps =[
+              "^tests/agents/gherkin-specs/"
+            ]
+            env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(patterns: regexps)
           }
         }
-        stage('Send Pull Request'){
-          options {
-            skipDefaultCheckout()
-            warnError('Pull Requests to APM agents failed')
-          }
-          environment {
-            DO_SEND_PR = "${params.Do_Send_PR}"
-          }
-          when {
-            beforeAgent true
-            changeset pattern: "^tests/agents/gherkin-specs/", comparator: "REGEXP"
-          }
-          steps {
-            unstash 'source'
-            dir("${BASE_DIR}"){
-              script {
-                def agents = readYaml(file: '.ci/.jenkins-agents.yml')
-                def parallelTasks = [:]
-                agents['agents'].each { agent ->
-                  parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
-                }
-
-                parallel(parallelTasks)
-              }
+        stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+      }
+    }
+    stage('Send Pull Request'){
+      options {
+        warnError('Pull Requests to APM agents failed')
+      }
+      environment {
+        DO_SEND_PR = "${params.Do_Send_PR}"
+      }
+      when {
+        beforeAgent true
+        expression { return env.GHERKIN_SPECS_UPDATED != "false" }
+      }
+      steps {
+        unstash 'source'
+        dir("${BASE_DIR}"){
+          script {
+            def agents = readYaml(file: '.ci/.jenkins-agents.yml')
+            def parallelTasks = [:]
+            agents['agents'].each { agent ->
+              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
             }
+
+            parallel(parallelTasks)
           }
         }
       }
