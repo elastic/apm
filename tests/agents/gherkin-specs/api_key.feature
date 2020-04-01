@@ -1,6 +1,6 @@
 Feature: API Key
 
-  Scenario: A configured api key is sent in the Authorization header
+  Scenario: A configured API key is sent in the Authorization header
     Given an agent
     When an api key is set to 'RTNxMjlXNEJt' in the config
     Then the Authorization header is 'ApiKey RTNxMjlXNEJt'
