@@ -1,11 +1,11 @@
 Feature: API Key
 
-  Scenario: A configured api key is sent in the Authorization header
+  Scenario: A configured API key is sent in the Authorization header
     Given an agent
     When an api key is set to 'RTNxMjlXNEJt' in the config
     Then the Authorization header is 'ApiKey RTNxMjlXNEJt'
 
-  Scenario: A configured api key takes precedence over a secret token
+  Scenario: A configured API key takes precedence over a secret token
     Given an agent
     When an api key is set to 'MjlXNEJasdfDt' in the config
     And a secret_token is set to 'secr3tT0ken' in the config
