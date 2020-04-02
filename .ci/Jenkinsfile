@@ -49,14 +49,15 @@ pipeline {
           repo: "git@github.com:elastic/${REPO}.git",
           credentialsId: "${JOB_GIT_CREDENTIALS}"
         )
-        // make sure the GIT variables are properly set for the isGitRegionMatch step
-        setEnvVar('GIT_PREVIOUS_COMMIT', "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}")
         script {
           dir("${BASE_DIR}"){
             def regexps =[
               "^tests/agents/gherkin-specs/"
             ]
-            env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(patterns: regexps)
+            env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(
+              from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
+              to: "${env.GIT_COMMIT}",
+              patterns: regexps)
           }
         }
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false
