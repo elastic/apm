@@ -110,7 +110,10 @@ def generateStepForAgent(Map params = [:]){
         sh(label: "Git config Email", script: "git config --global user.email infra-root-elasticmachine@elastic.co")
         unstash 'source'
         dir("${BASE_DIR}"){
-          sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
+          retry(3){
+            sleep randomNumber(min: 5, max: 10)
+            sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
+          }
           sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" "${env.DO_SEND_PR}" """, label: "Send Pull Request for apm-agent-${agent}"
         }
       }
