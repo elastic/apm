@@ -52,7 +52,7 @@ pipeline {
         script {
           dir("${BASE_DIR}"){
             def regexps =[
-              "^tests/agents/gherkin-specs/"
+              "^tests/agents/gherkin-specs/.*"
             ]
             env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
