@@ -75,6 +75,7 @@ pipeline {
         expression { return env.GHERKIN_SPECS_UPDATED != "false" }
       }
       steps {
+        deleteDir()
         unstash 'source'
         dir("${BASE_DIR}"){
           script {

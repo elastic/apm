@@ -16,3 +16,4 @@ Feature: API Key
     When a secret_token is set to 'secr3tT0ken' in the config
     And an api key is not set in the config
     Then the Authorization header is 'Bearer secr3tT0ken'
+
