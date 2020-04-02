@@ -4,6 +4,7 @@ set -uexo pipefail
 
 readonly APM_AGENT=${1}
 readonly APM_AGENT_SPECS_DIR=${2}
+readonly DO_SEND_PR=${3:-"true"}
 readonly APM_AGENT_REPO_NAME="apm-agent-${APM_AGENT}"
 readonly GIT_DIR=".ci/git"
 readonly APM_AGENT_REPO_DIR="${GIT_DIR}/${APM_AGENT_REPO_NAME}"
