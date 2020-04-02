@@ -11,7 +11,7 @@ Feature: API Key
     And a secret_token is set to 'secr3tT0ken' in the config
     Then the Authorization header is 'ApiKey MjlXNEJasdfDt'
 
-  Scenario: A configured secret token is sent if no api key is configured
+  Scenario: A configured secret token is sent if no API key is configured
     Given an agent
     When a secret_token is set to 'secr3tT0ken' in the config
     And an api key is not set in the config
