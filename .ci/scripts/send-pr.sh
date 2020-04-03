@@ -21,7 +21,7 @@ git add ${APM_AGENT_SPECS_DIR}
 git commit -m "test: synchronizing bdd specs"
 
 if [[ "${DO_SEND_PR}" == "true" ]]; then
-    hub pull-request -p --labels automation --reviewer @elastic/apm-agent-devs -m "test: synchronizing bdd specs"
+    hub pull-request -p --labels automation -m "test: synchronizing bdd specs"
 else 
     echo "PR sent to ${APM_AGENT_REPO_NAME}"
 fi
