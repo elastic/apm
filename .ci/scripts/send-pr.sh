@@ -9,7 +9,7 @@ readonly APM_AGENT_REPO_NAME="apm-agent-${APM_AGENT}"
 readonly GIT_DIR=".ci/git"
 readonly APM_AGENT_REPO_DIR="${GIT_DIR}/${APM_AGENT_REPO_NAME}"
 
-git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
+git clone "https://${GITHUB_TOKEN}@github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
 
 mkdir -p "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
 echo "Copying feature files to the ${APM_AGENT_REPO_NAME} repo"
@@ -21,11 +21,7 @@ git add ${APM_AGENT_SPECS_DIR}
 git commit -m "test: synchronizing bdd specs"
 
 if [[ "${DO_SEND_PR}" == "true" ]]; then
-    hub pull-request \ 
-        -p \                                  # push the branch to the remote
-        --labels automation \                 # comma-separated list of tags
-        --reviewer @elastic/apm-agent-devs \  # set agents as reviewer of the PR
-        -m "test: synchronizing bdd specs"  # PR message
+    hub pull-request -p --labels automation --reviewer @elastic/apm-agent-devs -m "test: synchronizing bdd specs"
 else 
     echo "PR sent to ${APM_AGENT_REPO_NAME}"
 fi
