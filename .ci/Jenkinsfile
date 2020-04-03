@@ -114,7 +114,10 @@ def generateStepForAgent(Map params = [:]){
             sleep randomNumber(min: 5, max: 10)
             sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
           }
-          sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" "${env.DO_SEND_PR}" """, label: "Send Pull Request for apm-agent-${agent}"
+          def token = getGithubToken()
+          withEnvMask(vars: [[var: "GITHUB_TOKEN", password: token]]){
+            sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" "${env.DO_SEND_PR}" """, label: "Send Pull Request for apm-agent-${agent}"
+          }
         }
       }
     }
