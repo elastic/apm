@@ -107,10 +107,9 @@ def generateStepForAgent(Map params = [:]){
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
         deleteDir()
-        sh(label: "Git config User", script: "git config --global user.name ${GIT_USER_MACHINE}")
-        sh(label: "Git config Email", script: "git config --global user.email 58790750+${GIT_USER_MACHINE}@users.noreply.github.com")
         unstash 'source'
         dir("${BASE_DIR}"){
+          setupAPMGitEmail(global: true)
           retry(3){
             sleep randomNumber(min: 5, max: 10)
             sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
