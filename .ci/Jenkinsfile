@@ -67,9 +67,6 @@ pipeline {
       options {
         warnError('Pull Requests to APM agents failed')
       }
-      environment {
-        DO_SEND_PR = "${params.Do_Send_PR}"
-      }
       when {
         beforeAgent true
         expression { return env.GHERKIN_SPECS_UPDATED != "false" }
@@ -99,9 +96,9 @@ pipeline {
 }
 
 def generateStepForAgent(Map params = [:]){
-  def agent = params.get('agent')
+  def agentName = params.get('agent')
   def featuresPath = params.get('featuresPath')
-  log(level: 'INFO', text: "agent=${agent} featuresPath=${featuresPath}")
+  log(level: 'INFO', text: "agent=${agentName} featuresPath=${featuresPath}")
   return {
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
@@ -109,12 +106,13 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          retry(3){
-            sleep randomNumber(min: 5, max: 10)
-            sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
-          }
-          withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]){
-            sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" "${env.DO_SEND_PR}" """, label: "Send Pull Request for apm-agent-${agent}"
+          sh script: """.ci/scripts/send-pr.sh "${agentName}" "${featuresPath}" """, label: "Prepare changes for apm-agent-${agentName}"
+          dir(".ci/git/apm-agent-${agentName}") {
+            if (params.Do_Send_PR) {
+              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
+            } else {
+              echo "PR sent to apm-agent-${agentName}"
+            }
           }
         }
       }
