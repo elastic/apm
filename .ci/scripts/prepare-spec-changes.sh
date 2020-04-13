@@ -5,7 +5,7 @@ set -uexo pipefail
 readonly APM_AGENT=${1}
 readonly APM_AGENT_SPECS_DIR=${2}
 readonly APM_AGENT_REPO_NAME="apm-agent-${APM_AGENT}"
-readonly APM_AGENT_REPO_DIR=".ci/git/${APM_AGENT_REPO_NAME}"
+readonly APM_AGENT_REPO_DIR=".ci/${APM_AGENT_REPO_NAME}"
 
 git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
 
