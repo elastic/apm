@@ -106,7 +106,7 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          sh script: """.ci/scripts/send-pr.sh "${agentName}" "${featuresPath}" """, label: "Prepare changes for apm-agent-${agentName}"
+          sh script: """.ci/scripts/prepare-spec-changes.sh "${agentName}" "${featuresPath}" """, label: "Prepare changes for apm-agent-${agentName}"
           dir(".ci/git/apm-agent-${agentName}") {
             if (params.Do_Send_PR) {
               githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
