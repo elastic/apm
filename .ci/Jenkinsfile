@@ -96,8 +96,8 @@ pipeline {
 }
 
 def generateStepForAgent(Map params = [:]){
-  def agentName = params.get('agent')
-  def featuresPath = params.get('featuresPath')
+  def agentName = params.containsKey('agent') ? params.get('agent') : error('generateStepForAgent: agent argument is required')
+  def featuresPath = params.containsKey('featuresPath') ? params.get('featuresPath') : error('generateStepForAgent: featuresPath argument is required')
   log(level: 'INFO', text: "agent=${agentName} featuresPath=${featuresPath}")
   return {
     node('linux && immutable') {
@@ -111,7 +111,7 @@ def generateStepForAgent(Map params = [:]){
             if (params.Do_Send_PR) {
               githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
             } else {
-              echo "PR sent to apm-agent-${agentName}"
+              echo "DRY-RUN: apm-agent-${agentName}"
             }
           }
         }
