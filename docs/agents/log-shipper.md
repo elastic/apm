@@ -58,7 +58,7 @@ That log can then either be shipped by Filebeat/Elastic Agent or the APM agent.
 * If the APM Server returns an error code or if there's any network error, the previous state is restored (negative acknowledge)
 * If the APM Server can guaranee at-least-once delivery after returning a 200, the whole process has a at-least-once delivery guarantee
 
-#### Hanling of file rotation
+#### Handling of file rotation
 * The file might be rotated as we are reading it `apm.log` -> `apm-1.log` or `apm.log1`
 * As we keep the file handle open, renaming doesn't affect reading
 * If the agent restarts, it checks via the creation time which file to continue reading from
