@@ -18,7 +18,7 @@
 @Library('apm@current') _
 
 pipeline {
-   agent { label 'linux && immutable' }
+  agent { label 'linux && immutable' }
   environment {
     REPO = 'apm'
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
@@ -79,7 +79,7 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
+              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", featuresPath: "${agent.FEATURES_PATH}")
             }
 
             parallel(parallelTasks)
@@ -96,9 +96,8 @@ pipeline {
 }
 
 def generateStepForAgent(Map params = [:]){
-  def agentName = params.containsKey('agent') ? params.get('agent') : error('generateStepForAgent: agent argument is required')
+  def repo = params.containsKey('repo') ? params.get('repo') : error('generateStepForAgent: repo argument is required')
   def featuresPath = params.containsKey('featuresPath') ? params.get('featuresPath') : error('generateStepForAgent: featuresPath argument is required')
-  log(level: 'INFO', text: "agent=${agentName} featuresPath=${featuresPath}")
   return {
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
@@ -106,12 +105,12 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          sh script: """.ci/scripts/prepare-spec-changes.sh "${agentName}" "${featuresPath}" """, label: "Prepare changes for apm-agent-${agentName}"
-          dir(".ci/apm-agent-${agentName}") {
+          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${featuresPath}" """, label: "Prepare changes for ${repo}"
+          dir(".ci/${repo}") {
             if (params.Do_Send_PR) {
               githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
             } else {
-              echo "DRY-RUN: apm-agent-${agentName}"
+              echo "DRY-RUN: ${repo}"
             }
           }
         }

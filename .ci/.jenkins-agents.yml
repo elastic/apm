@@ -1,12 +1,12 @@
 ---
 agents:
-  - NAME: "dotnet"
+  - REPO: "apm-agent-dotnet"
     FEATURES_PATH: "test/Elastic.Apm.Feature.Tests/Features"
-  - NAME: "go"
+  - REPO: "apm-agent-go"
     FEATURES_PATH: "features"
-  - NAME: "java"
+  - REPO: "apm-agent-java"
     FEATURES_PATH: "apm-agent-core/src/test/resources/specs"
-  - NAME: "python"
+  - REPO: "apm-agent-python"
     FEATURES_PATH: "tests/bdd/features"
-  - NAME: "ruby"
+  - REPO: "apm-agent-ruby"
     FEATURES_PATH: "features"
