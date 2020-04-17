@@ -18,7 +18,7 @@
 @Library('apm@current') _
 
 pipeline {
-   agent { label 'linux && immutable' }
+  agent { label 'linux && immutable' }
   environment {
     REPO = 'apm'
     BASE_DIR = "src/github.com/elastic/${env.REPO}"
@@ -67,9 +67,6 @@ pipeline {
       options {
         warnError('Pull Requests to APM agents failed')
       }
-      environment {
-        DO_SEND_PR = "${params.Do_Send_PR}"
-      }
       when {
         beforeAgent true
         expression { return env.GHERKIN_SPECS_UPDATED != "false" }
@@ -82,7 +79,7 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(agent: "${agent.NAME}", featuresPath: "${agent.FEATURES_PATH}")
+              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", featuresPath: "${agent.FEATURES_PATH}")
             }
 
             parallel(parallelTasks)
@@ -99,9 +96,8 @@ pipeline {
 }
 
 def generateStepForAgent(Map params = [:]){
-  def agent = params.get('agent')
-  def featuresPath = params.get('featuresPath')
-  log(level: 'INFO', text: "agent=${agent} featuresPath=${featuresPath}")
+  def repo = params.containsKey('repo') ? params.get('repo') : error('generateStepForAgent: repo argument is required')
+  def featuresPath = params.containsKey('featuresPath') ? params.get('featuresPath') : error('generateStepForAgent: featuresPath argument is required')
   return {
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
@@ -109,12 +105,13 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          retry(3){
-            sleep randomNumber(min: 5, max: 10)
-            sh script: '.ci/scripts/install-dependencies.sh', label: "Install dependencies"
-          }
-          withCredentials([string(credentialsId: '2a9602aa-ab9f-4e52-baf3-b71ca88469c7', variable: 'GITHUB_TOKEN')]){
-            sh script: """.ci/scripts/send-pr.sh "${agent}" "${featuresPath}" "${env.DO_SEND_PR}" """, label: "Send Pull Request for apm-agent-${agent}"
+          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${featuresPath}" """, label: "Prepare changes for ${repo}"
+          dir(".ci/${repo}") {
+            if (params.Do_Send_PR) {
+              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
+            } else {
+              echo "DRY-RUN: ${repo}"
+            }
           }
         }
       }
