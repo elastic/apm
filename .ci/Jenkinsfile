@@ -38,7 +38,7 @@ pipeline {
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
   parameters {
-    booleanParam(name: 'Do_Send_PR', defaultValue: true, description: 'If false, allows to execute this pipeline in dry run mode, without sending a PR.')
+    booleanParam(name: 'DRY_RUN_MODE', defaultValue: false, description: 'If false, allows to execute this pipeline in dry run mode, without sending a PR.')
   }
   stages {
     stage('Checkout'){
@@ -107,10 +107,10 @@ def generateStepForAgent(Map params = [:]){
           setupAPMGitEmail(global: true)
           sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${featuresPath}" """, label: "Prepare changes for ${repo}"
           dir(".ci/${repo}") {
-            if (params.Do_Send_PR) {
-              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
-            } else {
+            if (params.DRY_RUN_MODE) {
               echo "DRY-RUN: ${repo}"
+            } else {
+              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
             }
           }
         }
