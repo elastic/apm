@@ -74,10 +74,10 @@ Example:
 ```bash
 curl -H 'Content-Type: application/x-ndjson' -XPOST localhost:8200/intake/v2/logs -d \
 '{"metadata":{"service":{"name":"my-service","process":{"pid":32146,"ppid":3372},"system":{"architecture":"x86_64","hostname":"localhost","platform":"Mac OS X"}}}
-{"metadata":{"file":{"path":"/var/log/apm.log","name":"apm.log"}}}
+{"metadata":{"log":{"file":{"path":"/var/log/apm.log","name":"apm.log"}}}}
 {"@timestamp":"2020-04-08T06:34:44.045Z", "log.level": "INFO", "message":"Hello World", "process.thread.name":"main","log.logger":"co.elastic.apm.agent.Foo"}
 {"@timestamp":"2020-04-08T06:34:44.045Z", "log.level": "INFO", "message":"Hello World 2", "process.thread.name":"main","log.logger":"co.elastic.apm.agent.Foo"}
-{"metadata":{"file":{"path":"/var/log/app.log","name":"app.log"}}}
+{"metadata":{"log":{"file":{"path":"/var/log/app.log","name":"app.log"}}}}
 {"@timestamp":"2020-04-08T06:34:44.045Z", "log.level": "INFO", "message":"Hello World", "process.thread.name":"main","log.logger":"org.example.MyApplication"}
 '
 ```
