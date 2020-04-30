@@ -95,8 +95,8 @@ The layout of the log files are guaranteed to be nd-json.
 
 #### Validation and error handling
 Another difference compared to the event intake API is in regards to validation and error handling.
-Even if a log line can't be parsed or contains conflicting mappings (such as `"foo": "bar", "foo.bar": "baz"`), the APM Server should not discard the events.
-Instead, it should index the raw event and the error message into Elasticsearch.
+Even if a log line can't be parsed or contains conflicting mappings (such as `"foo": "bar", "foo": "baz", "foo.bar": "baz"`), the APM Server should not discard the events.
+Instead, it should index the raw event and the error message into Elasticsearch, similar to how Filebeat would handle that.
 
 #### Delivery guarantees
 Can the APM Server guarantee a at-least-once delivery after sending a `200` response to the APM agent?
