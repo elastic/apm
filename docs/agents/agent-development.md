@@ -132,6 +132,9 @@ As mentioned above, the first "event" in each ND-JSON stream contains metadata t
  - service metadata
  - global labels (requires APM Server 7.2 or greater)
 
+The process for proposing new metadata fields is detailed
+[here](new-fields.md).
+
 ### System metadata
 
 System metadata relates to the host/container in which the service being monitored is running:
