@@ -1,6 +1,6 @@
 # GraphQL transactions and spans
 
-**NB:** This document is a work in progress.
+**NB:** This document is not guaranteed to be final.
 
 ## Problems with our current approach
 
