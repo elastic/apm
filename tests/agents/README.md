@@ -20,10 +20,4 @@ Using or complying to these isn't a requirement.
 
 ### For performance
 
-- `tests/random_sql_query_set.json`
-
-To test the performance of a given implementation, a dataset of 24,890 unique SQL queries is provided.
-
-These are actual example queries, mostly from the Stack Exchange Data Explorer via [this distribution](https://github.com/johnthebrave/nlidb-datasets). Included is only the original SQL query part as an array with the format `[ { input: 'SELECT *…' }, … ]`.
-
-They are licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/).
+See [this distribution](https://github.com/johnthebrave/nlidb-datasets) for example queries.
