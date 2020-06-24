@@ -158,8 +158,7 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
  2. If the basename ends with ".scope", check for a hyphen and remove everything up to and including that. This allows us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
 
  3. Attempt to extract the Kubernetes pod UID from the dirname by matching one of the following regular expressions:
-
-     - `(?:^/kubepods/[^/]+/pod([^/]+)/$)`
+     - `(?:^/kubepods[\\S]*/pod([^/]+)$)`
      - `(?:^/kubepods\.slice/kubepods-[^/]+\.slice/kubepods-[^/]+-pod([^/]+)\.slice/$)`
 
     The capturing group in either case is the pod UID. In the latter case, which occurs when using the systemd cgroup driver, we must unescape underscores (`_`) to hyphens (`-`) in the pod UID.
