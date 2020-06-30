@@ -195,6 +195,24 @@ Service metadata relates to the service/application being monitored:
 
 For official Elastic agents, the agent name should just be the name of the language for which the agent is written, in lower case.
 
+### Cloud Provider Metadata
+
+Cloud provider metadata is collected from local cloud provider metadata services:
+
+- availability_zone
+- account
+  - id
+  - name
+- instance
+  - id
+  - name
+- machine.type
+- project
+  - id
+  - name
+- provider
+- region
+
 ### Global labels
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
