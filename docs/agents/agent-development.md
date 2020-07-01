@@ -197,7 +197,8 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 ### Cloud Provider Metadata
 
-Cloud provider metadata is collected from local cloud provider metadata services:
+[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/cloud.json)
+is collected from local cloud provider metadata services:
 
 - availability_zone
 - account
@@ -212,6 +213,18 @@ Cloud provider metadata is collected from local cloud provider metadata services
   - name
 - provider
 - region
+
+This metadata collection is controlled by a configuration value,
+`CLOUD_PROVIDER`. The default is `auto`, which automatically detect the cloud
+provider. If set to `none`, no cloud metadata will be generated. If set to
+any of `aws`, `gcp`, or `azure`, metadata will only be generated from the
+chosen provider.
+
+Any intake API requests to the APM server should be delayed until this
+metadata is available.
+
+A sample implementation of this metadata collection is available in
+[the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
 
 ### Global labels
 
