@@ -215,7 +215,7 @@ is collected from local cloud provider metadata services:
 - region
 
 This metadata collection is controlled by a configuration value,
-`CLOUD_PROVIDER`. The default is `auto`, which automatically detect the cloud
+`CLOUD_PROVIDER`. The default is `auto`, which automatically detects the cloud
 provider. If set to `none`, no cloud metadata will be generated. If set to
 any of `aws`, `gcp`, or `azure`, metadata will only be generated from the
 chosen provider.
