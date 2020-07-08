@@ -63,6 +63,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - [Error/exception tracking](#Errorexception-tracking)
 - [Metrics](#Metrics)
   - [System/process CPU/Heap](#Systemprocess-CPUHeap)
+  - [cgroup metrics](#cgroup-metrics)
   - [Runtime](#Runtime)
   - [Transaction and span breakdown](#Transaction-and-span-breakdown)
 - [Logging Correlation](#Logging-Correlation)
@@ -415,6 +416,37 @@ All agents (excluding JavaScript RUM) should record the following basic system/p
  - `system.memory.actual.free`: total available memory on the system, in bytes
  - `system.process.memory.size`: process virtual memory size, in bytes
  - `system.process.memory.rss.bytes`: process resident set size, in bytes
+ 
+### cgroup metrics
+
+Where applicable, all agents (excluding JavaScript RUM) should record the following cgroup metrics:
+
+ - `system.process.cgroup.memory.mem.limit.bytes`
+ - `system.process.cgroup.memory.mem.usage.bytes`
+ - `system.process.cgroup.memory.stats.inactive_file.bytes`
+
+#### Metrics source
+
+##### [cgroup-v1](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt)
+   - `system.process.cgroup.memory.mem.limit.bytes` - based on the `memory.limit_in_bytes` file
+   - `system.process.cgroup.memory.mem.usage.bytes` - based on the `memory.usage_in_bytes` file
+   - `system.process.cgroup.memory.stats.inactive_file.bytes` - based on the `total_inactive_file` line in the `memory.stat` file
+
+##### [cgroup-v2](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)
+   - `system.process.cgroup.memory.mem.limit.bytes` - based on the `memory.max` file
+   - `system.process.cgroup.memory.mem.usage.bytes` - based on the `memory.current` file
+   - `system.process.cgroup.memory.stats.inactive_file.bytes` - based on the `inactive_file` line in the `memory.stat` file
+
+#### Discovery of the memory files
+
+All files mentioned above are located at the same directory. Ideally, we can discover this dir by parsing the `/proc/self/mountinfo` file, looking for the memory mount line and extracting the path from within it. An example of such line is: 
+```
+436 431 0:33 /docker/5042cfbb4ab36fcef9ca5f1eda54f40265c6ef3fe0694dfe34b9b474e70f8df5 /sys/fs/cgroup/memory ro,nosuid,nodev,noexec,relatime master:22 - cgroup memory rw,memory
+```
+The regex `^\d+? \d+? .+? .+? (.*?) .*cgroup.*memory.*` works in the cgroup-v1 systems tested so far, where the first and only group should be the directory path. However, it will probably take a few iterations and tests on different container runtimes and OSs to get it right. 
+There is no regex currently suggested for cgroup-v2. Look in other agent PRs to get ideas.
+
+Whenever agents fail to discover the memory mount path, they should default to `/sys/fs/cgroup/memory`.
 
 ### Runtime
 
