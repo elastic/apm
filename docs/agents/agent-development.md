@@ -448,6 +448,12 @@ There is no regex currently suggested for cgroup-v2. Look in other agent PRs to 
 
 Whenever agents fail to discover the memory mount path, they should default to `/sys/fs/cgroup/memory`.
 
+#### Special values for unlimited memory quota
+
+There is a special value used to indicate that the cgroup is not configured with a memory limit. In cgroup v1, this value is numeric - `0x7ffffffffffff000` and in cgroup v2 it is represented by the string `max`. 
+Agents should not send the `system.process.cgroup.memory.mem.limit.bytes` metric when the read value is `max`. 
+They may or may not send this metric when reading `0x7ffffffffffff000`, as the UI is handling this case.
+
 ### Runtime
 
 Agent should record runtime-specific metrics, such as garbage collection pauses. Due to their runtime-specific nature, these will differ for each agent.
