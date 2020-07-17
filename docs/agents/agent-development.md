@@ -237,14 +237,37 @@ Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_
 
 ### Transactions
 
+#### Transaction outcome
+
+Agents set the optional `outcome` property to whether the transaction represents a success or a failure.
+The APM Server converts this to the [`event.outcome`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html) field.
+
+- `"failure"`: Indicates that this transaction describes a failed result.
+- `"success"`: Indicates that this transaction describes a successful result.
+- `"unknown"`:
+  TODO: does unknown make sense in the context of spans and transactions?
+  Would `unknown` apply to an HTTP 202 Accepted? Or a client span that puts a message into a queue?
+  In these cases we only know whether a message could successfully be enqueued but not if it could successfully be processed.
+  Or is this reserved to events that only represent the request part and where the response is a separate event?
+  A transaction contains information about both the request and the response.
+  If `unknown` doesn't apply to transactions it might make more sense to use a boolean as the datatype of this field in the intake API and let APM Server convert to `failure`/`success`. 
+- `null`/`undefined`: There's no information about the outcome of the transaction. \
+  Note that this is not equal to [`event.outcome: unknown`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html#ecs-event-outcome-unknown)
+  as it would imply that the event is not a `"failure"`.
+  Not setting the `outcome`, or setting it to `null`, makes no statement on the outcome of the transaction.
+  This may be the case when tracking a custom transaction without explicitly setting an outcome.
+
+What counts as a failed or successful request depends on the protocol and does not depend on whether there are error documents associated with a transaction.
+
 #### HTTP Transactions
 
 Agents should instrument HTTP request routers/handlers, starting a new transaction for each incoming HTTP request. When the request ends, the transaction should be ended, recording its duration.
 
 - The transaction `type` should be `request`.
 - The transaction `result` should be `HTTP Nxx`, where N is the first digit of the status code (e.g. `HTTP 4xx` for a 404)
+- The transaction `outcome` should be `"success"` for HTTP status codes < 500 and `"failure"` for status codes >= 500. \
+  Status codes in the 4xx range (client errors) are not considered a `failure` as the failure has not been caused by the application itself but by the caller.
 - The transaction `name` should be aggregatable, such as the route or handler name. Examples:
-
     - `GET /users/{id}`
     - `UsersController#index`
 
@@ -288,6 +311,17 @@ If a transaction is not sampled, you should set the `sampled: false` property an
 ### Spans
 
 The agent should also have a sense of the most common libraries for these and instrument them without any further setup from the app developers.
+
+#### Span outcome
+
+Agents set the optional `outcome` property to whether the span represents a success or a failure.
+
+While the transaction outcome lets you reason about the error rate from the service's point of view,
+other services might have a different perspective on that.
+For example, if there's a network error so that service A can't call service B,
+the error rate of service B is 100% from service A's perspective.
+However, as service B doesn't receive any requests, the error rate is 0% from service B's perspective.
+This also lets enables to reason about error rates of external services.
 
 #### Span stack traces
 
@@ -401,6 +435,11 @@ The agent support reporting exceptions/errors. Errors may come in one of two for
 Agents should include exception handling in the instrumentation they provide, such that exceptions are reported to the APM Server automatically, without intervention. In addition, hooks into logging libraries may be provided such that logged errors are also sent to the APM Server.
 
 Errors may or may not occur within the context of a transaction or span. If they do, then they will be associated with them by recording the trace ID and transaction or span ID. This enables the APM UI to annotate traces with errors.
+
+Tracking an error that's related to a transaction does not impact its `outcome`.
+A transaction might have multiple errors associated to it but still return with a 2xx status code.
+Hence, the status code is a more reliable signal for the outcome of the transaction.
+This, in turn, means that the `outcome` is always specific to the protocol.
 
 ## Metrics
 
