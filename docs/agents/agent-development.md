@@ -239,7 +239,7 @@ Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_
 
 #### Transaction outcome
 
-Agents set the optional `outcome` property to whether the transaction represents a success or a failure.
+The optional `outcome` property denotes whether the transaction represents a success or a failure.
 The APM Server converts this to the [`event.outcome`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html) field.
 
 - `"failure"`: Indicates that this transaction describes a failed result.
@@ -314,7 +314,7 @@ The agent should also have a sense of the most common libraries for these and in
 
 #### Span outcome
 
-Agents set the optional `outcome` property to whether the span represents a success or a failure.
+The optional `outcome` property denotes whether the span represents a success or a failure.
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
