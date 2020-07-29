@@ -239,23 +239,18 @@ Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_
 
 #### Transaction outcome
 
-The optional `outcome` property denotes whether the transaction represents a success or a failure.
+The `outcome` property denotes whether the transaction represents a success or a failure from the perspective of the entity that produced the event.
 The APM Server converts this to the [`event.outcome`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html) field.
+This property is optional to remain backwards compatibility.
+If an agent doesn't report the `outcome` (or reports `null`), the APM Server sets the outcome to `"unknown"`.
 
-- `"failure"`: Indicates that this transaction describes a failed result.
+- `"failure"`: Indicates that this transaction describes a failed result. \
+  Note that client errors don't fall into this category as they are not an error from the perspective of the server.
 - `"success"`: Indicates that this transaction describes a successful result.
-- `"unknown"`:
-  TODO: does unknown make sense in the context of spans and transactions?
-  Would `unknown` apply to an HTTP 202 Accepted? Or a client span that puts a message into a queue?
-  In these cases we only know whether a message could successfully be enqueued but not if it could successfully be processed.
-  Or is this reserved to events that only represent the request part and where the response is a separate event?
-  A transaction contains information about both the request and the response.
-  If `unknown` doesn't apply to transactions it might make more sense to use a boolean as the datatype of this field in the intake API and let APM Server convert to `failure`/`success`. 
-- `null`/`undefined`: There's no information about the outcome of the transaction. \
-  Note that this is not equal to [`event.outcome: unknown`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html#ecs-event-outcome-unknown)
-  as it would imply that the event is not a `"failure"`.
-  Not setting the `outcome`, or setting it to `null`, makes no statement on the outcome of the transaction.
-  This may be the case when tracking a custom transaction without explicitly setting an outcome.
+- `"unknown"`: Indicates that there's no information about the outcome.
+  This is the default value that applies when an outcome has not been set explicitly.
+  This may be the case when a user tracks a custom transaction without explicitly setting an outcome.
+  For existing auto-instrumentations, agents should set the outcome either to `"failure"` or `"success"`.
 
 What counts as a failed or successful request depends on the protocol and does not depend on whether there are error documents associated with a transaction.
 
@@ -267,6 +262,7 @@ Agents should instrument HTTP request routers/handlers, starting a new transacti
 - The transaction `result` should be `HTTP Nxx`, where N is the first digit of the status code (e.g. `HTTP 4xx` for a 404)
 - The transaction `outcome` should be `"success"` for HTTP status codes < 500 and `"failure"` for status codes >= 500. \
   Status codes in the 4xx range (client errors) are not considered a `failure` as the failure has not been caused by the application itself but by the caller.
+  As there's no browser API to get the status code of a page load, the RUM agent always reports `"unknown"` for those transactions.
 - The transaction `name` should be aggregatable, such as the route or handler name. Examples:
     - `GET /users/{id}`
     - `UsersController#index`
@@ -314,14 +310,18 @@ The agent should also have a sense of the most common libraries for these and in
 
 #### Span outcome
 
-The optional `outcome` property denotes whether the span represents a success or a failure.
+The `outcome` property denotes whether the span represents a success or a failure.
+It supports the same values as `transaction.outcome`.
+The only semantic difference is that client errors set the `outcome` to `"failure"`.
+Agents should try to determine the outcome for spans created by auto instrumentation,
+which is especially important for exit spans.
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
 For example, if there's a network error so that service A can't call service B,
 the error rate of service B is 100% from service A's perspective.
 However, as service B doesn't receive any requests, the error rate is 0% from service B's perspective.
-This also lets enables to reason about error rates of external services.
+The `span.outcome` also allows reasoning about error rates of external services.
 
 #### Span stack traces
 
@@ -350,6 +350,8 @@ For outbound HTTP request spans we capture the following http-specific span cont
 
 - `http.url` (the target URL)
 - `http.status_code` (the response status code)
+
+The span's `outcome` should be set to `"success"` if the status code is lower than 400 and to `"failure"` otherwise. 
 
 The captured URL should have the userinfo (username and password), if any, redacted.
 
