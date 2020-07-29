@@ -13,7 +13,7 @@ Every change that affects more than one agent should be initiated via a change t
 ## Process
 
 1. Agents discussion issue \
-  If there's a lot of uncertainty about what the poposal is,
+  If there's a lot of uncertainty about what the proposal is,
   a discussion issue should be created.
   In doubt, lean towards not creating a discussion issue and start with a draft PR.
   Discussion issues should not have votes/agent checkboxes.
