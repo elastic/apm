@@ -1,15 +1,5 @@
 Every change that affects more than one agent should be initiated via a change to the specification rather than creating a cross-agent issue.
 
-## Advantages
-
-- Ensures we have an up-to-date [spec](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) for agents.
-- Easier to keep track of what the current state of the proposal is.
-- Comments to a specific sentence of the spec can be made inline,
-  just like in code reviews.
-- If there are changes or amendments to a spec later on,
-  a PR to an existing spec is much cleaner than having to track down all preceding issues to find out what the current state is.
-- Easier to get a new agent (in-house or community) started.
-
 ## Process
 
 1. Agents discussion issue \
@@ -56,3 +46,13 @@ Every change that affects more than one agent should be initiated via a change t
   based on the milestone of the spec PR.
   Agent teams can still change the milestone if priorities shift.
   However, they should talk to their team lead about it.
+
+## Advantages
+
+- Ensures we have an up-to-date [spec](https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/) for agents.
+- Easier to keep track of what the current state of the proposal is.
+- Comments to a specific sentence of the spec can be made inline,
+  just like in code reviews.
+- If there are changes or amendments to a spec later on,
+  a PR to an existing spec is much cleaner than having to track down all preceding issues to find out what the current state is.
+- Easier to get a new agent (in-house or community) started.
