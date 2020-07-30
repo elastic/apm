@@ -45,7 +45,7 @@ Every change that affects more than one agent should be initiated via a change t
   They make sure the issues are assigned to a stack release milestone,
   based on the milestone of the spec PR.
   Agent teams can still change the milestone if priorities shift.
-  However, they should talk to their team lead about it.
+  However, they should let their team lead know.
 
 ## Advantages
 
