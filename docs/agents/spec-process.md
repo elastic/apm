@@ -22,8 +22,8 @@ Every change that affects more than one agent should be initiated via a change t
   every agent is more than welcome to contribute at any point in this process,
   but they are not expected to actively keep track if it.
 1. Ready for Review \
-  This automatically requests review from all agents due to the [`CODEOWNERS`](https://github.com/elastic/apm/tree/master/.github/CODEOWNERS) file.
-  After a quorum of agents has approved, others have 1 week to veto by requesting changes.
+  This automatically requests review from all agents and from PM due to the [`CODEOWNERS`](https://github.com/elastic/apm/tree/master/.github/CODEOWNERS) file.
+  After at least one more agent and one PM has approved, others have 1 week to veto by requesting changes.
   If the proposed changes are likely to be problematic for a certain agent,
   an approval from that agent is mandatory.
 1. Prioritization \
