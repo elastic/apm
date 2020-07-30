@@ -56,3 +56,12 @@ Every change that affects more than one agent should be initiated via a change t
 - If there are changes or amendments to a spec later on,
   a PR to an existing spec is much cleaner than having to track down all preceding issues to find out what the current state is.
 - Easier to get a new agent (in-house or community) started.
+
+## Guiding principles
+
+- Everyone in the team should be empowered to propose changes
+- The process should be lightweight and painless 
+- Keep the noise low by notifying the right people at the right time and maturity stage of the proposal
+
+If it turns out that it's not accomplishing that it's a bug,
+and you should raise a PR to fix it :)
