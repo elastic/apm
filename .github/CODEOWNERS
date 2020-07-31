@@ -1,4 +1,0 @@
-# Raising a PR against the agent spec folder will automatically request reviews from all agent teams
-# If the PR is not ready for review, create a draft PR instead
-# See also docs/agents/spec-process.md
-/docs/agents @elastic/apm-agent-go @elastic/apm-agent-java @elastic/apm-agent-net @elastic/apm-agent-node-js @elastic/apm-agent-php @elastic/apm-agent-python @elastic/apm-agent-ruby @elastic/apm-agent-rum @elastic/apm-pm
