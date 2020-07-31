@@ -44,6 +44,8 @@ Every change that affects more than one agent should be initiated via a change t
 1. The author of the PR creates an issue in each agent's repo \
   They make sure the issues are assigned to a stack release milestone,
   based on the milestone of the spec PR.
+  The author of the PR adds a comment to the PR with a table that lists each agent and the link to the implementation issue.
+  This makes it easier to see the current implementation state for each agent and makes it easy to verify that there's an issue for each agent.
   Agent teams can still change the milestone if priorities shift.
   However, they should let their team lead know.
 
