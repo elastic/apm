@@ -1,9 +1,11 @@
 ---
 name: Agents discussion
-about: Creates a agent discussion issue
+about: Creates an agent discussion issue
 labels: agents, discussion
 ---
 
 <!--
-Once the discussion is at a s
+Only create a discussion issue if it's not feasible to create draft PR against the spec yet.
+It's fine if the details of the spec change draft are not clear yet.
+See also /docs/agents/spec-process.md
 -->
