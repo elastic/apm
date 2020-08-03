@@ -3,11 +3,9 @@ Every change that affects more than one agent should be initiated via a change t
 ## Process
 
 1. Agents discussion issue \
-  If there's a lot of uncertainty about what the proposal is,
-  a discussion issue should be created.
-  In doubt, lean towards not creating a discussion issue and start with a draft PR.
+  Open a draft PR to change the specification to initiate a discussion.
+  If discussion is required before a spec change proposal can even be assembled, create an Agent discussion issue first.
   Discussion issues should not have votes/agent checkboxes.
-  It's not expected that all agents participate in the initial discussions, although everyone is invited to do so.
 1. Draft PR \
   It's fine if the first draft of the spec change even if details are unclear and need discussion.
   The PR should include which agents are affected by this change.

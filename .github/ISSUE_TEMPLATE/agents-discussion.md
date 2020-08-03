@@ -1,11 +1,12 @@
 ---
 name: Agents discussion
-about: Creates an agent discussion issue
+about: \
+ Open a draft PR to change the specification to initiate a discussion.
+ If discussion is required before a spec change proposal can even be assembled, create an Agent discussion issue first.
 labels: agents, discussion
 ---
 
 <!--
-Only create a discussion issue if it's not feasible to create draft PR against the spec yet.
-It's fine if the details of the spec change draft are not clear yet.
-See also /docs/agents/spec-process.md
+Open a draft PR to change the specification to initiate a discussion.
+If discussion is required before a spec change proposal can even be assembled, create an Agent discussion issue first.
 -->
