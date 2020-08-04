@@ -283,7 +283,7 @@ probability in the range \[0,1\] using the configuration `ELASTIC_APM_TRANSACTIO
  - `ELASTIC_APM_TRANSACTION_SAMPLE_RATE=1` means all transactions will be sampled (the default)
  - `ELASTIC_APM_TRANSACTION_SAMPLE_RATE=0.5` means approximately 50% of transactions will be sampled
 
-If a transaction is not sampled, you should set the `sampled: false` property and omit collecting `spans` and `context`.
+For more details on how to implement sampling in agents, see the separate [sampling](sampling.md) specification.
 
 ### Spans
 
