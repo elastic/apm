@@ -1,4 +1,4 @@
-Every change that affects more than one agent should be initiated via a change to the specification rather than creating a cross-agent issue.
+Every change that affects more than one agent should be initiated via a PR against the specification rather than creating an issue that describes the changes in its description.
 
 ## Process
 
