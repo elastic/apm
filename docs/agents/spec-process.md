@@ -43,9 +43,23 @@ Every change that affects more than one agent should be initiated via a PR again
   They make sure the issues are assigned to a stack release milestone,
   based on the milestone of the spec PR.
   The author of the PR adds a comment to the PR with a table that lists each agent and the link to the implementation issue.
+  A template for this table can be found in the next section.
   This makes it easier to see the current implementation state for each agent and makes it easy to verify that there's an issue for each agent.
   Agent teams can still change the milestone if priorities shift.
   However, they should let their team lead know.
+
+## Agent issue table template
+
+| Agent   | Link to agent implementation issue |
+| --------|------------------------------------|
+| .NET    | 
+| Go      | 
+| Java    | 
+| Node.js | 
+| PHP     | 
+| Python  | 
+| Ruby    | 
+| RUM     | 
 
 ## Advantages
 
