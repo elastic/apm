@@ -56,5 +56,7 @@ e.g.
     0.5555 -> 0.556
     0.5556 -> 0.556
 
+The implementation will look something like `math.Round(sampleRate*1000)/1000`.
+
 For a downstream agent, if `tracestate` is not found or does not contain an `elastic` entry with an `s` attribute,
-then it must assume a sampling rate of 1 just as the server does for backwards compatibility.
+then the `sample_rate` field must be omitted from transactions and spans.
