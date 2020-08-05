@@ -1,3 +1,5 @@
+# Sampling
+
 To reduce processing and storage overhead, transactions may be sampled
 by agents. Sampling here refers to "head-based sampling", where a sampling
 decision is made at the root of the distributed trace, before the details
@@ -51,14 +53,8 @@ trace-flags: https://www.w3.org/TR/trace-context/#sampled-flag
 
 In addition to propagating the sampling decision (boolean), agents must also propagate
 the sampling weight to ensure a consistent weight is applied to all events in the trace.
-This is achieved by adding an "elastic" key to `tracestate` when calculating the
-sampling weight, and propagating and parsing `tracestate` in all agents.
-
-For our own "elastic" `tracestate` entry we will introduce a key:value formatted list
-of attributes. Initially we will support a single attribute, "w", which holds the
-sample weight. The general `tracestate` format is:
-
-    tracestate: elastic=key:value;key:value...,othervendor=<opaque>
+This is achieved by adding a `w` attribute to our [`elastic` `tracestate` key](distributed-tracing.md#tracestate) when calculating the
+sampling weight.
 
 For example:
 
