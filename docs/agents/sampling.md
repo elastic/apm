@@ -43,10 +43,10 @@ As mentioned above, the sampling decision must be propagated throughout the trac
 We adhere to the W3C Trace-Context spec for this, propagating the decision through trace-flags: https://www.w3.org/TR/trace-context/#sampled-flag
 
 In addition to propagating the sampling decision (boolean), agents must also propagate the sampling rate to ensure it is consistently attached to to all events in the trace.
-This is achieved by adding an `s` attribute to our [`elastic` `tracestate` key](distributed-tracing.md#tracestate) with the value of the sampling rate.
+This is achieved by adding an `s` attribute to our [`es` `tracestate` key](distributed-tracing.md#tracestate) with the value of the sampling rate.
 e.g.
 
-    tracestate: elastic=s:0.1,othervendor=<opaque>
+    tracestate: es=s:0.1,othervendor=<opaque>
 
 As `tracestate` has modest size limits we must keep the size down.
 When recording `s` in `tracestate` the sampling rate should be rounded half away from zero to 3 decimal places.
@@ -58,5 +58,5 @@ e.g.
 
 The implementation will look something like `math.Round(sampleRate*1000)/1000`.
 
-For a downstream agent, if `tracestate` is not found or does not contain an `elastic` entry with an `s` attribute,
+For a downstream agent, if `tracestate` is not found or does not contain an `es` entry with an `s` attribute,
 then the `sample_rate` field must be omitted from transactions and spans.

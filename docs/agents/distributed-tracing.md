@@ -18,17 +18,17 @@ header.
 
 ## Tracestate
 
-For our own `elastic` `tracestate` entry we will introduce a `key:value` formatted list of attributes.
+For our own `es` `tracestate` entry we will introduce a `key:value` formatted list of attributes.
 This is used to propagate the sampling rate downstream, for example.
 See the [sampling](sampling.md) specification for more details.
 
 The general `tracestate` format is:
 
-    tracestate: elastic=key:value;key:value...,othervendor=<opaque>
+    tracestate: es=key:value;key:value...,othervendor=<opaque>
 
 For example:
 
-    tracestate: elastic=s:0.1,othervendor=<opaque>
+    tracestate: es=s:0.1,othervendor=<opaque>
 
 
 ### Validation and length limits
@@ -36,23 +36,27 @@ For example:
 The [`tracestate`](https://www.w3.org/TR/trace-context/#tracestate-header)
 specification lists a number of validation rules.
 In addition to that,
-there are specific rules for the attributes under the `elastic` entry.
+there are specific rules for the attributes under the `es` entry.
 
-Agents MUST implement these validation rules:
+Agents MUST implement these validation rules when mutating `tracestate`:
 
 - The `tracestate` field may contain a maximum of 32 entries.
   An entry consists of a vendor key, and an opaque vendor value.
-- Vendor keys (such as `elastic`) have a maximum size of 256 chars.
+- Vendor keys (such as `es`) have a maximum size of 256 chars.
 - Vendor keys MUST begin with a lowercase letter or a digit,
   and can only contain lowercase letters (`a-z`),
   digits (`0-9`), underscores (`_`), dashes (`-`), asterisks (`*`),
   and forward slashes (`/`).
 - Vendor values have a maximum size of 256 chars.
 - Vendor values may only contain ASCII RFC0020 characters (i.e., the range `0x20` to `0x7E`) except comma `,` and `=`.
-- In addition to the above limitations, the keys and values used in the `elastic` entry must not contain the characters `:` and `;`.
-- If adding another key/value pair to the `elastic` entry would exceed the limit of 256 chars,
+- In addition to the above limitations, the keys and values used in the `es` entry must not contain the characters `:` and `;`.
+- If adding another key/value pair to the `es` entry would exceed the limit of 256 chars,
   that key/value pair MUST be ignored by agents.
   The key/value and entry separators `:` and `;` have to be considered as well.
+
+Note that we will currently only ever populate an `es` `tracestate` entry at the trace root.
+It is not strictly necessary to validate `tracestate` in its entirety when received downstream.
+Instead, downstream agents may opt to only parse the `es` entry skip validation of other vendors' entries.
 
 ## Binary Fields
 
