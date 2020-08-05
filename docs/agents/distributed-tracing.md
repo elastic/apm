@@ -19,7 +19,7 @@ header.
 ## Tracestate
 
 For our own `elastic` `tracestate` entry we will introduce a `key:value` formatted list of attributes.
-This is used to propagate the sample weight downstream, for example.
+This is used to propagate the sampling rate downstream, for example.
 See the [sampling](sampling.md) specification for more details.
 
 The general `tracestate` format is:
@@ -28,7 +28,7 @@ The general `tracestate` format is:
 
 For example:
 
-    tracestate: elastic=w:5,othervendor=<opaque>
+    tracestate: elastic=s:0.1,othervendor=<opaque>
 
 
 ### Validation and length limits
