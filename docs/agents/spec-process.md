@@ -50,6 +50,7 @@ Every change that affects more than one agent should be initiated via a PR again
 
 ## Agent issue table template
 
+```
 | Agent   | Link to agent implementation issue |
 | --------|------------------------------------|
 | .NET    | 
@@ -59,7 +60,8 @@ Every change that affects more than one agent should be initiated via a PR again
 | PHP     | 
 | Python  | 
 | Ruby    | 
-| RUM     | 
+| RUM     |
+``` 
 
 ## Advantages
 
