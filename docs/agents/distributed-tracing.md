@@ -56,7 +56,7 @@ Agents MUST implement these validation rules when mutating `tracestate`:
 
 Note that we will currently only ever populate an `es` `tracestate` entry at the trace root.
 It is not strictly necessary to validate `tracestate` in its entirety when received downstream.
-Instead, downstream agents may opt to only parse the `es` entry skip validation of other vendors' entries.
+Instead, downstream agents may opt to only parse the `es` entry and skip validation of other vendors' entries.
 
 ## Binary Fields
 

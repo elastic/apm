@@ -58,5 +58,7 @@ e.g.
 
 The implementation will look something like `math.Round(sampleRate*1000)/1000`.
 
-For a downstream agent, if `tracestate` is not found or does not contain an `es` entry with an `s` attribute,
-then the `sample_rate` field must be omitted from transactions and spans.
+For non-root transactions the agent must parse incoming `tracestate` headers to identify the `es` entry and extract the `s` attribute.
+The `s` attribute value should be used to populate the `sample_rate` field of transactions and spans.
+If there is no `tracestate` or no valid `es` entry with an `s` attribute,
+then the agent must omit `sample_rate` from non-root transactions and their spans.
