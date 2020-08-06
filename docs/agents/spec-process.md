@@ -77,5 +77,5 @@ Every change that affects more than one agent should be initiated via a PR again
 - The process should be lightweight and painless 
 - Keep the noise low by notifying the right people at the right time and maturity stage of the proposal
 
-If it turns out that this process is not accomplishing these goals that it's a bug,
+If it turns out that this process is not accomplishing these goals then it's a bug,
 and you should raise a PR to fix it :)
