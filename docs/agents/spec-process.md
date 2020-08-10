@@ -32,18 +32,22 @@ Every change that affects more than one agent should be initiated via a PR again
   It's recommended to do that sooner rather than later
   so that we don't spend a lot of time discussing a feature that's not going to be prioritized.
   As a result of the prioritization,
-  the PR gets assigned to a milestone,
-  reflecting the stack release version this feature should be implemented by all agents.
-  If some agents are not going to implement the change by that stack release version,
-  or if there are no immediate plans to implement the change at all,
-  a comment should be made on the PR.
+  the PR description should be edited to contain a table listing all agents
+  and the milestone in which they plan to implement the change.
+  A template for this table can be found in the next section.
+  In addition to that,
+  the PR itself gets assigned to a milestone as well.
+  The milestone of the PR is equal to the minimum version from the agent table -
+  the first version any agent provides the feature.
+  If an agent has no immediate plans to implement the change,
+  the milestone should be set to `n/a` for that agent
+  and an explanatory comment should be added to the `Link to agent implementation issue` column.
 1. PR can be merged by the author of the PR \
   Three business days before merging, there should be a last call for objections.
 1. The author of the PR creates an issue in each agent's repo \
   They make sure the issues are assigned to a stack release milestone,
-  based on the milestone of the spec PR.
-  The author of the PR adds a comment to the PR with a table that lists each agent and the link to the implementation issue.
-  A template for this table can be found in the next section.
+  based on the milestone of the agent table.
+  The table should be amended to include the link to all the implementation issues.
   This makes it easier to see the current implementation state for each agent and makes it easy to verify that there's an issue for each agent.
   Agent teams can still change the milestone if priorities shift.
   However, they should let their team lead know.
@@ -51,16 +55,16 @@ Every change that affects more than one agent should be initiated via a PR again
 ## Agent issue table template
 
 ```
-| Agent   | Link to agent implementation issue |
-| --------|------------------------------------|
-| .NET    | 
-| Go      | 
-| Java    | 
-| Node.js | 
-| PHP     | 
-| Python  | 
-| Ruby    | 
-| RUM     |
+| Agent   |Milestone | Link to agent implementation issue |
+| --------|----------|------------------------------------|
+| .NET    |          | 
+| Go      |          | 
+| Java    |          | 
+| Node.js |          | 
+| PHP     |          | 
+| Python  |          | 
+| Ruby    |          | 
+| RUM     |          | 
 ``` 
 
 ## Advantages
