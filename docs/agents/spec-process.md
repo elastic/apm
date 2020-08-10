@@ -42,8 +42,9 @@ Every change that affects more than one agent should be initiated via a PR again
   If an agent has no immediate plans to implement the change,
   the milestone should be set to `n/a` for that agent
   and an explanatory comment should be added to the `Link to agent implementation issue` column.
-1. PR can be merged by the author of the PR \
-  Three business days before merging, there should be a last call for objections.
+1. The PR can be merged by the author of the PR \
+  One business day before merging, there should be a last call for objections.
+  This last call is not mandatory and is a good candidate for being automated in the future.
 1. The author of the PR creates an issue in each agent's repo \
   They make sure the issues are assigned to a stack release milestone,
   based on the milestone of the agent table.
