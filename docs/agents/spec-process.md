@@ -56,16 +56,16 @@ Every change that affects more than one agent should be initiated via a PR again
 ## Agent issue table template
 
 ```
-| Agent   |Milestone | Link to agent implementation issue |
-| --------|----------|------------------------------------|
-| .NET    |          | 
-| Go      |          | 
-| Java    |          | 
-| Node.js |          | 
-| PHP     |          | 
-| Python  |          | 
-| Ruby    |          | 
-| RUM     |          | 
+| Agent   | Milestone | Link to agent implementation issue |
+|---------|-----------|------------------------------------|
+| .NET    |  | 
+| Go      |  | 
+| Java    |  | 
+| Node.js |  | 
+| PHP     |  | 
+| Python  |  | 
+| Ruby    |  | 
+| RUM     |  | 
 ``` 
 
 ## Advantages
