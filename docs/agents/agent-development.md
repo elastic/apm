@@ -241,7 +241,7 @@ Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_
 
 The `outcome` property denotes whether the transaction represents a success or a failure from the perspective of the entity that produced the event.
 The APM Server converts this to the [`event.outcome`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html) field.
-This property is optional to remain backwards compatibility.
+This property is optional to preserve backwards compatibility.
 If an agent doesn't report the `outcome` (or reports `null`), the APM Server sets the outcome to `"unknown"`.
 
 - `"failure"`: Indicates that this transaction describes a failed result. \
