@@ -245,7 +245,7 @@ This property is optional to preserve backwards compatibility.
 If an agent doesn't report the `outcome` (or reports `null`), the APM Server sets the outcome to `"unknown"`.
 
 - `"failure"`: Indicates that this transaction describes a failed result. \
-  Note that client errors don't fall into this category as they are not an error from the perspective of the server.
+  Note that client errors (such as HTTP 4xx) don't fall into this category as they are not an error from the perspective of the server.
 - `"success"`: Indicates that this transaction describes a successful result.
 - `"unknown"`: Indicates that there's no information about the outcome.
   This is the default value that applies when an outcome has not been set explicitly.
@@ -314,7 +314,7 @@ The `outcome` property denotes whether the span represents a success or a failur
 It supports the same values as `transaction.outcome`.
 The only semantic difference is that client errors set the `outcome` to `"failure"`.
 Agents should try to determine the outcome for spans created by auto instrumentation,
-which is especially important for exit spans.
+which is especially important for exit spans (spans representing requests to other services).
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
