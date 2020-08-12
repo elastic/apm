@@ -6,6 +6,7 @@ agents:
     FEATURES_PATH: "features"
   - REPO: "apm-agent-java"
     FEATURES_PATH: "apm-agent-core/src/test/resources/specs"
+    JSON_SPECS_PATH: "apm-agent-core/src/test/resources/json-specs"
   - REPO: "apm-agent-python"
     FEATURES_PATH: "tests/bdd/features"
   - REPO: "apm-agent-ruby"
