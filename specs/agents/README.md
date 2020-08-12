@@ -52,7 +52,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - [Logging Correlation](log-correlation.md)
 - [Agent Configuration](configuration.md)
 
-# Specification process 
+# Processes
 
-- [`spec-process.md`](spec-process.md) explains how to propose changes to the specification
-- [`new-fields.md`](new-fields.md) explains the process for adding new fields to the intake API
+- [Proposing changes to the specification](process-spec.md)
+- [Proposing new fields to the intake API](process-new-fields.md)
