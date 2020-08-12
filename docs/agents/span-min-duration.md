@@ -8,6 +8,7 @@ However,
 that just cuts off at a certain point without considering which spans are important and which are not.
 
 ## Configuration option
+
 Key: `span_min_duration`
 
 Default value: 0ms (don't discard any spans)
@@ -25,20 +26,24 @@ Additionally, spans that lead to an error or that may be a parent of an async op
 However, external calls that don't propagate context,
 such as calls to a database, can be discarded using this threshold.
 
-
 ## Limitations
 
+The limitations are based on the premise that the `parent_id` of each span and transaction that's stored in Elasticsearch
+should point to another valid transaction or span that's present in the Elasticsearch index.
+
+A span that refers to a missing span via is `parent_id` is also known as an "orphaned span".
+
 ### Spans that propagate context to downstream services can't be discarded
+
 We only know whether to discard after the call has ended.
 At that point,
 the trace has already continued on the downstream service.
 Discarding the span for the external request would orphan the transaction of the downstream call.
 
-An argument could be made that this is not a big problem as the trace view then just won't show the downstream transaction.
-But as this would introduce inconsistencies (e.g.
-the transaction can be seen in the transaction details view of the service but when viewing the full trace it disappears) I suggest not allowing this for now.
+Propagating the trace context to downstream services is also known as out-of-process context propagation.
 
 ### Intermediate spans
+
 Discarding a single span that has both a parent and a child span is not possible as it would lead to orphaned child spans.
 
 However,
@@ -49,11 +54,21 @@ If the leaf is a non-context propagating span,
 such as a manually created span or a SQL call,
 the subtree can be discarded.
 
-### Async spans
+### Spans that lead up to async spans can't be discarded
 
-If the context of a span is propagated to another thread,
-it may not be discarded.
-That is because the other thread might create child spans of the first span even if it has already ended.
+Whenever the context of a span is captured when scheduling an async operation,
+this span may not be discarded.
+
+That is because when the async operation is executed, 
+and the span context gets restored,
+the async operation might create child spans of the first span,
+even if it has already ended,
+or concurrently to it ending.
+In this scenario, discarding the first span would orphan the async span.
+
+This is even true if it's unknown whether the async operation creates a span at all.
+
+Propagating the trace context to async operations is also known as in-process context propagation.
 
 ## Implementation
 
@@ -61,28 +76,21 @@ Spans store two flags in order to determine whether a span can be discarded:
 - `discardable`:
   Whether discarding this span is allowed.
   The default value is `true`.
-  Setting this to `false` also sets the `discardable` flag of all it's parents and grand-parents to `true.
+  Setting this to `false` also sets the `discardable` flag of all it's parents and grand-parents to `true`.
+  See also [Intermediate spans](#Intermediate-spans).
 - `discardRequested`:
-  Whether this span is 
+  Whether this span is requested to be discarded.
   The default value is `false`
   
 ### Marking as non-discardable
 
-The span is marked as non-discardable in these situations
+According to the [limitations](#Limitations),
+there are certain situations where a span (and thus all it's parents) are marked as non-discardable.
+
  - When an error is reported for this span
- - When the span is reported to APM Server \
-   To make sure it's parents are also non-discardable
- - On out-of-process context propagation \ 
-   When the trace context gets injected into a carrier,
-   for example when writing the `traceparent` header into HTTP request headers,
-   The span is marked as non-discardable.
-   Not doing that would orphan the transaction of the downstream service -
-   it would reference a discarded (non-existing) span.
+ - When the span is reported to APM Server
+ - On out-of-process context propagation 
  - On in-process context propagation
-   Spans leading up to async operations can't be discarded if the async operation may start after it's parent has ended.
-   This is even true if it's unknown whether the async operation creates a span at all.
-   The reason for that is to avoid the situation that the async span becomes an orphan,
-   meaning it references a discarded parent.
 
 ### Request discarding
 
