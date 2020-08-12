@@ -11,3 +11,4 @@ agents:
     FEATURES_PATH: "tests/bdd/features"
   - REPO: "apm-agent-ruby"
     FEATURES_PATH: "features"
+    JSON_SPECS_PATH: "spec/fixtures"
