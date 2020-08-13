@@ -3,11 +3,14 @@
 set -uexo pipefail
 
 readonly APM_AGENT_REPO_NAME=${1}
-readonly SPECS_TYPE=${2} # gherkin
+readonly SPECS_TYPE=${2} # json or gherkin
 readonly APM_AGENT_SPECS_DIR=${3}
 readonly APM_AGENT_REPO_DIR=".ci/${APM_AGENT_REPO_NAME}"
 
 EXTENSION="feature"
+if [[ "${SPECS_TYPE}" == "json" ]]; then
+    EXTENSION="json"
+fi
 
 git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
 

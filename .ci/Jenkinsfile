@@ -58,6 +58,15 @@ pipeline {
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
               to: "${env.GIT_COMMIT}",
               patterns: regexps)
+
+            // regexp for JSON specs
+            regexps =[
+              "^tests/agents/json-specs/.*"
+            ]
+            env.JSON_SPECS_UPDATED = isGitRegionMatch(
+              from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
+              to: "${env.GIT_COMMIT}",
+              patterns: regexps)
           }
         }
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false
@@ -87,6 +96,30 @@ pipeline {
         }
       }
     }
+    stage('Send Pull Request for JSON specs'){
+      options {
+        warnError('Pull Requests to APM agents failed')
+      }
+      when {
+        beforeAgent true
+        expression { return env.JSON_SPECS_UPDATED != "false" }
+      }
+      steps {
+        deleteDir()
+        unstash 'source'
+        dir("${BASE_DIR}"){
+          script {
+            def agents = readYaml(file: '.ci/.jenkins-agents.yml')
+            def parallelTasks = [:]
+            agents['agents'].each { agent ->
+              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
+            }
+
+            parallel(parallelTasks)
+          }
+        }
+      }
+    }
   }
   post {
     cleanup {
@@ -106,7 +139,7 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare changes for ${repo}"
+          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
             if (params.DRY_RUN_MODE) {
               echo "DRY-RUN: ${repo}"
