@@ -79,7 +79,7 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", filesPath: "${agent.FEATURES_PATH}")
+              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "bdd", filesPath: "${agent.FEATURES_PATH}")
             }
 
             parallel(parallelTasks)
@@ -97,6 +97,7 @@ pipeline {
 
 def generateStepForAgent(Map params = [:]){
   def repo = params.containsKey('repo') ? params.get('repo') : error('generateStepForAgent: repo argument is required')
+  def filesType = params.containsKey('filesType') ? params.get('filesType') : error('generateStepForAgent: filesType argument is required. Valid values: [bdd]')
   def filesPath = params.containsKey('filesPath') ? params.get('filesPath') : error('generateStepForAgent: filesPath argument is required')
   return {
     node('linux && immutable') {
@@ -110,7 +111,7 @@ def generateStepForAgent(Map params = [:]){
             if (params.DRY_RUN_MODE) {
               echo "DRY-RUN: ${repo}"
             } else {
-              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
+              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation')
             }
           }
         }
