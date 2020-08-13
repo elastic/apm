@@ -63,7 +63,7 @@ pipeline {
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false
       }
     }
-    stage('Send Pull Request'){
+    stage('Send Pull Request for BDD specs'){
       options {
         warnError('Pull Requests to APM agents failed')
       }
