@@ -16,8 +16,12 @@ Agents can be configured to sample probabilistically, by specifying a sampling p
 
 At the time of making a sampling decision, the sampling rate must be recorded so that it can be associated with every transaction and span in the trace.
 This will be used by the server for scaling transaction and span metrics.
+These metrics are used in the service map to display performance and throughput both from the perspective of the service itself (transaction metrics grouped by `service.name`) and from the perspective of upstream services (exit span metrics grouped by `destination.service.resource`).
 
-The sampling rate must be recorded on transactions and spans as `sample_rate`. e.g.
+These metrics will be more accurate when the sampling rate is high.
+But even with lower sampling rates,
+the server is able to calculate representative metrics.
+To enable the server to properly weigh the metrics, agents must record the sampling rate on transactions and spans as `sample_rate`. e.g.
 
     {"transaction":{"name":"GET /","sample_rate":0.1,...}}
     {"span":{"name":"SELECT FROM table","sample_rate":0.1,...}}
