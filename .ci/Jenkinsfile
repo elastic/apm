@@ -81,7 +81,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { return env.GHERKIN_SPECS_UPDATED != "false" }
-          expression { return params.FORCE_SEND_PR == "true" }
+          expression { return params.FORCE_SEND_PR }
         }
       }
       steps {
@@ -108,7 +108,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { return env.JSON_SPECS_UPDATED != "false" }
-          expression { return params.FORCE_SEND_PR == "true" }
+          expression { return params.FORCE_SEND_PR }
         }
       }
       steps {
