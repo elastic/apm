@@ -15,7 +15,7 @@ fi
 git clone "https://github.com/elastic/${APM_AGENT_REPO_NAME}" "${APM_AGENT_REPO_DIR}"
 
 mkdir -p "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
-echo "Copying spec files to the ${APM_AGENT_REPO_NAME} repo"
+echo "Copying ${EXTENSION} files to the ${APM_AGENT_REPO_NAME} repo"
 cp tests/agents/${SPECS_TYPE}-specs/*.${EXTENSION} "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
 
 cd "${APM_AGENT_REPO_DIR}"
