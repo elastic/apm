@@ -92,7 +92,7 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+              parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
             }
 
             parallel(parallelTasks)
@@ -120,7 +120,7 @@ pipeline {
             def parallelTasks = [:]
             agents['agents'].each { agent ->
               if (agent.JSON_SPECS_PATH) {
-                parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
+                parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
               }
             }
 
