@@ -139,7 +139,7 @@ Transaction name examples:
 
 The life cycle of responding to a GraphQL query is mostly split in two parts. First, the quer(y/ies) are read, parsed and analyzed. Second, they are executed.
 
-![Example GraphQL waterfall](graphql-example.png)
+![Example GraphQL waterfall](https://user-images.githubusercontent.com/2163464/90007930-dfbd7b00-dc9b-11ea-8729-5d0237a0d6a4.png)
 
 This example shows the server responding to one request, with two named queries, `SKUs` and `Names`.
 
