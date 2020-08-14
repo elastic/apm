@@ -39,6 +39,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - Tracing
   - [Transactions](tracing-transactions.md)
   - [Spans](tracing-spans.md)
+    - [Discarding of spans](tracing-spans-discarding.md)
   - [Sampling](tracing-sampling.md)
   - [Distributed tracing](tracing-distributed-tracing.md)
   - [Tracer API](tracing-api.md)
