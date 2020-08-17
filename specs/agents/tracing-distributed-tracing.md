@@ -25,7 +25,7 @@ specification described in [this commit](https://github.com/w3c/trace-context-bi
 
 For our own `es` `tracestate` entry we will introduce a `key:value` formatted list of attributes.
 This is used to propagate the sampling rate downstream, for example.
-See the [sampling](sampling.md) specification for more details.
+See the [sampling](tracing-sampling.md) specification for more details.
 
 The general `tracestate` format is:
 
