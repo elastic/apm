@@ -137,10 +137,10 @@ pipeline {
   }
 }
 
-def generateStepForAgent(Map params = [:]){
-  def repo = params.containsKey('repo') ? params.get('repo') : error('generateStepForAgent: repo argument is required')
-  def filesType = params.containsKey('filesType') ? params.get('filesType') : error('generateStepForAgent: filesType argument is required. Valid values: [gherkin | json]')
-  def filesPath = params.containsKey('filesPath') ? params.get('filesPath') : error('generateStepForAgent: filesPath argument is required')
+def generateStepForAgent(Map args = [:]){
+  def repo = args.containsKey('repo') ? args.get('repo') : error('generateStepForAgent: repo argument is required')
+  def filesType = args.containsKey('filesType') ? args.get('filesType') : error('generateStepForAgent: filesType argument is required. Valid values: [gherkin | json]')
+  def filesPath = args.containsKey('filesPath') ? args.get('filesPath') : error('generateStepForAgent: filesPath argument is required')
   return {
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
