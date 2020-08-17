@@ -22,3 +22,6 @@ If an agent doesn't report the `outcome` (or reports `null`), the APM Server set
   For existing auto-instrumentations, agents should set the outcome either to `"failure"` or `"success"`.
 
 What counts as a failed or successful request depends on the protocol and does not depend on whether there are error documents associated with a transaction.
+
+Agents should expose an API to manually override the outcome.
+This value must always take precedence over the automatically determined value.
