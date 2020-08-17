@@ -37,6 +37,9 @@ pipeline {
     disableResume()
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
+  triggers {
+    cron('H H(4-5) * * 1,5')
+  }
   parameters {
     booleanParam(name: 'DRY_RUN_MODE', defaultValue: false, description: 'If true, allows to execute this pipeline in dry run mode, without sending a PR.')
     booleanParam(name: 'FORCE_SEND_PR', defaultValue: false, description: 'If true, will force sending a PR.')
