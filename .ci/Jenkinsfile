@@ -39,6 +39,7 @@ pipeline {
   }
   parameters {
     booleanParam(name: 'DRY_RUN_MODE', defaultValue: false, description: 'If true, allows to execute this pipeline in dry run mode, without sending a PR.')
+    booleanParam(name: 'FORCE_SEND_PR', defaultValue: false, description: 'If true, will force sending a PR.')
   }
   stages {
     stage('Checkout'){
@@ -58,18 +59,30 @@ pipeline {
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
               to: "${env.GIT_COMMIT}",
               patterns: regexps)
+
+            // regexp for JSON specs
+            regexps =[
+              "^tests/agents/json-specs/.*"
+            ]
+            env.JSON_SPECS_UPDATED = isGitRegionMatch(
+              from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
+              to: "${env.GIT_COMMIT}",
+              patterns: regexps)
           }
         }
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false
       }
     }
-    stage('Send Pull Request'){
+    stage('Send Pull Request for BDD specs'){
       options {
         warnError('Pull Requests to APM agents failed')
       }
       when {
         beforeAgent true
-        expression { return env.GHERKIN_SPECS_UPDATED != "false" }
+        anyOf {
+          expression { return env.GHERKIN_SPECS_UPDATED == "true" }
+          expression { return params.FORCE_SEND_PR }
+        }
       }
       steps {
         deleteDir()
@@ -79,7 +92,36 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["apm-agent-${agent.NAME}"] = generateStepForAgent(repo: "${agent.REPO}", featuresPath: "${agent.FEATURES_PATH}")
+              parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+            }
+
+            parallel(parallelTasks)
+          }
+        }
+      }
+    }
+    stage('Send Pull Request for JSON specs'){
+      options {
+        warnError('Pull Requests to APM agents failed')
+      }
+      when {
+        beforeAgent true
+        anyOf {
+          expression { return env.JSON_SPECS_UPDATED == "true" }
+          expression { return params.FORCE_SEND_PR }
+        }
+      }
+      steps {
+        deleteDir()
+        unstash 'source'
+        dir("${BASE_DIR}"){
+          script {
+            def agents = readYaml(file: '.ci/.jenkins-agents.yml')
+            def parallelTasks = [:]
+            agents['agents'].each { agent ->
+              if (agent.JSON_SPECS_PATH) {
+                parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
+              }
             }
 
             parallel(parallelTasks)
@@ -97,7 +139,8 @@ pipeline {
 
 def generateStepForAgent(Map params = [:]){
   def repo = params.containsKey('repo') ? params.get('repo') : error('generateStepForAgent: repo argument is required')
-  def featuresPath = params.containsKey('featuresPath') ? params.get('featuresPath') : error('generateStepForAgent: featuresPath argument is required')
+  def filesType = params.containsKey('filesType') ? params.get('filesType') : error('generateStepForAgent: filesType argument is required. Valid values: [gherkin | json]')
+  def filesPath = params.containsKey('filesPath') ? params.get('filesPath') : error('generateStepForAgent: filesPath argument is required')
   return {
     node('linux && immutable') {
       catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
@@ -105,12 +148,12 @@ def generateStepForAgent(Map params = [:]){
         unstash 'source'
         dir("${BASE_DIR}"){
           setupAPMGitEmail(global: true)
-          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${featuresPath}" """, label: "Prepare changes for ${repo}"
+          sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
             if (params.DRY_RUN_MODE) {
               echo "DRY-RUN: ${repo}"
             } else {
-              githubCreatePullRequest(title: 'test: synchronizing bdd spec', labels: 'automation')
+              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation')
             }
           }
         }
