@@ -53,6 +53,27 @@ pipeline {
           repo: "git@github.com:elastic/${REPO}.git",
           credentialsId: "${JOB_GIT_CREDENTIALS}"
         )
+        stash allowEmpty: true, name: 'source', useDefaultExcludes: false
+      }
+    }
+    // This stage will populate the environment, and will only be executed under any of the
+    // following conditions:
+    // 1. we run the pipeline NOT in DRY_RUN_MODE, because we want to send real PRs
+    // 2. we run the pipeline forcing sending real PRs, because we want so
+    // Because the rest of the following stages will need these variables to check for changes,
+    // skipping this stage would not take effect in them, as they are covered by the 
+    // FORCE_SEND_PR check.
+    stage('Check for spec changes'){
+      when {
+        beforeAgent true
+        anyOf {
+          expression { return env.DRY_RUN_MODE == "false" }
+          expression { return params.FORCE_SEND_PR }
+        }
+      }
+      steps {
+        deleteDir()
+        unstash 'source'
         script {
           dir("${BASE_DIR}"){
             def regexps =[
@@ -73,7 +94,6 @@ pipeline {
               patterns: regexps)
           }
         }
-        stash allowEmpty: true, name: 'source', useDefaultExcludes: false
       }
     }
     stage('Send Pull Request for BDD specs'){
