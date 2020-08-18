@@ -19,6 +19,8 @@ echo "Copying ${EXTENSION} files to the ${APM_AGENT_REPO_NAME} repo"
 cp tests/agents/${SPECS_TYPE}-specs/*.${EXTENSION} "${APM_AGENT_REPO_DIR}/${APM_AGENT_SPECS_DIR}"
 
 cd "${APM_AGENT_REPO_DIR}"
+git config user.email
 git checkout -b "update-spec-files-$(date "+%Y%m%d%H%M%S")"
 git add "${APM_AGENT_SPECS_DIR}"
 git commit -m "test: synchronizing ${SPECS_TYPE} specs"
+git --no-pager log -1
