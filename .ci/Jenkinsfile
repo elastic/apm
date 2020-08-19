@@ -68,7 +68,7 @@ pipeline {
       when {
         beforeAgent true
         allOf {
-          not { changeRequest }
+          not { changeRequest() }
           anyOf {
             expression { return env.DRY_RUN_MODE == "false" }
             expression { return params.FORCE_SEND_PR }
@@ -107,7 +107,7 @@ pipeline {
       when {
         beforeAgent true
         allOf {
-          not { changeRequest }
+          not { changeRequest() }
           anyOf {
             expression { return env.GHERKIN_SPECS_UPDATED == "true" }
             expression { return params.FORCE_SEND_PR }
@@ -137,7 +137,7 @@ pipeline {
       when {
         beforeAgent true
         allOf {
-          not { changeRequest }
+          not { changeRequest() }
           anyOf {
             expression { return env.JSON_SPECS_UPDATED == "true" }
             expression { return params.FORCE_SEND_PR }
