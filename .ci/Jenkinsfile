@@ -58,7 +58,6 @@ pipeline {
     }
     // This stage will populate the environment, and will only be executed under any of the
     // following conditions:
-    // 0. we run the pipeline for a branch, not a PR
     // 1. we run the pipeline NOT in DRY_RUN_MODE, because we want to send real PRs
     // 2. we run the pipeline forcing sending real PRs, because we want so
     // Because the rest of the following stages will need these variables to check for changes,
@@ -67,12 +66,9 @@ pipeline {
     stage('Check for spec changes'){
       when {
         beforeAgent true
-        allOf {
-          not { changeRequest() }
-          anyOf {
-            expression { return env.DRY_RUN_MODE == "false" }
-            expression { return params.FORCE_SEND_PR }
-          }
+        anyOf {
+          expression { return env.DRY_RUN_MODE == "false" }
+          expression { return params.FORCE_SEND_PR }
         }
       }
       steps {
@@ -106,12 +102,9 @@ pipeline {
       }
       when {
         beforeAgent true
-        allOf {
-          not { changeRequest() }
-          anyOf {
-            expression { return env.GHERKIN_SPECS_UPDATED == "true" }
-            expression { return params.FORCE_SEND_PR }
-          }
+        anyOf {
+          expression { return env.GHERKIN_SPECS_UPDATED == "true" }
+          expression { return params.FORCE_SEND_PR }
         }
       }
       steps {
@@ -183,7 +176,7 @@ def generateStepForAgent(Map args = [:]){
           setupAPMGitEmail(global: true)
           sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
-            if (params.DRY_RUN_MODE) {
+            if (params.DRY_RUN_MODE || isPR()) {
               echo "DRY-RUN: ${repo}"
             } else {
               githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation')
