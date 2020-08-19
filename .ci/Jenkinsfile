@@ -173,7 +173,7 @@ def generateStepForAgent(Map args = [:]){
           setupAPMGitEmail(global: true)
           sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
-            if (params.DRY_RUN_MODE) {
+            if (params.DRY_RUN_MODE || isPR()) {
               echo "DRY-RUN: ${repo}"
             } else {
               githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation')
