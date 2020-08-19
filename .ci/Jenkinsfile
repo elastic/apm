@@ -42,7 +42,7 @@ pipeline {
   }
   parameters {
     booleanParam(name: 'DRY_RUN_MODE', defaultValue: false, description: 'If true, allows to execute this pipeline in dry run mode, without sending a PR.')
-    booleanParam(name: 'FORCE_SEND_PR', defaultValue: false, description: 'If true, will force sending a PR.')
+    booleanParam(name: 'FORCE_SEND_PR', defaultValue: false, description: 'If true, will force sending a PR, although it could be affected by the value off the DRY_RUN parameter: if the latter is true, a message will be printed in the console.')
   }
   stages {
     stage('Checkout'){
