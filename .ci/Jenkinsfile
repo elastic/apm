@@ -129,12 +129,9 @@ pipeline {
       }
       when {
         beforeAgent true
-        allOf {
-          not { changeRequest() }
-          anyOf {
-            expression { return env.JSON_SPECS_UPDATED == "true" }
-            expression { return params.FORCE_SEND_PR }
-          }
+        anyOf {
+          expression { return env.JSON_SPECS_UPDATED == "true" }
+          expression { return params.FORCE_SEND_PR }
         }
       }
       steps {
