@@ -23,5 +23,25 @@ If an agent doesn't report the `outcome` (or reports `null`), the APM Server set
 
 What counts as a failed or successful request depends on the protocol and does not depend on whether there are error documents associated with a transaction.
 
+##### Error rate
+
+The error rate of a transaction group is based on the `outcome` of its transactions.
+
+    error_rate = failure / (failure + success)
+
+Note that when calculating the error rate,
+transactions with an `unknown` or non-existent outcome are not considered.
+
+The calculation just looks at the subset of transactions where the result is known and extrapolates the error rate for the total population.
+This avoids that `unknown` or non-existant outcomes reduce the error rate,
+which would happen when looking at a mix of old and new agents,
+or when looking at RUM data (as page load transactions have an `unknown` outcome).
+
+Also note that this only reflects the error rate as perceived from the application itself.
+The error rate perceived from its clients is greater or equal to that.
+
+##### Outcome API
+
 Agents should expose an API to manually override the outcome.
 This value must always take precedence over the automatically determined value.
+The documentation should clarify that transactions with `unknown` outcomes are ignored in the error rate calculation.
