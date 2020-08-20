@@ -8,8 +8,8 @@ SQL-based data stores' span names are abbreviated versions of their queries, eg.
 
 ### For precision
 
-- `tests/sql_token_examples.json`
-- `tests/sql_token_examples.json`
+- `tests/agents/sql_token_examples.json`
+- `tests/agents/sql_signature_examples.json`
 
 To get similar results across agents a set of `input -> expected output` examples are provided here as JSON files.
 
