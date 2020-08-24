@@ -15,6 +15,7 @@
 | Python Agent              | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  | [📂 contrib][apm-agent-python-contrib]
 | Ruby Agent                | [apm-agent-ruby][]    | [📘 elastic.co][apm-agent-ruby-docs]    | [📂 contrib][apm-agent-ruby-contrib]
 | .NET Agent                | [apm-agent-dotnet][]  | [📘 elastic.co][apm-agent-dotnet-docs]  | [📂 contrib][apm-agent-dotnet-contrib]
+| PHP Agent                 | [apm-agent-php][]     | elastic.co - TBD                        | [📂 contrib][apm-agent-php-contrib]
 
 
 [apm-server-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-server
@@ -52,3 +53,7 @@
 [apm-agent-dotnet-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-dotnet
 [apm-agent-dotnet-docs]: https://www.elastic.co/guide/en/apm/agent/dotnet/current/index.html
 [apm-agent-dotnet]: https://github.com/elastic/apm-agent-dotnet
+
+[apm-agent-php-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-php
+[apm-agent-php-docs]: https://www.elastic.co/guide/en/apm/agent/php/current/index.html
+[apm-agent-php]: https://github.com/elastic/apm-agent-php
