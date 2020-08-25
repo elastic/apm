@@ -12,10 +12,11 @@ Note that this clones all agent repos in the current directory the first time it
     -a, --agent     create issues for a specific agent (repeatable)
     -t, --title     the title of the issue (required)
     -b, --body      the body of the issue (required)
-    -m, --milestone the milestone of the issue (required)
+    -m, --milestone the milestone of the issue (optional)
     -d, --dry-run   perform a dry run
     "
 
+dry_run=false
 AGENTS=()
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -36,20 +37,17 @@ done
 : "${body:?Variable not set or empty}"
 
 if [ -z "$milestone" ]; then
-  MILESTONE_COMMAND=''
+  milestone_cmd=''
 else
-  MILESTONE_COMMAND="--milestone $milestone"
+  milestone_cmd="--milestone $milestone"
 fi
 
 for agent in "${AGENTS[@]}" ; do
   gh repo clone elastic/apm-agent-$agent || true
   pushd apm-agent-$agent
-  if [ "$dry_run" = true ] ; then
-    echo gh issue create --title "$title" --body "$body" $MILESTONE_COMMAND 
-  else
-    gh issue create --title "$title" --body "$body" $MILESTONE_COMMAND
+  echo gh issue create --title "$title" --body "$body" $milestone_cmd
+  if [ "$dry_run" = false ] ; then
+    gh issue create --title "$title" --body "$body" $milestone_cmd
   fi
   popd
 done
-
-
