@@ -18,17 +18,17 @@ Note that this clones all agent repos in the current directory the first time it
 
 AGENTS=()
 while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --all-agents) AGENTS=(dotnet go java nodejs php python ruby rum-js); ;;
-        -a|--agent) AGENTS+=("$2"); shift ;;
-        -t|--title) title="$2"; shift ;;
-        -b|--body) body="$2"; shift ;;
-        -m|--milestone) milestone="$2"; shift ;;
-	-d|--dry-run) dry_run=true ;;
-	-h|--help) echo "$usage" >&2; exit ;;
-        *) echo "Unknown parameter passed: $1"; echo "$usage" >&2; exit 1 ;;
-    esac
-    shift || true
+  case $1 in
+    --all-agents) AGENTS=(dotnet go java nodejs php python ruby rum-js); ;;
+    -a|--agent) AGENTS+=("$2"); shift ;;
+    -t|--title) title="$2"; shift ;;
+    -b|--body) body="$2"; shift ;;
+    -m|--milestone) milestone="$2"; shift ;;
+    -d|--dry-run) dry_run=true ;;
+    -h|--help) echo "$usage" >&2; exit ;;
+    *) echo "Unknown parameter passed: $1"; echo "$usage" >&2; exit 1 ;;
+  esac
+  shift || true
 done
 
 : "${AGENTS:?Variable not set or empty}"
