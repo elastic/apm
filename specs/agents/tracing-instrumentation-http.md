@@ -55,12 +55,10 @@ All errors that are captured during a request to an ignored URL are still sent t
 
 |                |   |
 |----------------|---|
-| Type           | `List<WildcardMatcher>` |
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
 | Default        | agent specific |
 | Dynamic        | `true` |
 | Central config | `true` |
-
-Agents should test against this common set of test cases to ensure interoperability: [`wildcard_matcher_tests.json`](../../tests/agents/json-specs/wildcard_matcher_tests.json)
 
 #### HTTP client spans
 
