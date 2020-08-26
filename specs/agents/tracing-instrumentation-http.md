@@ -35,6 +35,32 @@ Request and response headers, cookies, and form bodies should be sanitised (i.e.
 
 Agents may may include additional patterns if there are common conventions specific to language frameworks.
 
+##### `transaction_ignore_urls` configuration
+
+Used to restrict requests to certain URLs from being instrumented.
+
+This property should be set to a list containing one or more strings.
+When an incoming HTTP request is detected,
+its request path will be tested against each element in this list.
+For example, adding `/home/index` to this list would match and remove instrumentation from the following URLs:
+
+```
+https://www.mycoolsite.com/home/index
+http://localhost/home/index
+http://whatever.com/home/index?value1=123
+```
+
+NOTE: 
+All errors that are captured during a request to an ignored URL are still sent to the APM Server regardless of this setting.
+
+|                |   |
+|----------------|---|
+| Type           | `List<WildcardMatcher>` |
+| Default        | agent specific |
+| Dynamic        | `true` |
+| Central config | `true` |
+
+Agents should test against this common set of test cases to ensure interoperability: [`wildcard_matcher_tests.json`](../../tests/agents/json-specs/wildcard_matcher_tests.json)
 
 #### HTTP client spans
 
