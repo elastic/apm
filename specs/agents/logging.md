@@ -9,20 +9,20 @@ This option is case-insensitive.
 |                |   |
 |----------------|---|
 | Valid options  | `trace`, `debug`, `info`, `warning`, `error`, `critical`, `off` |
-| Default        | `info` |
+| Default        | `warning` |
 | Dynamic        | `true` |
 | Central config | `true` |
 
 ### Mapping to native log levels
 
 As not all logging frameworks used by the different agents can natively work with these levels.
-Thus, agents will need to translate them.
+Thus, agents will need to translate them, using their best judgment for the mapping.
 
 Some examples:
 If the logging framework used by an agent doesn't have `trace`,
 it would map it to the same level as `debug`.
 If the underlying logging framework doesn't support `critical`,
-agents can treat that as a synonym for `error`.
+agents can treat that as a synonym for `error` or `fatal`.
 
 The `off` level is a switch to completely turn off logging.
 
