@@ -7,13 +7,8 @@ We currently have a default limit of 500 spans in the agents and 1000 spans in t
 However,
 that just cuts off at a certain point without considering which spans are important and which are not.
 
-## Configuration option
+## `span_min_duration` configuration
 
-Key: `span_min_duration`
-
-Default value: 0ms (don't discard any spans)
-
-Description:
 Sets the minimum duration of spans.
 Spans that execute faster than this threshold are attempted to be discarded.
 
@@ -25,6 +20,13 @@ Additionally, spans that lead to an error or that may be a parent of an async op
 
 However, external calls that don't propagate context,
 such as calls to a database, can be discarded using this threshold.
+
+|                |                                 |
+|----------------|---------------------------------|
+| Type           | `integer`                       |
+| Default        | `0ms` (don't discard any spans) |
+| Dynamic        | `true`                          |
+| Central config | `true`                          |
 
 ## Limitations
 
