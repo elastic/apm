@@ -78,7 +78,7 @@ Spans store two flags in order to determine whether a span can be discarded:
 - `discardable`:
   Whether discarding this span is allowed.
   The default value is `true`.
-  Setting this to `false` also sets the `discardable` flag of all it's parents and grand-parents to `true`.
+  Setting this to `false` also sets the `discardable` flag of all it's parents and grand-parents to `false`.
   See also [Intermediate spans](#Intermediate-spans).
 - `discardRequested`:
   Whether this span is requested to be discarded.
