@@ -12,7 +12,7 @@
 | Java Agent                | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    | [📂 contrib][apm-agent-java-contrib]
 | JavaScript RUM Agent      | [apm-agent-rum-js][]  | [📘 elastic.co][apm-agent-js-base-docs] | [📂 contrib][apm-agent-rum-js-contrib]
 | Node.js Agent             | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  | [📂 contrib][apm-agent-nodejs-contrib]
-| PHP Agent                 | [apm-agent-php][]     | elastic.co - TBD                        | [📂 contrib][apm-agent-php-contrib]
+| PHP Agent                 | [apm-agent-php][]     | [📘 elastic.co][apm-agent-php-docs]     | [📂 contrib][apm-agent-php-contrib]
 | Python Agent              | [apm-agent-python][]  | [📘 elastic.co][apm-agent-python-docs]  | [📂 contrib][apm-agent-python-contrib]
 | Ruby Agent                | [apm-agent-ruby][]    | [📘 elastic.co][apm-agent-ruby-docs]    | [📂 contrib][apm-agent-ruby-contrib]
 | .NET Agent                | [apm-agent-dotnet][]  | [📘 elastic.co][apm-agent-dotnet-docs]  | [📂 contrib][apm-agent-dotnet-contrib]

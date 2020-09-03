@@ -49,6 +49,7 @@ Every change that affects more than one agent should be initiated via a PR again
   They make sure the issues are assigned to a stack release milestone,
   based on the milestone of the agent table.
   The table should be amended to include the link to all the implementation issues.
+  The [`create-agent-issues.sh`](../../scripts/create-agent-issues.sh) script is your friend here.
   This makes it easier to see the current implementation state for each agent and makes it easy to verify that there's an issue for each agent.
   Agent teams can still change the milestone if priorities shift.
   However, they should let their team lead know.

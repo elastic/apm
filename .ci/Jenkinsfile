@@ -81,7 +81,6 @@ pipeline {
             ]
             env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
-              to: "${env.GIT_COMMIT}",
               patterns: regexps)
 
             // regexp for JSON specs
@@ -90,7 +89,6 @@ pipeline {
             ]
             env.JSON_SPECS_UPDATED = isGitRegionMatch(
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
-              to: "${env.GIT_COMMIT}",
               patterns: regexps)
           }
         }
