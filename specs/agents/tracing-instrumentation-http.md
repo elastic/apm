@@ -41,7 +41,8 @@ Used to restrict requests to certain URLs from being instrumented.
 
 This property should be set to a list containing one or more strings.
 When an incoming HTTP request is detected,
-its request path will be tested against each element in this list.
+its request [`path`](https://tools.ietf.org/html/rfc3986#section-3.3)
+will be tested against each element in this list.
 For example, adding `/home/index` to this list would match and remove instrumentation from the following URLs:
 
 ```
