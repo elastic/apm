@@ -18,18 +18,18 @@ e.g.
  - `0` means no transactions will be sampled
  - `0.5` means approximately 50% of transactions will be sampled
 
-The maximum precision of the sampling rate is `0.001` (0.1%).
-The sampling rate should be rounded half away from zero to 3 decimal places.
-Values greater than `0` but less than `0.001` should be rounded to 0.001.
+The maximum precision of the sampling rate is `0.0001` (0.01%).
+The sampling rate should be rounded half away from zero to 4 decimal places.
+Values greater than `0` but less than `0.0001` should be rounded to 0.0001.
 
 e.g.
 
-    0.0001 -> 0.001
-    0.5554 -> 0.555
-    0.5555 -> 0.556
-    0.5556 -> 0.556
+    0.00001 -> 0.0001
+    0.55554 -> 0.5555
+    0.55555 -> 0.5556
+    0.55556 -> 0.5556
 
-The implementation will look something like `math.Round(sampleRate*1000)/1000`.
+The implementation will look something like `math.Round(sampleRate*10000)/10000`.
 It is recommended to do that calculation once rather than every time the sampling rate is queried.
 This is to ensure we are consistent when [propagating](#propagation) the sampling rate through `tracestate`.
 
@@ -105,7 +105,7 @@ e.g.
     tracestate: es=s:0.1,othervendor=<opaque>
 
 As `tracestate` has modest size limits we must keep the size down.
-This is ensured as the `transaction_sample_rate` configuration option has a maximum precision of 3 decimal places.
+This is ensured as the `transaction_sample_rate` configuration option has a maximum precision of 4 decimal places.
 
 For non-root transactions the agent must parse incoming `tracestate` headers to identify the `es` entry and extract the `s` attribute.
 The `s` attribute value should be used to populate the `sample_rate` field of transactions and spans.
