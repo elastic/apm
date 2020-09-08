@@ -10,6 +10,8 @@ The only semantic difference is that client errors set the `outcome` to `"failur
 Agents should try to determine the outcome for spans created by auto instrumentation,
 which is especially important for exit spans (spans representing requests to other services).
 
+If an agent doesn't report the `outcome` (or reports `null`), the APM Server will set it based on `http.response.status_code`. If the status code is not available, then it will be set to `"unknown"`.
+
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
 For example, if there's a network error so that service A can't call service B,
