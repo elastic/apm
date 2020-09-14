@@ -11,7 +11,7 @@ Transactions are created either by the built-in auto-instrumentation or an agent
 The `outcome` property denotes whether the transaction represents a success or a failure from the perspective of the entity that produced the event.
 The APM Server converts this to the [`event.outcome`](https://www.elastic.co/guide/en/ecs/current/ecs-allowed-values-event-outcome.html) field.
 This property is optional to preserve backwards compatibility.
-If an agent doesn't report the `outcome` (or reports `null`), the APM Server sets the outcome to `"unknown"`.
+If an agent doesn't report the `outcome` (or reports `null`), the APM Server will set it based on `context.http.response.status_code`. If the status code is not available, then it will be set to `"unknown"`.
 
 - `"failure"`: Indicates that this transaction describes a failed result. \
   Note that client errors (such as HTTP 4xx) don't fall into this category as they are not an error from the perspective of the server.
