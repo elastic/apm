@@ -19,19 +19,16 @@ Where applicable, all agents (excluding JavaScript RUM) should record the follow
 
  - `system.process.cgroup.memory.mem.limit.bytes`
  - `system.process.cgroup.memory.mem.usage.bytes`
- - `system.process.cgroup.memory.stats.inactive_file.bytes`
 
 #### Metrics source
 
 ##### [cgroup-v1](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt)
    - `system.process.cgroup.memory.mem.limit.bytes` - based on the `memory.limit_in_bytes` file
    - `system.process.cgroup.memory.mem.usage.bytes` - based on the `memory.usage_in_bytes` file
-   - `system.process.cgroup.memory.stats.inactive_file.bytes` - based on the `total_inactive_file` line in the `memory.stat` file
 
 ##### [cgroup-v2](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)
    - `system.process.cgroup.memory.mem.limit.bytes` - based on the `memory.max` file
    - `system.process.cgroup.memory.mem.usage.bytes` - based on the `memory.current` file
-   - `system.process.cgroup.memory.stats.inactive_file.bytes` - based on the `inactive_file` line in the `memory.stat` file
 
 #### Discovery of the memory files
 
