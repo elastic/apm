@@ -1,3 +1,5 @@
+[![Build Status](https://apm-ci.elastic.co/job/apm-shared/job/apm-update-specs-mbp/job/master/badge/icon)](https://apm-ci.elastic.co/job/apm-shared/job/apm-update-specs-mbp/job/master/)
+
 <h1 align='center'><img src='https://github.com/elastic/apm/blob/master/apm-logo.svg' alt='Elastic APM' width='32' valign='middle' /> Elastic APM</h1>
 
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
