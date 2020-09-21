@@ -195,8 +195,12 @@ def createPRDescription() {
     message += "* Manually forced with the CI automation job."
   }
   if (env?.SPEC_UPDATED?.equals('true')){
-    def gitLog = sh(script: "git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
-    message += "* Changeset \n ${gitLog}"
+    def gitLog = sh(script: """
+      git log --pretty=format:'  * https://github.com/${env.ORG_NAME}/${env.REPO_NAME}/%h %s' \
+          ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD \
+          --follow -- tests/agents \
+      | sed 's/#\\([0-9]\\+\\)/https:\\/\\/github.com\\/${env.ORG_NAME}\\/${env.REPO_NAME}\\/pull\\1/g' || true""", returnStdout: true)
+    message += "* Changeset\n${gitLog}"
   }
   return message
 }
