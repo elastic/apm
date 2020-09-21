@@ -196,6 +196,8 @@ def createDescription() {
   if (env?.SPEC_UPDATED?.equals('true')){
     // Compare with the target or base branch to which the change could be merged, otherwise the branch name
     def to = isPR() ? env.CHANGE_TARGET : env.BRANCH_NAME
+    sh 'git --no-pager log --pretty=oneline | true'
+    sh 'git --no-pager log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...head --pretty=oneline --follow -- tests/agents || true'
     def gitLog = sh(script: "git --no-pager log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...${to} --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
     message += "* Changeset \n ${gitLog}"
   }
