@@ -195,7 +195,9 @@ def createDescription() {
     message += "* Manually forced with the CI automation job."
   }
   if (env?.SPEC_UPDATED?.equals('true')){
-    def gitLog = sh(script: "git --no-pager log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...${env.BRANCH_NAME} --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
+    // Compare with the TARGET_BRANCH env variable if PR otherwise the BRANCH_NAME.
+    def to = isPR() ? env.TARGET_BRANCH : env.BRANCH_NAME
+    def gitLog = sh(script: "git --no-pager log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...${to} --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
     message += "* Changeset \n ${gitLog}"
   }
   return message
