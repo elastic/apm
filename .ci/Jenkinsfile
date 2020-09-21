@@ -90,6 +90,7 @@ pipeline {
             env.JSON_SPECS_UPDATED = isGitRegionMatch(
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
               patterns: regexps)
+            env.SPEC_UPDATED = env.JSON_SPECS_UPDATED.equals('true') || env.GHERKIN_SPECS_UPDATED.equals('true')
           }
         }
       }
@@ -174,7 +175,19 @@ def generateStepForAgent(Map args = [:]){
             if (params.DRY_RUN_MODE || isPR()) {
               echo "DRY-RUN: ${repo}"
             } else {
-              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation')
+              def message = """
+              ### What
+              APM agent specs automatic sync
+              ### Why
+              """
+              if (params.FORCE_SEND_PR) {
+                message += "* Manually forced with the CI automation job."
+              }
+              if (env?.SPEC_UPDATED?.equals('true')){
+                def gitLog = sh(script: "git --no-pager log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...${env.BRANCH_NAME} --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
+                message += "* Changeset \n ${gitLog}"
+              }
+              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation', description: "${message}")
             }
           }
         }
