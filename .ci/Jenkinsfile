@@ -168,10 +168,10 @@ def generateStepForAgent(Map args = [:]){
         deleteDir()
         unstash 'source'
         dir("${BASE_DIR}"){
+          def message = createDescription()
           setupAPMGitEmail(global: true)
           sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
-            def message = createDescription()
             if (params.DRY_RUN_MODE || isPR()) {
               echo "DRY-RUN: ${repo} with description: '${message}'"
             } else {
