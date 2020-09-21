@@ -90,7 +90,7 @@ pipeline {
               from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
               patterns: regexps)
             env.SPEC_UPDATED = env.JSON_SPECS_UPDATED.equals('true') || env.GHERKIN_SPECS_UPDATED.equals('true')
-            env.MESSAGE = createDescription()
+            env.PR_DESCRIPTION = createPRDescription()
           }
         }
       }
@@ -173,9 +173,9 @@ def generateStepForAgent(Map args = [:]){
           sh script: """.ci/scripts/prepare-spec-changes.sh "${repo}" "${filesType}" "${filesPath}" """, label: "Prepare ${filesType} changes for ${repo}"
           dir(".ci/${repo}") {
             if (params.DRY_RUN_MODE || isPR()) {
-              echo "DRY-RUN: ${repo} with description: '${env.MESSAGE}'"
+              echo "DRY-RUN: ${repo} with description: '${env.PR_DESCRIPTION}'"
             } else {
-              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation', description: "${env.MESSAGE}")
+              githubCreatePullRequest(title: "test: synchronizing ${filesType} spec", labels: 'automation', description: "${env.PR_DESCRIPTION}")
             }
           }
         }
@@ -184,26 +184,25 @@ def generateStepForAgent(Map args = [:]){
   }
 }
 
-def createDescription() {
+def createPRDescription() {
   def message = """
   ### What
   APM agent specs automatic sync
+
   ### Why
   """
   if (params.FORCE_SEND_PR) {
     message += "* Manually forced with the CI automation job."
   }
   if (env?.SPEC_UPDATED?.equals('true')){
-    // Compare with the target or base branch to which the change could be merged, otherwise the branch name
-    def to = isPR() ? env.CHANGE_TARGET : env.BRANCH_NAME
     sh """
       ls -ltra
       git config -l
-      git log --pretty=oneline | true
+      git log --pretty=oneline || true
       pwd
-      git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...head --pretty=oneline --follow -- tests/agents || true
+      git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD --pretty=oneline --follow -- tests/agents || true
     """
-    def gitLog = sh(script: "git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...${to} --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
+    def gitLog = sh(script: "git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
     message += "* Changeset \n ${gitLog}"
   }
   return message
