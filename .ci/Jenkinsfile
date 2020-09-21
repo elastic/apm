@@ -195,13 +195,6 @@ def createPRDescription() {
     message += "* Manually forced with the CI automation job."
   }
   if (env?.SPEC_UPDATED?.equals('true')){
-    sh """
-      ls -ltra
-      git config -l
-      git log --pretty=oneline || true
-      pwd
-      git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD --pretty=oneline --follow -- tests/agents || true
-    """
     def gitLog = sh(script: "git log ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}...HEAD --pretty=oneline --follow -- tests/agents || true", returnStdout: true)
     message += "* Changeset \n ${gitLog}"
   }
