@@ -9,9 +9,13 @@ This option is case-insensitive.
 |                |   |
 |----------------|---|
 | Valid options  | `trace`, `debug`, `info`, `warning`, `error`, `critical`, `off` |
-| Default        | `warning` |
+| Default        | `info` (soft default) |
 | Dynamic        | `true` |
 | Central config | `true` |
+
+Note that this default is not enforced among all agents.
+If an agent development team thinks that a different default should be used
+(such as `warning`), that is acceptable.
 
 ### Mapping to native log levels
 
