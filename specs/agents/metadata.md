@@ -32,9 +32,9 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
  3. Attempt to extract the Kubernetes pod UID from the dirname by matching one of the following regular expressions:
      - `(?:^/kubepods[\\S]*/pod([^/]+)$)`
-     - `(?:^/kubepods\.slice/kubepods-[^/]+\.slice/kubepods-[^/]+-pod([^/]+)\.slice/$)`
+     - `(?:^/kubepods\.slice/(kubepods-[^/]+\.slice/)?kubepods[^/]*-pod([^/]+)\.slice$)`
 
-    The capturing group in either case is the pod UID. In the latter case, which occurs when using the systemd cgroup driver, we must unescape underscores (`_`) to hyphens (`-`) in the pod UID.
+    The first capturing group in the first case and the second capturing group in the second case is the pod UID. In the latter case, we must unescape underscores (`_`) to hyphens (`-`) in the pod UID.
     If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
 
  4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular expressions:
