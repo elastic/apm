@@ -7,13 +7,14 @@ usage="$(basename "$0") -- program to create issues on one or multiple agent rep
 Requires gh (https://github.com/cli/cli) to be installed.
 Note that this clones all agent repos in the current directory the first time it's executed.
 
-    -h              show this help text
-    --all-agents    create issues for all agents
-    -a, --agent     create issues for a specific agent (repeatable)
-    -t, --title     the title of the issue (required)
-    -b, --body      the body of the issue (required)
-    -m, --milestone the milestone of the issue (optional)
-    -d, --dry-run   perform a dry run
+    -h                  show this help text
+    --all-agents        create issues for all agents
+    --backend-agents    create issues for all backend agents
+    -a, --agent         create issues for a specific agent (repeatable)
+    -t, --title         the title of the issue (required)
+    -b, --body          the body of the issue (required)
+    -m, --milestone     the milestone of the issue (optional)
+    -d, --dry-run       perform a dry run
     "
 
 dry_run=false
@@ -21,6 +22,7 @@ AGENTS=()
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --all-agents) AGENTS=(dotnet go java nodejs php python ruby rum-js); ;;
+    --backend-agents) AGENTS=(dotnet go java nodejs php python ruby); ;;
     -a|--agent) AGENTS+=("$2"); shift ;;
     -t|--title) title="$2"; shift ;;
     -b|--body) body="$2"; shift ;;
