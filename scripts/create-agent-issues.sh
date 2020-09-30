@@ -35,7 +35,7 @@ done
 : "${AGENTS:?Variable not set or empty}"
 : "${spec_pr:?Variable not set or empty}"
 
-title=$(GH_REPO=elastic/apm gh pr view ${spec_pr} | head -n 1 | cut -f2)
+title=$(gh pr view ${spec_pr} -R elastic/apm | head -n 1 | cut -f2)
 body="Implementing elastic/apm#${spec_pr}"
 
 if [ -z "$milestone" ]; then
@@ -45,8 +45,8 @@ else
 fi
 
 for agent in "${AGENTS[@]}" ; do
-  echo GH_REPO=elastic/apm-agent-$agent gh issue create --title "$title" --body "$body" $milestone_cmd
+  echo gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd
   if [ "$dry_run" = false ] ; then
-    GH_REPO=elastic/apm-agent-$agent gh issue create --title "$title" --body "$body" $milestone_cmd
+    gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd
   fi
 done
