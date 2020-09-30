@@ -5,14 +5,13 @@ set -e
 usage="$(basename "$0") -- program to create issues on one or multiple agent repos
 
 Requires gh (https://github.com/cli/cli) to be installed.
-Note that this clones all agent repos in the current directory the first time it's executed.
 
     -h                  show this help text
     --all-agents        create issues for all agents
     --backend-agents    create issues for all backend agents
     -a, --agent         create issues for a specific agent (repeatable)
-    -t, --title         the title of the issue (required)
-    -b, --body          the body of the issue (required)
+    -s, --spec-pr       the PR number of the spec PR that should be implemented by agents (required)
+                        this determines the title and body of the created issues
     -m, --milestone     the milestone of the issue (optional)
     -d, --dry-run       perform a dry run
     "
@@ -24,8 +23,7 @@ while [[ "$#" -gt 0 ]]; do
     --all-agents) AGENTS=(dotnet go java nodejs php python ruby rum-js); ;;
     --backend-agents) AGENTS=(dotnet go java nodejs php python ruby); ;;
     -a|--agent) AGENTS+=("$2"); shift ;;
-    -t|--title) title="$2"; shift ;;
-    -b|--body) body="$2"; shift ;;
+    -s|--spec-pr) spec_pr="$2" ; shift ;;
     -m|--milestone) milestone="$2"; shift ;;
     -d|--dry-run) dry_run=true ;;
     -h|--help) echo "$usage" >&2; exit ;;
@@ -35,8 +33,10 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 : "${AGENTS:?Variable not set or empty}"
-: "${title:?Variable not set or empty}"
-: "${body:?Variable not set or empty}"
+: "${spec_pr:?Variable not set or empty}"
+
+title=$(gh pr view ${spec_pr} -R elastic/apm | head -n 1 | cut -f2)
+body="Implementing elastic/apm#${spec_pr}"
 
 if [ -z "$milestone" ]; then
   milestone_cmd=''
@@ -44,12 +44,21 @@ else
   milestone_cmd="--milestone $milestone"
 fi
 
+TABLE_ROWS=()
 for agent in "${AGENTS[@]}" ; do
-  gh repo clone elastic/apm-agent-$agent || true
-  pushd apm-agent-$agent
-  echo gh issue create --title "$title" --body "$body" $milestone_cmd
+  echo gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd
   if [ "$dry_run" = false ] ; then
-    gh issue create --title "$title" --body "$body" $milestone_cmd
+    issue=$(gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd)
+    TABLE_ROWS+=("| $agent | $milestone | $issue |")
   fi
-  popd
+done
+
+echo "
+Add this table to the issue description of https://github.com/elastic/apm/pull/${spec_pr}
+
+| Agent   | Milestone | Link to agent implementation issue |
+|---------|-----------|------------------------------------|"
+
+for row in "${TABLE_ROWS[@]}" ; do
+    echo $row
 done
