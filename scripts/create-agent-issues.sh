@@ -44,9 +44,21 @@ else
   milestone_cmd="--milestone $milestone"
 fi
 
+TABLE_ROWS=()
 for agent in "${AGENTS[@]}" ; do
   echo gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd
   if [ "$dry_run" = false ] ; then
-    gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd
+    issue=$(gh issue create -R elastic/apm-agent-$agent --title "$title" --body "$body" $milestone_cmd)
+    TABLE_ROWS+=("| $agent | $milestone | $issue |")
   fi
+done
+
+echo "
+Add this table to the issue description of https://github.com/elastic/apm/pull/${spec_pr}
+
+| Agent   | Milestone | Link to agent implementation issue |
+|---------|-----------|------------------------------------|"
+
+for row in "${TABLE_ROWS[@]}" ; do
+    echo $row
 done
