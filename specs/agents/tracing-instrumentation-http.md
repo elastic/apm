@@ -46,4 +46,5 @@ For outbound HTTP request spans we capture the following http-specific span cont
   The captured URL should have the userinfo (username and password), if any, redacted.
 - `http.status_code` (the response status code) \
   The span's `outcome` should be set to `"success"` if the status code is lower than 400 and to `"failure"` otherwise. 
+  If the request is aborted the `outcome` should be set to `unknown`.
 
