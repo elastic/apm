@@ -52,6 +52,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - [Logging Correlation](log-correlation.md)
 - [Agent Configuration](configuration.md)
 - [Data sanitization](sanitization.md)
+- [Agent logging](logging.md)
 
 # Processes
 
