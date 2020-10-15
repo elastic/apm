@@ -1,25 +1,8 @@
 ### Distributed Tracing
 
-We implement the W3C standards, both for HTTP headers and binary fields.
+We implement the [W3C standards](https://www.w3.org/TR/trace-context-1/) for
+`traceparent` and `tracestate`, both for HTTP headers and binary fields.
 
-#### HTTP Headers
-
-Our implementation relies on the [W3C Trace Context](https://www.w3.org/TR/trace-context-1/) standard. Until this standard became final,
-we used the header name `elastic-apm-traceparent` and we did not support `tracestate`. Soon after the standard became official, we
-started to fully align with it. For backward compatibility reasons, this was done in phases, so that the first step was to look for both
-`traceparent` headers in incoming requests (meaning - both `elastic-apm-traceparent` and `traceparent`) and sending both `traceparent` headers in outgoing requests (with the exception of the RUM agent,
-due to CORS). [Issue #71](https://github.com/elastic/apm/issues/71) describes this in more detail, as well as tracking implementation
-in the different agents.
-New agents may decide whether to support both `traceparent` headers (so to be compatible with older agent versions) or only the formal W3C
-header.
-
-#### Binary Fields
-
-Our implementation relies on the [W3C Binary Trace Context](https://w3c.github.io/trace-context-binary/) standard. Since we started
-implementing it when this was still a draft, we named the field `elasticapmtraceparent` instead of `traceparent`, and we decided to
-wait with the implementation of the `tracestate` field. We chose to avoid hyphens in the field name in order to reduce risk of breaking field name limitations, such as we encountered with some JMS clients.
-In order to make sure we are fully aligned, all agents are implementing the
-specification described in [this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
 
 #### Tracestate
 
@@ -45,8 +28,6 @@ there are specific rules for the attributes under the `es` entry.
 
 Agents MUST implement these validation rules when mutating `tracestate`:
 
-- The `tracestate` field may contain a maximum of 32 entries.
-  An entry consists of a vendor key, and an opaque vendor value.
 - Vendor keys (such as `es`) have a maximum size of 256 chars.
 - Vendor keys MUST begin with a lowercase letter or a digit,
   and can only contain lowercase letters (`a-z`),
@@ -55,10 +36,40 @@ Agents MUST implement these validation rules when mutating `tracestate`:
 - Vendor values have a maximum size of 256 chars.
 - Vendor values may only contain ASCII RFC0020 characters (i.e., the range `0x20` to `0x7E`) except comma `,` and `=`.
 - In addition to the above limitations, the keys and values used in the `es` entry must not contain the characters `:` and `;`.
-- If adding another key/value pair to the `es` entry would exceed the limit of 256 chars,
-  that key/value pair MUST be ignored by agents.
-  The key/value and entry separators `:` and `;` have to be considered as well.
+- If adding another key/value pair to the `es` entry would exceed the limit of
+  256 chars (including separator characters `:` and `;`), that key/value pair
+  MUST be ignored by agents.
 
 Note that we will currently only ever populate an `es` `tracestate` entry at the trace root.
 It is not strictly necessary to validate `tracestate` in its entirety when received downstream.
 Instead, downstream agents may opt to only parse the `es` entry and skip validation of other vendors' entries.
+This means that the vendor key validations are only relevant if an agent adds
+its own non-`es` keys to tracestate
+
+In addition, we do not enforce the 32-entry limit for vendor entries in
+`tracestate`. Doing so would cripple our ability to use `tracestate` for our
+own purposes, arbitrarily. Removing other entries to make way for our own
+would also cause unexpected behavior. In any case, this situation should be
+rare and we feel comfortable ignoring the validation rules in this case.
+
+
+#### Binary Fields
+
+Our implementation relies on the [W3C Binary Trace
+Context](https://w3c.github.io/trace-context-binary/) standard.  In order to
+make sure we are fully aligned, all agents are implementing the specification described in
+[this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
+
+Binary fields should only be used where strings are not allowed, such as in
+Kafka record headers.
+
+
+#### Legacy HTTP Headers/Binary Fields
+
+Some agents support the legacy header name `elastic-apm-traceparent` and the
+binary field name `elasticapmtraceparent`. These names were used while the W3C
+standard was being finalized, to avoid any backwards-compatibility issues. New
+agents do not need to support these legacy names. Because `tracestate` was
+not implemented until the standar was finalized, no legacy names exist for
+this field.
+
