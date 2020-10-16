@@ -1,13 +1,13 @@
-### Distributed Tracing
+## Distributed Tracing
 
 We implement the [W3C standards](https://www.w3.org/TR/trace-context-1/) for
 `traceparent` and `tracestate`, both for HTTP headers and binary fields.
 
 
-#### `trace_id`, `parent_id`, and `traceparent`
+### `trace_id`, `parent_id`, and `traceparent`
 
-Our `trace_id`, `parent_id`, and `traceparent` HTTP header all follow the
-standard established by the
+Our `trace_id`, `parent_id`, and the combined `traceparent` HTTP header follow
+the standard established by the
 [W3C Trace-Context Spec](https://github.com/w3c/trace-context/blob/master/spec/20-http_request_header_format.md#traceparent-header).
 
 The `traceparent` header is composed of four parts:
@@ -20,25 +20,25 @@ The `traceparent` header is composed of four parts:
 Example:
 
 ```
-elastic-apm-traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
-(_____________________)  () (______________________________) (______________) ()
-            v            v                 v                        v         v
-      Header name       Version        Trace-Id                Span-Id     Flags
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+             () (______________________________) (______________) ()
+             v                 v                        v         v
+           Version         Trace-Id                 Span-Id     Flags
 ```
 
 
-##### Version
+#### Version
 
-The `version` is 1 byte representing an 8-bit unsigned integer. Currently,
-the `version` will always be `00`.
+The `version` is 1 byte (2 hexadecimal digits) representing an 8-bit unsigned
+integer. Currently, the `version` will always be `00`.
 
-##### Trace ID
+#### Trace ID
 
 A Trace ID is globally unique, and consists of 128 random bits (like a UUID).
 Its string representation is 32 hexadecimal digits.  This is the ID for the
 whole distributed trace and stays constant throughout a given trace.
 
-##### Transaction/Span ID, and Parent ID
+#### Transaction/Span ID, and Parent ID
 
 Each transaction object will store the global `trace_id`. If the transaction
 is started without an incoming `traceparent` header, then the `trace_id`
@@ -65,14 +65,14 @@ the case of errors is 128 bits, encoded as 32 hexadecimal digits), a
 span that caused the error).
 
 
-##### Flags
+#### Flags
 
 The W3C traceparent header specifies 8 bits for flags. Currently, only a single
 flag (`sampled`) is defined, with the rest reserved for later use. These flags
 are recommendations given by the by the caller rather than strict rules to
 follow.
 
-###### Sampled
+##### Sampled
 
 The `sampled` flag is the least significant bit (right-most) and denotes that
 the caller may have recorded trace data. If this flag is unset (`0` in the
@@ -82,7 +82,7 @@ transaction. See the [sampling](tracing-sampling.md) specification for more
 details.
 
 
-#### `tracestate`
+### `tracestate`
 
 For our own `es` `tracestate` entry we will introduce a `key:value` formatted list of attributes.
 This is used to propagate the sampling rate downstream, for example.
@@ -97,7 +97,7 @@ For example:
     tracestate: es=s:0.1,othervendor=<opaque>
 
 
-##### Validation and length limits
+#### Validation and length limits
 
 The [`tracestate`](https://www.w3.org/TR/trace-context/#tracestate-header)
 specification lists a number of validation rules.
@@ -131,7 +131,7 @@ would also cause unexpected behavior. In any case, this situation should be
 rare and we feel comfortable ignoring the validation rules in this case.
 
 
-#### HTTP Headers
+### HTTP Headers
 
 Every outgoing request should be intercepted and modified to include both the
 `traceparent` and `tracestate` headers, described above.
@@ -145,7 +145,7 @@ representing the outgoing request. If (and only if) that span is not sampled,
 the `span-id` may instead be the `id` of the current transaction.
 
 
-#### Binary Fields
+### Binary Fields
 
 Our implementation relies on the [W3C Binary Trace
 Context](https://w3c.github.io/trace-context-binary/) standard.  In order to
@@ -157,7 +157,7 @@ Kafka record headers. The field names should still be `traceparent` and
 `tracestate`.
 
 
-#### Legacy HTTP Headers/Binary Fields
+### Legacy HTTP Headers/Binary Fields
 
 Some agents support the legacy header name `elastic-apm-traceparent` and the
 binary field name `elasticapmtraceparent`. These names were used while the W3C
