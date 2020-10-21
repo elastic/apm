@@ -153,16 +153,16 @@ make sure we are fully aligned, all agents are implementing the specification de
 [this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
 
 Binary fields should only be used where strings are not allowed, such as in
-Kafka record headers. The field names should still be `traceparent` and
+Kafka record headers. The field names should be `elasticapmtraceparent` (due
+to the lack of finalization for the binary trace context spec) and
 `tracestate`.
 
 
-### Legacy HTTP Headers/Binary Fields
+### Legacy HTTP Header Name
 
-Some agents support the legacy header name `elastic-apm-traceparent` and the
-binary field name `elasticapmtraceparent`. These names were used while the W3C
-standard was being finalized, to avoid any backwards-compatibility issues. New
-agents do not need to support these legacy names. Because `tracestate` was
-not implemented until the standard was finalized, no legacy names exist for
-this field.
+Some agents support the legacy header name `elastic-apm-traceparent`. This name
+was used while the W3C standard was being finalized, to avoid any
+backwards-compatibility issues. New agents do not need to support this legacy
+name. Because `tracestate` was not implemented until the standard was
+finalized, no legacy names exist for this field.
 
