@@ -40,7 +40,7 @@ whole distributed trace and stays constant throughout a given trace.
 
 #### Transaction/Span ID, and Parent ID
 
-Each transaction object will store the global `trace_id`. If the transaction
+Each transaction and span object will store the global `trace_id`. If the transaction
 is started without an incoming `traceparent` header, then the `trace_id`
 should be generated.
 
@@ -78,8 +78,9 @@ The `sampled` flag is the least significant bit (right-most) and denotes that
 the caller may have recorded trace data. If this flag is unset (`0` in the
 least significant bit), the agent should not sample the transaction. If this
 flag is set (`1` in the least significant bit), the agent should sample the
-transaction. See the [sampling](tracing-sampling.md) specification for more
-details.
+transaction. The agent may ignore this flag if sampling a transaction would
+conflict with another config option, e.g. rate limit.See the
+[sampling](tracing-sampling.md) specification for more details.
 
 
 ### `tracestate`
