@@ -145,6 +145,10 @@ The `span-id` part of the `traceparent` header should be the `id` of the span
 representing the outgoing request. If (and only if) that span is not sampled,
 the `span-id` may instead be the `id` of the current transaction.
 
+HTTP/text format should be used for headers wherever possible. Only in cases
+where binary fields are necessary (such as in Kafka record headers) should
+binary fields be used. (See below for binary fields)
+
 
 ### Binary Fields
 
