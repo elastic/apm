@@ -23,7 +23,7 @@ Example:
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
              () (______________________________) (______________) ()
              v                 v                        v         v
-           Version         Trace-Id                 Span-Id     Flags
+           Version         Trace-Id                 Parent-Id    Flags
 ```
 
 
@@ -48,11 +48,15 @@ Each transaction and span object will have an `id`. This is generated for each
 transaction and span, and is 64 random bits (with a string representation of
 16 hexadecimal digits).
 
-Each transaction and span object will have a `parent_id`, except for the
-very first transaction in the distributed trace. The `parent_id` will be the
-`id` of the parent transaction/span. For new transactions with an incoming
-`traceparent` header, the `span-id` piece of the `traceparent` should be
-used as the `parent_id`.
+Each transaction and span object will have a `parent_id`, except for the very
+first transaction in the distributed trace. Some agents allow the user to
+ensure a parent ID is present on a transaction via an API call. In this case,
+if the transaction doesn't have a `parent_id` the agent will generate a new ID
+and set it as the `parent_id` for the transaction.
+
+The `parent_id` will be the `id` of the parent transaction/span. For new
+transactions with an incoming `traceparent` header, the `parent-id` piece of
+the `traceparent` should be used as the `parent_id`.
 
 In addition to the above rules, spans will also have a `transaction_id`,
 which is the `id` of the current transaction. While not necessary for
@@ -62,7 +66,8 @@ queries.
 Error objects will also include the `trace_id` (optional), an `id` (which in
 the case of errors is 128 bits, encoded as 32 hexadecimal digits), a
 `transaction_id`, and a `parent_id` (which is the `id` of the transaction or
-span that caused the error).
+span that caused the error). If an error occurs outside of the context of a
+transaction or span, these fields may be missing.
 
 
 #### Flags
