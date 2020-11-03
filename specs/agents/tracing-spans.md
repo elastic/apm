@@ -2,6 +2,16 @@
 
 The agent should also have a sense of the most common libraries for these and instrument them without any further setup from the app developers.
 
+#### Span ID fields
+
+Each span object will have an `id`. This is generated for each transaction and
+span, and is 64 random bits (with a string representation of 16 hexadecimal
+digits).
+
+Spans will also have a `transaction_id`, which is the `id` of the current
+transaction. While not necessary for distributed tracing, this inclusion allows
+for simpler and more performant UI queries.
+
 #### Span outcome
 
 The `outcome` property denotes whether the span represents a success or a failure.
