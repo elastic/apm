@@ -99,6 +99,109 @@ metadata is available.
 A sample implementation of this metadata collection is available in
 [the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
 
+#### AWS metadata
+
+[Instance metadata about an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) can be retrieved from the internal metadata endpoint, `http://169.254.169.254`.
+
+As an example with curl, first, an API token must be created
+
+```sh
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 300"`
+```
+
+Then, metadata can be retrieved, passing the API token
+
+```sh
+curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data
+```
+
+From the returned metadata, the following fields are useful
+
+| Cloud metadata field  | AWS Metadata field  |
+| --------------------  | ------------------- |
+| `account.id`          | `accountId`         |
+| `instance.id`         | `instanceId`        |
+| `availability_zone`   | `availabilityZone`  |
+| `machine.type`        | `instanceType`      |
+| `provider`            | aws                 |
+| `region`              | `region`            |
+
+#### GCP metadata
+
+Metadata about a GCP machine instance can be retrieved from the 
+metadata service, `http://metadata.google.internal`.
+
+An example with curl
+
+```sh
+curl -X GET "http://metadata.google.internal/computeMetadata/v1/?recursive=true" -H "Metadata-Flavor: Google"
+```
+
+From the returned metadata, the following fields are useful
+
+| Cloud metadata field  | AWS Metadata field  |
+| --------------------  | ------------------- |
+| `instance.id`         | `instance.id`       |
+| `instance.name`       | `instance.name`     |
+| `project.id`          | `project.numericProjectId` as a string |
+| `project.name`        | `project.projectId` |
+| `availability_zone`   | last part of `instance.zone`, split by `/`  |
+| `machine.type`        | last part of `instance.machineType`, split by `/` |
+| `provider`            | gcp                 |
+| `region`              | last part of `instance.zone`, split by `-`            |
+
+#### Azure metadata
+
+##### Azure VMs
+
+Metadata about an Azure VM can be retrieved from the internal metadata
+endpoint, `http://169.254.169.254`.
+
+An example with curl
+
+```sh
+curl -X GET "http://169.254.169.254/metadata/instance/compute?api-version=2019-08-15" -H "Metadata: true"
+```
+
+From the returned metadata, the following fields are useful
+
+| Cloud metadata field  | AWS Metadata field  |
+| --------------------  | ------------------- |
+| `account.id`          | `subscriptionId`    |
+| `instance.id`         | `vmId`              |
+| `instance.name`       | `name`              |
+| `project.name`        | `resourceGroupName` |
+| `availability_zone`   | `zone`              |
+| `machine.type`        | `vmSize`            |
+| `provider`            | azure               |
+| `region`              | `location`          |
+
+##### Azure App Services
+
+Azure App Services are a PaaS offering within Azure which doe not
+have access to the internal metadata endpoint. Metadata about
+an App Service can however be retrieved from environment variables
+
+
+| Cloud metadata field  | Environment variable |
+| --------------------  | ------------------- |
+| `account.id`          | first part of `WEBSITE_OWNER_NAME`, split by `+` |
+| `instance.id`         | `WEBSITE_INSTANCE_ID` |
+| `instance.name`       | `WEBSITE_SITE_NAME` |
+| `project.name`        | `WEBSITE_RESOURCE_GROUP` |
+| `provider`            | azure               |
+| `region`              | last part of `WEBSITE_OWNER_NAME`, split by `-`, trim end `"webspace"`          |
+
+The environment variable `WEBSITE_OWNER_NAME` has the form
+
+```
+{subscription id}+{app service plan resource group}-{region}webspace
+```
+
+an example of which is `f5940f10-2e30-3e4d-a259-63451ba6dae4+elastic-apm-AustraliaEastwebspace`
+
+
+
 ### Global labels
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
