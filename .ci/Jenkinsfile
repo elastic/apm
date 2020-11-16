@@ -119,9 +119,11 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              def repository = 'apm-agent-' + agent.REPO
-              if (env.SELECTED_AGENT == 'All' || env.SELECTED_AGENT == repository) {
-                parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+              if (agent.FEATURES_PATH) {
+                def repository = 'apm-agent-' + agent.REPO
+                if (env.SELECTED_AGENT == 'All' || env.SELECTED_AGENT == repository) {
+                  parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+                }
               }
             }
 
