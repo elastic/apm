@@ -43,6 +43,7 @@ pipeline {
   parameters {
     booleanParam(name: 'DRY_RUN_MODE', defaultValue: false, description: 'If true, allows to execute this pipeline in dry run mode, without sending a PR.')
     booleanParam(name: 'FORCE_SEND_PR', defaultValue: false, description: 'If true, will force sending a PR, although it could be affected by the value off the DRY_RUN parameter: if the latter is true, a message will be printed in the console.')
+    choice(name: 'APM_AGENTS', choices: ['All','.NET', 'Go', 'Java', 'Node.js', 'PHP', 'Python', 'Ruby', 'RUM'], description: 'Name of the APM Agent you want to update its specs.')
   }
   stages {
     stage('Checkout'){
@@ -106,6 +107,11 @@ pipeline {
           expression { return params.FORCE_SEND_PR }
         }
       }
+      environment {
+        // agentMapping is defined in the shared library as a map
+        APM_AGENTS = "${params?.APM_AGENTS}"
+        SELECTED_AGENT = agentMapping.id(env.APM_AGENTS)
+      }
       steps {
         deleteDir()
         unstash 'source'
@@ -114,7 +120,11 @@ pipeline {
             def agents = readYaml(file: '.ci/.jenkins-agents.yml')
             def parallelTasks = [:]
             agents['agents'].each { agent ->
-              parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+              if (agent.FEATURES_PATH) {
+                if (env.SELECTED_AGENT == 'all' || "apm-agent-${env.SELECTED_AGENT}" == agent.REPO) {
+                  parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "gherkin", filesPath: "${agent.FEATURES_PATH}")
+                }
+              }
             }
 
             parallel(parallelTasks)
@@ -125,6 +135,11 @@ pipeline {
     stage('Send Pull Request for JSON specs'){
       options {
         warnError('Pull Requests to APM agents failed')
+      }
+      environment {
+        // agentMapping is defined in the shared library as a map
+        APM_AGENTS = "${params?.APM_AGENTS}"
+        SELECTED_AGENT = agentMapping.id(env.APM_AGENTS)
       }
       when {
         beforeAgent true
@@ -142,7 +157,9 @@ pipeline {
             def parallelTasks = [:]
             agents['agents'].each { agent ->
               if (agent.JSON_SPECS_PATH) {
-                parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
+                if (env.SELECTED_AGENT == 'all' || "apm-agent-${env.SELECTED_AGENT}" == agent.REPO) {
+                  parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
+                }
               }
             }
 
