@@ -157,7 +157,7 @@ pipeline {
             def parallelTasks = [:]
             agents['agents'].each { agent ->
               if (agent.JSON_SPECS_PATH) {
-                if (env.SELECTED_AGENT == 'all' || env.SELECTED_AGENT == agent.REPO) 
+                if (env.SELECTED_AGENT == 'all' || env.SELECTED_AGENT == agent.REPO) {
                   parallelTasks["${agent.REPO}"] = generateStepForAgent(repo: "${agent.REPO}", filesType: "json", filesPath: "${agent.JSON_SPECS_PATH}")
                 }
               }
