@@ -139,7 +139,8 @@ pipeline {
       }
       environment {
         // agentMapping is defined in the shared library as a map
-        SELECTED_AGENT = agentMapping.id(params.APM_AGENTS)
+        APM_AGENTS = "${params?.APM_AGENTS}"
+        SELECTED_AGENT = agentMapping.id(env.APM_AGENTS)
       }
       when {
         beforeAgent true
