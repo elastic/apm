@@ -70,7 +70,7 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 ### Cloud Provider Metadata
 
-[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/metadata.json#L5-L129)
+[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/metadata.json)
 is collected from local cloud provider metadata services:
 
 - availability_zone
