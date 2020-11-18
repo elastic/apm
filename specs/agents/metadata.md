@@ -6,7 +6,7 @@ As mentioned above, the first "event" in each ND-JSON stream contains metadata t
  - global labels (requires APM Server 7.2 or greater)
 
 The process for proposing new metadata fields is detailed
-[here](new-fields.md).
+[here](process-new-fields.md).
 
 ### System metadata
 
