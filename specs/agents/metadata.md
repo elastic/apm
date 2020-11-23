@@ -178,7 +178,7 @@ From the returned metadata, the following fields are useful
 
 ##### Azure App Services
 
-Azure App Services are a PaaS offering within Azure which doe not
+Azure App Services are a PaaS offering within Azure which does not
 have access to the internal metadata endpoint. Metadata about
 an App Service can however be retrieved from environment variables
 
