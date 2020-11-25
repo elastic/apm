@@ -176,7 +176,7 @@ From the returned metadata, the following fields are useful
 | `provider`            | azure               |
 | `region`              | `location`          |
 
-##### Azure App Services
+##### Azure App Services _(Optional)_
 
 Azure App Services are a PaaS offering within Azure which doe not
 have access to the internal metadata endpoint. Metadata about
@@ -200,7 +200,9 @@ The environment variable `WEBSITE_OWNER_NAME` has the form
 
 an example of which is `f5940f10-2e30-3e4d-a259-63451ba6dae4+elastic-apm-AustraliaEastwebspace`
 
-
+Cloud metadata for Azure App Services is optional; it is up
+to each agent to determine whether it is useful to implement
+for their language ecosystem.
 
 ### Global labels
 
