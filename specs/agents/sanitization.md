@@ -10,8 +10,8 @@ be interpreted as described in
 Sometimes it is necessary to sanitize, i.e., remove,
 sensitive data sent to Elastic APM.
 
-This config accepts a list of wildcard patterns of field names which should be
-sanitized.
+This config accepts a list of wildcard patterns of field names which control
+how an agent will sanitize data.
 
 |                |   |
 |----------------|---|
