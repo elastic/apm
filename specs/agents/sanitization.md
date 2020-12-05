@@ -46,7 +46,7 @@ the value it has replaced. Some example replacement strings
 include `REDACTED`, `**********`, `-----------`, etc.
 
 Fields that MUST be sanitized are the HTTP Request headers, HTTP Response
-headers, and form fields in a `application/x-www-form-urlencoded` request
+headers, and form fields in an `application/x-www-form-urlencoded` request
 body.  No fields (including `set-cookie` headers) are exempt from this.
 
 The query string and other captured request bodies (such as `application/json`)
