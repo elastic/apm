@@ -1,12 +1,17 @@
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in
+[RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
+
 ## Data sanitization
 
 ### `sanitize_field_names` configuration
 
 Sometimes it is necessary to sanitize, i.e., remove,
 sensitive data sent to Elastic APM.
-This config accepts a list of wildcard patterns of field names which should be sanitized.
-These apply to HTTP headers (including cookies) and `application/x-www-form-urlencoded` data (POST form fields).
-The query string and the captured request body (such as `application/json` data) will not get sanitized.
+
+This config accepts a list of wildcard patterns of field names which should be
+sanitized.
 
 |                |   |
 |----------------|---|
@@ -14,3 +19,38 @@ The query string and the captured request body (such as `application/json` data)
 | Default        | `password, passwd, pwd, secret, *key, *token*, *session*, *credit*, *card*, authorization, set-cookie` |
 | Dynamic        | `true` |
 | Central config | `true` |
+
+## Configuration
+
+Agents MUST provide a minimum default configuration of
+
+    [ 'password', 'passwd', 'pwd', 'secret', '*key', '*token*', '*session*',
+      '*credit*','*card*', 'authorization', 'set-cookie']
+
+for the `sanitize_field_names` configuration value.  Agent's MAY include the
+following extra fields in their default configuration to avoid breaking changes
+
+    ['pw','pass','connect.sid']
+
+If an end-user configures different values, these values MUST **replace** the
+above values. An end-user's configured values MUST NOT be merged with these
+default values.
+
+## Sanitizing Values
+
+If a payload field's name (a header key, a form key) matches a configured
+wildcard, that field's _value_ MUST be removed/redacted and the key itself
+MUST still be reported in the agent payload. Agents MAY chose the string
+they use to replace the value so long as it's consistent and does not reveal
+the value it has replaced. Some example replacement strings
+include `REDACTED`, `**********`, `-----------`, etc.
+
+Fields that MUST be sanitized are the HTTP Request headers, HTTP Response
+headers, and form fields in a `application/x-www-form-urlencoded` request
+body.  No fields (including `set-cookie` headers) are exempt from this.
+
+The query string and other captured request bodies (such as `application/json`)
+MUST NOT be sanitized.
+
+Agents MAY choose to further sanitize fields based on the _value_ of a
+particular field, including the keys and values store in a cookie header.
