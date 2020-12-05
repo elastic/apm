@@ -54,3 +54,5 @@ MUST NOT be sanitized.
 
 Agents MAY choose to further sanitize fields based on the _value_ of a
 particular field, including the keys and values store in a cookie header.
+Agents SHOULD consider sanitization based on values to be a seperate
+feature with its own configuration.
