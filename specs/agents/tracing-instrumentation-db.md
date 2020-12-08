@@ -1,4 +1,4 @@
-#### Database spans
+## Database spans
 
 We capture spans for various types of database/data-stores operations, such as SQL queries, Elasticsearch queries, Redis commands, etc. We follow some of the same conventions defined by OpenTracing for capturing database-specific span context, including:
 
@@ -15,7 +15,7 @@ For MongoDB, this can be set to the command encoded as MongoDB Extended JSON.
 
 For Elasticsearch search-type queries, the request body may be recorded. Alternatively, if a query is specified in HTTP query parameters, that may be used instead. If the body is gzip-encoded, the body should be decoded first.
 
-##### Database span names
+### Database span names
 
 For SQL operations we perform a limited parsing the statement, and extract the operation name and outer-most table involved (if any). See more details here: https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA.
 
@@ -26,7 +26,7 @@ For MongoDB, the span name should be the command name in the context of its coll
 For Elasticsearch, the span name should be `Elasticsearch: <method> <path>`, e.g.
 `Elasticsearch: GET /index/_search`.
 
-##### Database span type/subtype
+### Database span type/subtype
 
 For database spans, the type should be `db` and subtype should be the database name. Agents should standardise on the following span subtypes:
 

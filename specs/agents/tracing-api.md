@@ -1,4 +1,4 @@
-### Tracer APIs
+## Tracer APIs
 
 All agents must provide an API to enable developers to instrument their applications manually, in addition to any automatic instrumentation. Agents document their APIs in the elastic.co docs:
 

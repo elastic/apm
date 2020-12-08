@@ -1,4 +1,4 @@
-#### HTTP Transactions
+## HTTP Transactions
 
 Agents should instrument HTTP request routers/handlers, starting a new transaction for each incoming HTTP request. When the request ends, the transaction should be ended, recording its duration.
 
@@ -35,7 +35,7 @@ Request and response headers, cookies, and form bodies should be sanitised (i.e.
 
 Agents may may include additional patterns if there are common conventions specific to language frameworks.
 
-##### `transaction_ignore_urls` configuration
+### `transaction_ignore_urls` configuration
 
 Used to restrict requests to certain URLs from being instrumented.
 
@@ -61,7 +61,7 @@ All errors that are captured during a request to an ignored URL are still sent t
 | Dynamic        | `true` |
 | Central config | `true` |
 
-#### HTTP client spans
+## HTTP client spans
 
 We capture spans for outbound HTTP requests. These should have a type of `external`, and subtype of `http`. The span name should have the format `<method> <host>`.
 

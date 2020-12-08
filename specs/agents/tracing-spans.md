@@ -1,8 +1,8 @@
-### Spans
+## Spans
 
 The agent should also have a sense of the most common libraries for these and instrument them without any further setup from the app developers.
 
-#### Span ID fields
+### Span ID fields
 
 Each span object will have an `id`. This is generated for each transaction and
 span, and is 64 random bits (with a string representation of 16 hexadecimal
@@ -12,7 +12,7 @@ Spans will also have a `transaction_id`, which is the `id` of the current
 transaction. While not necessary for distributed tracing, this inclusion allows
 for simpler and more performant UI queries.
 
-#### Span outcome
+### Span outcome
 
 The `outcome` property denotes whether the span represents a success or a failure.
 It supports the same values as `transaction.outcome`.
@@ -29,17 +29,17 @@ the error rate of service B is 100% from service A's perspective.
 However, as service B doesn't receive any requests, the error rate is 0% from service B's perspective.
 The `span.outcome` also allows reasoning about error rates of external services.
 
-#### Outcome API
+### Outcome API
 
 Agents should expose an API to manually override the outcome.
 This value must always take precedence over the automatically determined value.
 The documentation should clarify that spans with `unknown` outcomes are ignored in the error rate calculation.
 
-#### Span stack traces
+### Span stack traces
 
 Spans may have an associated stack trace, in order to locate the associated source code that caused the span to occur. If there are many spans being collected this can cause a significant amount of overhead in the application, due to the capture, rendering, and transmission of potentially large stack traces. It is possible to limit the recording of span stack traces to only spans that are slower than a specified duration, using the config variable `ELASTIC_APM_SPAN_FRAMES_MIN_DURATION`.
 
-#### Span count
+### Span count
 
 When a span is started a counter should be incremented on its transaction, in order to later identify the _expected_ number of spans. In this way we can identify data loss, e.g. because events have been dropped, or because of instrumentation errors.
 
