@@ -38,6 +38,10 @@ Examples:
 - `JMS SEND to MyQueue`
 - `RabbitMQ RECEIVE from MyExchange`**
 
+Agents may deviate from this pattern, as long as they ensure a proper cardinality is maintained, that is- neither too low nor too high. 
+For example, agents may choose to name all transactions/spans reading-from/sending-to temporary queues equally. 
+On the other end, agents may choose to append a cardinality-increasing factor to the name, like the routing key in RabbitMQ.
+
 \* Java agent's instrumentation for Kafka does not follow this pattern at the moment.
 
 \** In RabbitMQ, queues are only relevant in the receiver side, so the exchange name is used instead. Agents may add an opt-in config to 
