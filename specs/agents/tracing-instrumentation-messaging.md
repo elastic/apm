@@ -29,7 +29,7 @@ polling spans, where we want to capture such as well).
 - Spans: 
   - `span.type`: `messaging` 
   - `span.subtype`: the name of the framework - e.g. `jms`, `kafka`, `rabbitmq` 
-  - `span.action`: `send` or `receive`
+  - `span.action`: `send`, `receive` or `poll`
   
 ### Naming
 
