@@ -33,10 +33,11 @@ polling spans, where we want to capture such as well).
   
 ### Naming
 
-Transaction and span names may* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE to/from <QUEUE-NAME>`.
+Transaction and span names may* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
 Examples:
 - `JMS SEND to MyQueue`
-- `RabbitMQ RECEIVE from MyExchange`**
+- `RabbitMQ RECEIVE from MyQueue`**
+- `RabbitMQ POLL from MyExchange`**
 
 Agents may deviate from this pattern, as long as they ensure a proper cardinality is maintained, that is- neither too low nor too high. 
 For example, agents may choose to name all transactions/spans reading-from/sending-to temporary queues equally. 
