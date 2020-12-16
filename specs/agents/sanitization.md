@@ -20,7 +20,7 @@ how an agent will sanitize data.
 | Dynamic        | `true` |
 | Central config | `true` |
 
-## Configuration
+#### Configuration
 
 Agents MUST provide a minimum default configuration of
 
