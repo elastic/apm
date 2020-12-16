@@ -38,8 +38,7 @@ If a payload field's name (a header key, a form key) matches a configured
 wildcard, that field's _value_ MUST be redacted and the key itself
 MUST still be reported in the agent payload. Agents MAY choose the string
 they use to replace the value so long as it's consistent and does not reveal
-the value it has replaced. Some example replacement strings
-include `REDACTED`, `**********`, `-----------`, etc.
+the value it has replaced. The replacement string SHOULD be `[REDACTED]`.
 
 Fields that MUST be sanitized are the HTTP Request headers, HTTP Response
 headers, and form fields in an `application/x-www-form-urlencoded` request
