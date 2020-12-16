@@ -32,10 +32,6 @@ following extra fields in their default configuration to avoid breaking changes
 
     ['pw','pass','connect.sid']
 
-If an end-user configures different values, these values MUST **replace** the
-above values. An end-user's configured values MUST NOT be merged with these
-default values.
-
 ## Sanitizing Values
 
 If a payload field's name (a header key, a form key) matches a configured
