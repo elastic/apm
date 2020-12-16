@@ -39,7 +39,7 @@ default values.
 ## Sanitizing Values
 
 If a payload field's name (a header key, a form key) matches a configured
-wildcard, that field's _value_ MUST be removed/redacted and the key itself
+wildcard, that field's _value_ MUST be redacted and the key itself
 MUST still be reported in the agent payload. Agents MAY chose the string
 they use to replace the value so long as it's consistent and does not reveal
 the value it has replaced. Some example replacement strings
