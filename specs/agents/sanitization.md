@@ -47,7 +47,4 @@ body.  No fields (including `set-cookie` headers) are exempt from this.
 The query string and other captured request bodies (such as `application/json`)
 SHOULD NOT be sanitized.
 
-Agents MAY choose to further sanitize fields based on the _value_ of a
-particular field, including the keys and values stored in a cookie header.
-Agents SHOULD consider sanitization based on values to be a seperate
-feature with its own configuration.
+Agents SHOULD NOT sanitize fields based on the _value_ of a particular field.
