@@ -33,7 +33,7 @@ polling spans, where we want to capture such as well).
   
 ### Naming
 
-Transaction and span names may* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
+Transaction and span names should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
 Examples:
 - `JMS SEND to MyQueue`
 - `RabbitMQ RECEIVE from MyQueue`**
@@ -43,14 +43,14 @@ Agents may deviate from this pattern, as long as they ensure a proper cardinalit
 For example, agents may choose to name all transactions/spans reading-from/sending-to temporary queues equally. 
 On the other end, agents may choose to append a cardinality-increasing factor to the name, like the routing key in RabbitMQ.
 
-\* Java agent's instrumentation for Kafka does not follow this pattern at the moment.
+\* At least up to version 1.19.0, the Java agent's instrumentation for Kafka does not follow this pattern.
 
 #### \** RabbitMQ naming specifics 
 
 In RabbitMQ, queues are only relevant in the receiver side, so the exchange name is used instead for sender spans.
 When the default exchange is used (denoted with an empty string), it should be replaced with `<default>`. 
 
-Agents may add an opt-in config to append the routing key to the name as well, for example: `RabbitMQ RECEIVE from MyExchange\58D7EA987`.
+Agents may add an opt-in config to append the routing key to the name as well, for example: `RabbitMQ RECEIVE from MyExchange/58D7EA987`.
 
 For RabbitMQ transaction and polling spans, the queue name is used instead, whenever available (i.e. when the polling yields a message).
 
@@ -61,11 +61,12 @@ uses "topic", this field will contain the topic name. In RabbitMQ, whenever the 
 - **`context.message.age.ms`**: optional for message/record receivers only (transactions or spans). 
 A numeric field indicating the message's age in milliseconds. Relevant for transactions and 
 `receive` spans that receive valid messages. There is no accurate definition as to how this is calculated. If the messaging framework 
-provides a timestamp for the message- agents may use it. Otherwise, the sending agent can add a timestamp _indicated as milliseconds since 
-epoch UTC_ to the message's metadata to be retrieved by the receiving agent. If a timestamp is not available- agents should omit this field. 
+provides a timestamp for the message- agents may use it (subtract the message/record timestamp from the read timestamp). 
+If a timestamp is not available- agents should omit this field or find an alternative and document it in this spec. For example, the 
+sending agent can add a timestamp to the message's metadata to be retrieved by the receiving agent.  
 Clock skews between agents are ignored, unless the calculated age (receive-timestamp minus send-timestamp) is negative, in which case the 
 agent should report 0 for this field.
-- **`context.message.routing-key`**: optional. Use only where relevant. Currently only RabbitMQ.
+- **`context.message.routing_key`**: optional. Use only where relevant. Currently only RabbitMQ.
 
 #### Transaction context fields
 
@@ -78,6 +79,7 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
    - Capture only when `ELASTIC_APM_CAPTURE_HEADERS` config is set to `true`.
    - Sanitize headers with keys configured through `ELASTIC_APM_SANITIZE_FIELD_NAMES`.
    - Intake: key-value pairs, same like `context.request.headers`.
+- **`context.service.framework.name`**: same as `span.subtype`, but not in lowercase, e.g. `Kafka`, `RabbitMQ`
 
 #### Span context fields
 
@@ -88,12 +90,12 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
  available, append it with a leading `/`, for example: `kafka/myTopic`, `rabbitmq/myExchange`, `rabbitmq`.
 - **`context.destination.service.type`**: mandatory. Use `messaging`.
 
-### `ELASTIC_APM_IGNORE_MESSAGE_QUEUES` configuration
+### `ignore_message_queues` configuration
 
-Used to filter out specific messaging queues/topics from being traced.
+Used to filter out specific messaging queues/topics/exchanges from being traced.
 
-This property should be set to a list containing one or more strings. When set, sends-to and receives-from the specified 
-queues/topic will be ignored.
+This property should be set to a list containing one or more wildcard matcher strings. When set, sends-to and receives-from the specified 
+queues/topics/exchanges will be ignored.
 
 |                |   |
 |----------------|---|
