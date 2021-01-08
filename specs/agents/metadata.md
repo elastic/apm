@@ -74,7 +74,9 @@ For official Elastic agents, the agent name should just be the name of the langu
 is collected from local cloud provider metadata services:
 
 - availability_zone
-- account.id
+- account
+  - id
+  - name
 - instance
   - id
   - name
@@ -82,7 +84,7 @@ is collected from local cloud provider metadata services:
 - project
   - id
   - name
-- provider
+- provider (**required**)
 - region
 
 This metadata collection is controlled by a configuration value,
