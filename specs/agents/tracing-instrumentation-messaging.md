@@ -102,4 +102,4 @@ queues/topics/exchanges will be ignored.
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
 | Default        | empty |
 | Dynamic        | `true` |
-| Central config | `false` |
+| Central config | `true` |
