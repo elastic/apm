@@ -1,4 +1,4 @@
-#### Transaction sampling
+## Transaction sampling
 
 To reduce processing and storage overhead, transactions may be sampled by agents.
 Sampling here refers to "head-based sampling".
@@ -7,7 +7,7 @@ Head-based sampling is where a sampling decision is made at the root of the dist
 before the details or outcome of the trace are known,
 and propagated throughout the trace.
 
-##### `transaction_sample_rate` configuration
+### `transaction_sample_rate` configuration
 
 By default, all transactions will be sampled.
 Agents can be configured to sample probabilistically,
@@ -41,7 +41,7 @@ This is to ensure we are consistent when [propagating](#propagation) the samplin
 | Dynamic        | `true`  |
 | Central config | `true`  |
 
-##### Effect on metrics
+### Effect on metrics
 
 At the time of making a sampling decision,
 the sampling rate must be recorded so that it can be associated with every transaction and span in the trace.
@@ -81,7 +81,7 @@ This is required for backwards compatibility with agents that do not send a samp
 The server will only calculate span metrics for newer agents that include `sample_rate` in spans,
 as otherwise the representative counts will be incorrect for sampling rates less than 1.
 
-##### Non-sampled transactions
+### Non-sampled transactions
 
 Currently _all_ transactions are captured by Elastic APM agents.
 Sampling controls how much data is captured for transactions:
@@ -93,7 +93,7 @@ No spans should be captured.
 
 In the future we may introduce options to agents to stop sending non-sampled transactions altogether.
 
-##### Propagation
+### Propagation
 
 As mentioned above, the sampling decision must be propagated throughout the trace.
 We adhere to the W3C Trace-Context spec for this, propagating the decision through trace-flags: https://www.w3.org/TR/trace-context/#sampled-flag
