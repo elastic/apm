@@ -75,7 +75,7 @@ pipeline {
         // GIT_PREVIOUS_SUCCESSFUL_COMMIT might point to a local merge commit instead a commit in the
         // origin, then let's use the target branch for PRs and the GIT_PREVIOUS_SUCCESSFUL_COMMIT for
         // branches.
-        COMMIT_FROM = """${isPR() ? "origin/${env.CHANGE_TARGET}" : "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}" """
+        COMMIT_FROM = """${isPR() ? "origin/${env.CHANGE_TARGET}" : "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"}"""
       }
       steps {
         deleteDir()
