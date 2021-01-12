@@ -71,6 +71,12 @@ pipeline {
           expression { return params.FORCE_SEND_PR }
         }
       }
+      environment {
+        // GIT_PREVIOUS_SUCCESSFUL_COMMIT might point to a local merge commit instead a commit in the
+        // origin, then let's use the target branch for PRs and the GIT_PREVIOUS_SUCCESSFUL_COMMIT for
+        // branches.
+        COMMIT_FROM = """${isPR() ? "origin/${env.CHANGE_TARGET}" : "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"}"""
+      }
       steps {
         deleteDir()
         unstash 'source'
@@ -80,7 +86,7 @@ pipeline {
               "^tests/agents/gherkin-specs/.*"
             ]
             env.GHERKIN_SPECS_UPDATED = isGitRegionMatch(
-              from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
+              from: "${env.COMMIT_FROM}",
               patterns: regexps)
 
             // regexp for JSON specs
@@ -88,7 +94,7 @@ pipeline {
               "^tests/agents/json-specs/.*"
             ]
             env.JSON_SPECS_UPDATED = isGitRegionMatch(
-              from: "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}",
+              from: "${env.COMMIT_FROM}",
               patterns: regexps)
             env.SPEC_UPDATED = env.JSON_SPECS_UPDATED.equals('true') || env.GHERKIN_SPECS_UPDATED.equals('true')
             env.PR_DESCRIPTION = createPRDescription()
