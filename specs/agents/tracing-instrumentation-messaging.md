@@ -87,7 +87,7 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
 - **`context.destination.port`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.service.name`**: mandatory. Use the framework name in lowercase, e.g. `kafka`, `rabbitmq`.
 - **`context.destination.service.resource`**: mandatory. Use the framework name in lowercase. Wherever the queue/topic/exchange name is
- available, append it with a leading `/`, for example: `kafka/myTopic`, `rabbitmq/myExchange`, `rabbitmq`.
+ available, append it with a leading `/`, for example: `kafka/myTopic`, `rabbitmq/myExchange`, `jms`.
 - **`context.destination.service.type`**: mandatory. Use `messaging`.
 
 ### `ignore_message_queues` configuration
