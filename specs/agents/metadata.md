@@ -99,6 +99,36 @@ metadata is available.
 A sample implementation of this metadata collection is available in
 [the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
 
+In environments where a cloud provider's instance metadata is not
+available, agents SHOULD make a best effort to find instance metadata in
+environment/process variables. 
+
+#### Azure App Services Cloud Metadata
+
+In the _Azure App Services_ environment, Agents SHOULD
+
+- Use a value of `azure` for the `provider` field
+- Use the `WEBSITE_OWNER_NAME` environment variable for the
+  `account.name` field
+- Use the `WEBSITE_INSTANCE_ID` environment variable for the
+  `instance.id` field
+- Use the `WEBSITE_SITE_NAME` environment variable for the
+  `project.name` field
+- Manipulate the `WEBSITE_RESOURCE_GROUP` environment to derive a value
+  for the `region` field
+
+The `WEBSITE_RESOURCE_GROUP` will contain a value that looks something like this
+
+    appsvc_linux_centralus
+    default-web-eastus
+    
+Agents SHOULD split this value by non-alphanumeric delimiters and use
+the last value as the `region`.  In the above examples this would result
+in a region of `centarlus` and `eastus`.
+
+Agents MUST NOT assume these values are present, and SHOULD use the
+string `UNKNOWN` when an expected environment variable is not set.
+
 ### Global labels
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
