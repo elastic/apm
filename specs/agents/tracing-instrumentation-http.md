@@ -63,10 +63,10 @@ All errors that are captured during a request to an ignored URL are still sent t
 
 ### `transaction_ignore_user_agents` configuration
 
-Used to restrict requests from certain User-Agents from being instrumented.
+Used to restrict requests made by certain User-Agents from being instrumented.
 
 This property should be set to a list containing one or more strings.
-When an incoming HTTP request is detected, the `User-Agent` request headers will be tested against each element in this list.
+When an incoming HTTP request is detected, the `User-Agent` request headers will be tested against each element in this list and if a match is found, no trace will be captured for this request.
 
 NOTE: 
 All errors that are captured during a request made by an ignored user agent are still sent to the APM Server regardless of this setting.
