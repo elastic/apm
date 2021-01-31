@@ -61,6 +61,23 @@ All errors that are captured during a request to an ignored URL are still sent t
 | Dynamic        | `true` |
 | Central config | `true` |
 
+### `transaction_ignore_user_agents` configuration
+
+Used to restrict requests from certain User-Agents from being instrumented.
+
+This property should be set to a list containing one or more strings.
+When an incoming HTTP request is detected, the `User-Agent` request headers will be tested against each element in this list.
+
+NOTE: 
+All errors that are captured during a request made by an ignored user agent are still sent to the APM Server regardless of this setting.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | `<none>` |
+| Dynamic        | `true` |
+| Central config | `true` |
+
 ## HTTP client spans
 
 We capture spans for outbound HTTP requests. These should have a type of `external`, and subtype of `http`. The span name should have the format `<method> <host>`.
