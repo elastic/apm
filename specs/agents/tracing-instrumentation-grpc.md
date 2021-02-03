@@ -47,10 +47,11 @@ If such status is not available, then we default to the following:
 - `failure` if an error is reported
 - `success` otherwise
 
-According to the [gRPC status codes reference spec](https://github.com/grpc/grpc/blob/master/doc/statuscodes.md), The
-following statuses are not used by gRPC client & server, thus they should be considered as client-side errors.
+According to the [gRPC status codes reference spec](https://github.com/grpc/grpc/blob/master/doc/statuscodes.md), some
+statuses are not used by gRPC client & server, thus they should be considered as client-side errors.
 
-The `UNKNOWN` status refers to an error that is not known to the protocol, thus we should treat it as a `failure`.
+The gRPC `UNKNOWN` status refers to an error that is not known, thus we should treat it as a `failure` and NOT map it to
+an `unknown` outcome.
 
 For gRPC spans (from the client):
 
