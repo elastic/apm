@@ -21,7 +21,17 @@ If an agent doesn't report the `outcome` (or reports `null`), the APM Server wil
   This may be the case when a user tracks a custom transaction without explicitly setting an outcome.
   For existing auto-instrumentations, agents should set the outcome either to `"failure"` or `"success"`.
 
-What counts as a failed or successful request depends on the protocol and does not depend on whether there are error documents associated with a transaction.
+What counts as a failed or successful request depends on the protocol.
+
+The following protocols get their outcome from protocol-level attributes:
+
+- [gRPC](tracing-instrumentation-grpc.md#outcome)
+- [HTTP](tracing-instrumentation-http.md#outcome)
+
+For other protocols, we can default to the following behavior:
+
+- `failure` when an error is reported
+- `success` otherwise
 
 #### Error rate
 
