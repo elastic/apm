@@ -40,6 +40,12 @@ For other protocols, we can default to the following behavior:
 - `failure` when an error is reported
 - `success` otherwise
 
+Also, while we encourage most instrumentations to create spans that have a deterministic outcomes, there are a few 
+examples for which we might still have to report `unknown` outcomes to prevent reporting any misleading information:
+- Inferred spans created through a sampling profiler: those are not exit spans, we can't know if those could be reported
+as either `failure` or `outcome` due to inability to capture any errors.
+- External process execution, we can't know the `outcome` until the process has exited with an exit code.
+
 ### Outcome API
 
 Agents should expose an API to manually override the outcome.
