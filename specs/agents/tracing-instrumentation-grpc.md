@@ -89,4 +89,4 @@ The statuses marked with (*) are not used by gRPC libraries and thus their actua
 application.
 
 Also, the gRPC status code for a given transaction should be reported in the `transaction.result` field, thus we still have the
-capability to detect an abnormal rate of a given status, in a similar was as we do with HTTP 4xx and 5xx errors.
+capability to detect an abnormal rate of a given status, in a similar way as we do with HTTP 4xx and 5xx errors.
