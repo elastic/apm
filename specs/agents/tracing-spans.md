@@ -20,7 +20,7 @@ to calling external services (exit spans) from the monitored application. It sup
 This property is optional to preserve backwards compatibility, thus it is allowed to omit it or use a `null` value.
 
 If an agent does not report the `outcome` property (or use a `null` value), then the outcome will be set according to HTTP
-response status if available, or `unknown` if not available. This allows to allow a server-side fallback for existing
+response status if available, or `unknown` if not available. This allows a server-side fallback for existing
 agents that might not report `outcome`.
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
