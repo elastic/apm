@@ -14,13 +14,14 @@ for simpler and more performant UI queries.
 
 ### Span outcome
 
-The `outcome` property denotes whether the span represents a success or a failure.
-It supports the same values as `transaction.outcome`.
-The only semantic difference is that client errors set the `outcome` to `"failure"`.
-Agents should try to determine the outcome for spans created by auto instrumentation,
-which is especially important for exit spans (spans representing requests to other services).
+The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates
+to calling external services (exit spans) from the monitored application. It supports the same values as `transaction.outcome`.
 
-If an agent doesn't report the `outcome` (or reports `null`), the APM Server will set it based on `context.response.status_code`. If the status code is not available, then it will be set to `"unknown"`.
+This property is optional to preserve backwards compatibility, thus it is allowed to omit it or use a `null` value.
+
+If an agent does not report the `outcome` property (or use a `null` value), then the outcome will be set according to HTTP
+response status if available, or `unknown` if not available. This allows a server-side fallback for existing
+agents that might not report `outcome`.
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
@@ -28,6 +29,22 @@ For example, if there's a network error so that service A can't call service B,
 the error rate of service B is 100% from service A's perspective.
 However, as service B doesn't receive any requests, the error rate is 0% from service B's perspective.
 The `span.outcome` also allows reasoning about error rates of external services.
+
+The following protocols get their outcome from protocol-level attributes:
+
+- [gRPC](tracing-instrumentation-grpc.md#outcome)
+- [HTTP](tracing-instrumentation-http.md#outcome)
+
+For other protocols, we can default to the following behavior:
+
+- `failure` when an error is reported
+- `success` otherwise
+
+Also, while we encourage most instrumentations to create spans that have a deterministic outcomes, there are a few 
+examples for which we might still have to report `unknown` outcomes to prevent reporting any misleading information:
+- Inferred spans created through a sampling profiler: those are not exit spans, we can't know if those could be reported
+as either `failure` or `outcome` due to inability to capture any errors.
+- External process execution, we can't know the `outcome` until the process has exited with an exit code.
 
 ### Outcome API
 
