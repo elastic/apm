@@ -45,6 +45,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - Instrumentation
       - [Databases](tracing-instrumentation-db.md)
       - [HTTP](tracing-instrumentation-http.md)
+      - [Messaging systems](tracing-instrumentation-messaging.md)
       - [gRPC](tracing-instrumentation-grpc.md)
       - [GraphQL](tracing-instrumentation-graphql.md)
 - [Error/exception tracking](error-tracking.md)

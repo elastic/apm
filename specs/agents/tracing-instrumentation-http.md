@@ -1,11 +1,11 @@
-#### HTTP Transactions
+## HTTP Transactions
 
 Agents should instrument HTTP request routers/handlers, starting a new transaction for each incoming HTTP request. When the request ends, the transaction should be ended, recording its duration.
 
 - The transaction `type` should be `request`.
 - The transaction `result` should be `HTTP Nxx`, where N is the first digit of the status code (e.g. `HTTP 4xx` for a 404)
-- The transaction `outcome` should be `"success"` for HTTP status codes < 500 and `"failure"` for status codes >= 500. \
-  Status codes in the 4xx range (client errors) are not considered a `failure` as the failure has not been caused by the application itself but by the caller.
+- The transaction `outcome` is set from response status code (see [Outcome](#outcome))
+
   As there's no browser API to get the status code of a page load, the RUM agent always reports `"unknown"` for those transactions.
 - The transaction `name` should be aggregatable, such as the route or handler name. Examples:
     - `GET /users/{id}`
@@ -35,7 +35,7 @@ Request and response headers, cookies, and form bodies should be sanitised (i.e.
 
 Agents may may include additional patterns if there are common conventions specific to language frameworks.
 
-##### `transaction_ignore_urls` configuration
+### `transaction_ignore_urls` configuration
 
 Used to restrict requests to certain URLs from being instrumented.
 
@@ -51,9 +51,6 @@ http://localhost/home/index
 http://whatever.com/home/index?value1=123
 ```
 
-NOTE: 
-All errors that are captured during a request to an ignored URL are still sent to the APM Server regardless of this setting.
-
 |                |   |
 |----------------|---|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
@@ -61,7 +58,21 @@ All errors that are captured during a request to an ignored URL are still sent t
 | Dynamic        | `true` |
 | Central config | `true` |
 
-#### HTTP client spans
+### `transaction_ignore_user_agents` configuration
+
+Used to restrict requests made by certain User-Agents from being instrumented.
+
+This property should be set to a list containing one or more strings.
+When an incoming HTTP request is detected, the `User-Agent` request headers will be tested against each element in this list and if a match is found, no trace will be captured for this request.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | `<none>` |
+| Dynamic        | `true` |
+| Central config | `true` |
+
+## HTTP client spans
 
 We capture spans for outbound HTTP requests. These should have a type of `external`, and subtype of `http`. The span name should have the format `<method> <host>`.
 
@@ -69,7 +80,18 @@ For outbound HTTP request spans we capture the following http-specific span cont
 
 - `http.url` (the target URL) \
   The captured URL should have the userinfo (username and password), if any, redacted.
-- `http.status_code` (the response status code) \
-  The span's `outcome` should be set to `"success"` if the status code is lower than 400 and to `"failure"` otherwise. 
-  If the request is aborted the `outcome` should be set to `unknown`.
+- `http.status_code` (the response status code)
+- `outcome` is set from response status code (see [Outcome](#outcome) for details)
 
+## Outcome
+
+For HTTP transactions (from the server perspective), status codes in the 4xx range (client errors) are not considered
+a `failure` as the failure has not been caused by the application itself but by the caller.
+
+For HTTP spans (from the client perspective), the span's `outcome` should be set to `"success"` if the status code is
+lower than 400 and to `"failure"` otherwise.
+
+For both transactions and spans, if there is no HTTP status we set `outcome` from the reported error:
+
+- `failure` if an error is reported
+- `success` otherwise

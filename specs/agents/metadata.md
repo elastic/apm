@@ -6,7 +6,7 @@ As mentioned above, the first "event" in each ND-JSON stream contains metadata t
  - global labels (requires APM Server 7.2 or greater)
 
 The process for proposing new metadata fields is detailed
-[here](new-fields.md).
+[here](process-new-fields.md).
 
 ### System metadata
 
@@ -70,7 +70,7 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 ### Cloud Provider Metadata
 
-[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/cloud.json)
+[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/metadata.json)
 is collected from local cloud provider metadata services:
 
 - availability_zone
@@ -84,7 +84,7 @@ is collected from local cloud provider metadata services:
 - project
   - id
   - name
-- provider
+- provider (**required**)
 - region
 
 This metadata collection is controlled by a configuration value,

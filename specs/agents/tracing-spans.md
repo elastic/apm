@@ -1,8 +1,8 @@
-### Spans
+## Spans
 
 The agent should also have a sense of the most common libraries for these and instrument them without any further setup from the app developers.
 
-#### Span ID fields
+### Span ID fields
 
 Each span object will have an `id`. This is generated for each transaction and
 span, and is 64 random bits (with a string representation of 16 hexadecimal
@@ -12,15 +12,16 @@ Spans will also have a `transaction_id`, which is the `id` of the current
 transaction. While not necessary for distributed tracing, this inclusion allows
 for simpler and more performant UI queries.
 
-#### Span outcome
+### Span outcome
 
-The `outcome` property denotes whether the span represents a success or a failure.
-It supports the same values as `transaction.outcome`.
-The only semantic difference is that client errors set the `outcome` to `"failure"`.
-Agents should try to determine the outcome for spans created by auto instrumentation,
-which is especially important for exit spans (spans representing requests to other services).
+The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates
+to calling external services (exit spans) from the monitored application. It supports the same values as `transaction.outcome`.
 
-If an agent doesn't report the `outcome` (or reports `null`), the APM Server will set it based on `context.response.status_code`. If the status code is not available, then it will be set to `"unknown"`.
+This property is optional to preserve backwards compatibility, thus it is allowed to omit it or use a `null` value.
+
+If an agent does not report the `outcome` property (or use a `null` value), then the outcome will be set according to HTTP
+response status if available, or `unknown` if not available. This allows a server-side fallback for existing
+agents that might not report `outcome`.
 
 While the transaction outcome lets you reason about the error rate from the service's point of view,
 other services might have a different perspective on that.
@@ -29,17 +30,33 @@ the error rate of service B is 100% from service A's perspective.
 However, as service B doesn't receive any requests, the error rate is 0% from service B's perspective.
 The `span.outcome` also allows reasoning about error rates of external services.
 
-#### Outcome API
+The following protocols get their outcome from protocol-level attributes:
+
+- [gRPC](tracing-instrumentation-grpc.md#outcome)
+- [HTTP](tracing-instrumentation-http.md#outcome)
+
+For other protocols, we can default to the following behavior:
+
+- `failure` when an error is reported
+- `success` otherwise
+
+Also, while we encourage most instrumentations to create spans that have a deterministic outcomes, there are a few 
+examples for which we might still have to report `unknown` outcomes to prevent reporting any misleading information:
+- Inferred spans created through a sampling profiler: those are not exit spans, we can't know if those could be reported
+as either `failure` or `outcome` due to inability to capture any errors.
+- External process execution, we can't know the `outcome` until the process has exited with an exit code.
+
+### Outcome API
 
 Agents should expose an API to manually override the outcome.
 This value must always take precedence over the automatically determined value.
 The documentation should clarify that spans with `unknown` outcomes are ignored in the error rate calculation.
 
-#### Span stack traces
+### Span stack traces
 
 Spans may have an associated stack trace, in order to locate the associated source code that caused the span to occur. If there are many spans being collected this can cause a significant amount of overhead in the application, due to the capture, rendering, and transmission of potentially large stack traces. It is possible to limit the recording of span stack traces to only spans that are slower than a specified duration, using the config variable `ELASTIC_APM_SPAN_FRAMES_MIN_DURATION`.
 
-#### Span count
+### Span count
 
 When a span is started a counter should be incremented on its transaction, in order to later identify the _expected_ number of spans. In this way we can identify data loss, e.g. because events have been dropped, or because of instrumentation errors.
 
