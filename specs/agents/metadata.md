@@ -101,7 +101,7 @@ A sample implementation of this metadata collection is available in
 
 #### AWS metadata
 
-[Instance metadata about an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) can be retrieved from the internal metadata endpoint, `http://169.254.169.254`.
+[Metadata about an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) can be retrieved from the internal metadata endpoint, `http://169.254.169.254`.
 
 As an example with curl, first, an API token must be created
 
