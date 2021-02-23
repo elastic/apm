@@ -38,6 +38,8 @@ The following field should also be set for DynamoDB:
 AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can 
 be used for instrumenting SQS, but the follow specifications supersede those of the messaging spec.
 
+For distributed tracing, the SQS API has "message attributes" that can be used in lieu of headers.
+
 - **`context.destination.region`**: mandatory. The AWS region where the queue is.
 
 ### SNS (AWS Simple Notification Service)
@@ -48,3 +50,5 @@ but the only action that is instrumented is `PUBLISH`. These specifications supe
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
 `SNS PUBISH MyTopic`.
 - **`context.destination.region`**: mandatory. The AWS region where the topic is.
+
+For distributed tracing, the SNS API has "message attributes" that can be used in lieu of headers.
