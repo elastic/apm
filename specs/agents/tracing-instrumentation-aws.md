@@ -8,8 +8,8 @@ Some of the services can use existing specs. When there are differences or addit
 AWS Simple Storage Service offers object storage via a REST API. The objects are organized into buckets, which are 
 themselves organized into regions.
 
-- `span.name`: The span name should follow this pattern: `S3 <OperationName> <BucketName>`. For example,
-`S3 GetObject myBucket`. Note that the operation name is in CamelCase.
+- `span.name`: The span name should follow this pattern: `S3 <OperationName> <bucket-name>`. For example,
+`S3 GetObject my-bucket`. Note that the operation name is in CamelCase.
 - `span.type`: `storage`
 - `span.subtype`: `s3`
 - `span.action`: The operation name in CamelCase. For example ‘GetObject’.
@@ -21,8 +21,9 @@ themselves organized into regions.
 - **`context.destination.region`**: mandatory. The AWS region where the bucket is.
 - **`context.destination.service.name`**: mandatory. Use `s3`
 - **`context.destination.service.resource`**: optional. The bucket name, if available. The s3 API allows either the
-bucket name or the ARN to be provided when referring to a bucket. When an ARN is provided, the bucket name should
-be extracted from it.
+bucket name or an Access Point to be provided when referring to a bucket. When an Access Point is provided, the access
+point name preceded by `accesspoint/` should be extracted. For example, given an Access Point such as
+`arn:aws:s3:us-west-2:123456789012:accesspoint/myendpoint`, the agent extracts `accesspoint/myendpoint`.
 - **`context.destination.service.type`**: mandatory. Use `storage`.
 
 ### DynamoDB
