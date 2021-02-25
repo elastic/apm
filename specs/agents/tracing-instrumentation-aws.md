@@ -21,9 +21,11 @@ themselves organized into regions.
 - **`context.destination.region`**: mandatory. The AWS region where the bucket is.
 - **`context.destination.service.name`**: mandatory. Use `s3`
 - **`context.destination.service.resource`**: optional. The bucket name, if available. The s3 API allows either the
-bucket name or an Access Point to be provided when referring to a bucket. When an Access Point is provided, the access
-point name preceded by `accesspoint/` should be extracted. For example, given an Access Point such as
-`arn:aws:s3:us-west-2:123456789012:accesspoint/myendpoint`, the agent extracts `accesspoint/myendpoint`.
+bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons.
+When an Access Point is provided, the access point name preceded by `accesspoint/` or `accesspoint:` should be extracted.
+For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent
+extracts `accesspoint/myendpointslashes`. Given an Access Point such as
+`arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`.
 - **`context.destination.service.type`**: mandatory. Use `storage`.
 
 ### DynamoDB
