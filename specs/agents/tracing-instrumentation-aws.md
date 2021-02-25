@@ -49,7 +49,7 @@ The AWS Simple Notification Service can be instrumented using the [messaging spe
 but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec: 
 
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
-`SNS PUBISH MyTopic`.
+`SNS PUBLISH MyTopic`.
 - **`context.destination.region`**: mandatory. The AWS region where the topic is.
 
 For distributed tracing, the SNS API has "message attributes" that can be used in lieu of headers.
