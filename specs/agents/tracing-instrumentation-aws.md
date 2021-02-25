@@ -34,7 +34,7 @@ Note that the `db.instance` field is the AWS region.
 The following field should also be set for DynamoDB:
 - **`context.destination.region`**: mandatory. The AWS region where the table is, if available.
 
-### SQS (Simple Queue Service )
+### SQS (Simple Queue Service)
 
 AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can 
 be used for instrumenting SQS, but the follow specifications supersede those of the messaging spec.
