@@ -30,18 +30,23 @@ extracts `accesspoint/myendpointslashes`. Given an Access Point such as
 
 ### DynamoDB
 
-AWS DynamoDB is a document database so instrumenting it will follow the [db spec](tracing-instrumentation-db.md). 
-Note that the `db.instance` field is the AWS region.
+AWS DynamoDB is a document database so instrumenting it will follow the [db spec](tracing-instrumentation-db.md).
+The follow specifications supersede those of the db spec.
 
-The following field should also be set for DynamoDB:
-- **`context.destination.region`**: mandatory. The AWS region where the table is, if available.
+- **`span.name`**: The span name should capture the operation name in CamelCase and the table name, if available.
+The format should be `DynamoDB <ActionName> <TableName>`. So for example, `DynamoDB UpdateItem my_table`.
+
+#### Span context fields
+- **`context.db.instance`**: mandatory. The AWS region where the table is.
+- **`context.db.statement`**: optional. For a DynamoDB `query` operation, capture the `KeyConditionExpression` in this field.
+- **`context.destination.cloud.region`**: mandatory. The AWS region where the table is, if available.
 
 ### SQS (Simple Queue Service)
 
 AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can 
 be used for instrumenting SQS, but the follow specifications supersede those of the messaging spec.
 
-- **`context.destination.region`**: mandatory. The AWS region where the queue is.
+- **`context.destination.cloud.region`**: mandatory. The AWS region where the queue is.
 
 For distributed tracing, the SQS API has "message attributes" that can be used in lieu of headers.
 
@@ -52,6 +57,7 @@ but the only action that is instrumented is `PUBLISH`. These specifications supe
 
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
 `SNS PUBLISH MyTopic`.
-- **`context.destination.region`**: mandatory. The AWS region where the topic is.
+
+- **`context.destination.cloud.region`**: mandatory. The AWS region where the topic is.
 
 For distributed tracing, the SNS API has "message attributes" that can be used in lieu of headers.
