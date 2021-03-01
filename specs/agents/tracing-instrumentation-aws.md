@@ -38,7 +38,7 @@ The format should be `DynamoDB <ActionName> <TableName>`. So for example, `Dynam
 
 #### Span context fields
 - **`context.db.instance`**: mandatory. The AWS region where the table is.
-- **`context.db.statement`**: optional. For a DynamoDB `query` operation, capture the `KeyConditionExpression` in this field.
+- **`context.db.statement`**: optional. For a DynamoDB `Query` operation, capture the `KeyConditionExpression` in this field.
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the table is, if available.
 
 ### SQS (Simple Queue Service)
