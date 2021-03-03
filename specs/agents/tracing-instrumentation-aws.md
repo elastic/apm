@@ -18,7 +18,7 @@ themselves organized into regions.
 
 - **`context.destination.address`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.port`**: optional. Not available in some cases. Only set if the actual connection is available.
-- **`context.destination.region`**: mandatory. The AWS region where the bucket is.
+- **`context.destination.cloud.region`**: mandatory. The AWS region where the bucket is.
 - **`context.destination.service.name`**: mandatory. Use `s3`
 - **`context.destination.service.resource`**: optional. The bucket name, if available. The s3 API allows either the
 bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons.
