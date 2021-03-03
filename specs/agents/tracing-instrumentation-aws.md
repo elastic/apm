@@ -37,7 +37,7 @@ The follow specifications supersede those of the db spec.
 The format should be `DynamoDB <ActionName> <TableName>`. So for example, `DynamoDB UpdateItem my_table`.
 
 #### Span context fields
-- **`context.db.instance`**: mandatory. The AWS region where the table is.
+- **`context.db.instance`**: mandatory. AWS DynamoDB table name used in the operation.
 - **`context.db.statement`**: optional. For a DynamoDB `Query` operation, capture the `KeyConditionExpression` in this field.
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the table is, if available.
 
