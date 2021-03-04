@@ -22,7 +22,7 @@ themselves organized into regions.
 - **`context.destination.service.name`**: mandatory. Use `s3`
 - **`context.destination.service.resource`**: optional. The bucket name, if available. The s3 API allows either the
 bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons.
-When an Access Point is provided, the access point name preceded by `accesspoint/` or `accesspoint:` should be extracted.
+When an Access Point is provided, the Access Point name preceded by `accesspoint/` or `accesspoint:` should be extracted.
 For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent
 extracts `accesspoint/myendpointslashes`. Given an Access Point such as
 `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`.
@@ -53,10 +53,16 @@ For distributed tracing, the SQS API has "message attributes" that can be used i
 ### SNS (AWS Simple Notification Service)
 
 The AWS Simple Notification Service can be instrumented using the [messaging spec](tracing-instrumentation-messaging.md), 
-but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec: 
+but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec:
 
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
-`SNS PUBLISH MyTopic`.
+`SNS PUBLISH MyTopic`. The publish API allows a topic to be specified as a topic arn, target arn, or phone number.
+If the topic is a phone number, do not put the phone number in the span name. The span name should instead be
+`SNS PUBLISH <PHONE_NUMBER>`. For target and topic arns that are Access Points, use the Access Point name preceded by
+`accesspoint/` or `accesspoint:`. So a target/topic arn specified as
+`arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes` as
+the topic name. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`,
+the agent extracts `accesspoint:myendpointcolons` as the topic name.
 
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the topic is.
 
