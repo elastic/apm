@@ -4,4 +4,4 @@ Agents should provide instrumentation/hooks for popular logging libraries in ord
 
 By adding trace context to log records, users will be able to move between the APM UI and Logs UI.
 
-See also the [logging](logging.md) spec.
+See also the [log-onboarding](log-onboarding.md) spec.
