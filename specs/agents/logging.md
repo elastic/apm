@@ -38,4 +38,3 @@ Those agents should still accept their "native" log levels to preserve backwards
 However, in central config,
 there will only be a dropdown with the levels that are consistent across agents.
 Also, the documentation should not mention the old log levels going forward.
-

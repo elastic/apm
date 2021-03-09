@@ -66,6 +66,6 @@ to `${service.name}.log`.
 ## Testing
 
 Due to differences in the possible Agent implementations of this feature, no
-Gherkin spec is provided. Testing will primarily be accomplished via opbeans.
+Gherkin spec is provided. Testing will primarily be accomplished via Opbeans.
 Each Agent team should update their Opbeans app so that it only relies on this
 configuration option to format ECS logs that will be picked up by filebeat.
