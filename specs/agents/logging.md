@@ -41,7 +41,7 @@ Also, the documentation should not mention the old log levels going forward.
 
 ### `log_ecs_formatting` configuration
 
-Configures the agent to automatically format logs as ECS-compatible JSON
+Configures the agent to automatically format application logs as ECS-compatible JSON
 (if possible).
 
 |----------------|---|
@@ -80,6 +80,7 @@ Agents should always populate
 [`service.name`](https://github.com/elastic/ecs-logging/blob/18cde109acb284c97988f9df9defb685b798db9a/spec/spec.json#L66-L74)
 even if there is not an active transaction.
 
+The `service.name` is used to be able to add a logs tab to the service view in the UI. This lets users quickly get a stream of all logs for a particular service.
 ##### `event.dataset`
 
 The
