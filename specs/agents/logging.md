@@ -76,22 +76,24 @@ but will not cause errors if they are omitted:
 
 ##### `service.name`
 
-Agents should always populate
-[`service.name`](https://github.com/elastic/ecs-logging/blob/18cde109acb284c97988f9df9defb685b798db9a/spec/spec.json#L66-L74)
-even if there is not an active transaction.
+Agents should always populate `service.name` even if there is not an active
+transaction.
 
-The `service.name` is used to be able to add a logs tab to the service view in the UI. This lets users quickly get a stream of all logs for a particular service.
+The `service.name` is used to be able to add a logs tab to the service view in
+the UI. This lets users quickly get a stream of all logs for a particular
+service.
+
 ##### `event.dataset`
 
-The
-[`event.dataset`](https://github.com/elastic/ecs-logging/blob/18cde109acb284c97988f9df9defb685b798db9a/spec/spec.json#L75-L91)
-field is used in some ML jobs in Elasticsearch to surface anomalies within
-datasets. This field should be a step more granular than `service.name` where
-possible. However, the cardinality of this field should be limited, so
-per-class or per-file logger names are not appropriate for this field.
+The `event.dataset` field is used in some ML jobs in Elasticsearch to surface
+anomalies within datasets. This field should be a step more granular than
+`service.name` where possible. However, the cardinality of this field should be
+limited, so per-class or per-file logger names are not appropriate for this
+field.
 
-A good example is in the Java agent, where `event.dataset` is set to the
-log appender name.
+A good example is in the Java agent, where `event.dataset` is set to
+`${service.name}.${appender.name}`, where `appender.name` is the name of the
+log appender.
 
 If an agent doesn't have reasonable options for this field, it should be set
 to `${service.name}.log`.
