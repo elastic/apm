@@ -2,7 +2,7 @@
 
 We capture spans for various types of database/data-stores operations, such as SQL queries, Elasticsearch queries, Redis commands, etc. We follow some of the same conventions defined by OpenTracing for capturing database-specific span context, including:
 
- - `db.instance`: database instance name, e.g. "customers"
+ - `db.instance`: database instance name, e.g. "customers". For DynamoDB, this is the region.
  - `db.statement`: statement/query, e.g. "SELECT * FROM foo"
  - `db.user`: username used for database access, e.g. "readonly_user"
  - `db.type`: database type/category, which should be "sql" for SQL databases, and the lower-cased database name otherwise.
