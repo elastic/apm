@@ -190,19 +190,20 @@ an App Service can however be retrieved from environment variables
 | `instance.name`       | `WEBSITE_SITE_NAME` |
 | `project.name`        | `WEBSITE_RESOURCE_GROUP` |
 | `provider`            | azure               |
-| `region`              | last part of `WEBSITE_OWNER_NAME`, split by `-`, trim end `"webspace"`          |
+| `region`              | last part of `WEBSITE_OWNER_NAME`, split by `-`, trim end `"webspace"` and anything following |
 
 The environment variable `WEBSITE_OWNER_NAME` has the form
 
 ```
-{subscription id}+{app service plan resource group}-{region}webspace
+{subscription id}+{app service plan resource group}-{region}webspace{.*}
 ```
 
 an example of which is `f5940f10-2e30-3e4d-a259-63451ba6dae4+elastic-apm-AustraliaEastwebspace`
 
 Cloud metadata for Azure App Services is optional; it is up
 to each agent to determine whether it is useful to implement
-for their language ecosystem.
+for their language ecosystem. See [azure_app_service_metadata specs](../../tests/agents/gherkin-specs/azure_app_service_metadata.feature)
+for scenarios and expected outcomes.
 
 ### Global labels
 
