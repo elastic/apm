@@ -4,6 +4,8 @@ The Agents will be a critical part of log collection onboarding for their
 application logs. This is primarily accomplished via the `log_ecs_formatting`
 configuration option, described below.
 
+In future iterations, the shipping of ECS logs will become more automated by auto-parsing ECS-JSON logs in Filebeat and [automatically shipping log files](https://github.com/elastic/apm/issues/374) that got reformatted via `log_ecs_formatting`.
+
 ## `log_ecs_formatting` configuration
 
 Configures the agent to automatically format application logs as ECS-compatible JSON
@@ -25,6 +27,7 @@ When this option is set to `on`, the agent should format all logs from the
 app as ECS-compatible json, as shown in the
 [spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
 
+For all options other than `off`, the [log correlation](log-correlation.md) should be implicitly enabled.
 ### Required fields
 
 The following fields are required:
@@ -50,8 +53,9 @@ service.
 
 #### `event.dataset`
 
-The `event.dataset` field is used in some ML jobs in Elasticsearch to surface
-anomalies within datasets. This field should be a step more granular than
+The `event.dataset` field is used  to power the [log anomaly chart in the logs UI](https://www.elastic.co/guide/en/observability/current/inspect-log-anomalies.html#anomalies-chart).
+The dataset can also be useful to filter for different log streams from the same pod, for example.
+This field should be a step more granular than
 `service.name` where possible. However, the cardinality of this field should be
 limited, so per-class or per-file logger names are not appropriate for this
 field.
@@ -68,4 +72,4 @@ to `${service.name}.log`.
 Due to differences in the possible Agent implementations of this feature, no
 Gherkin spec is provided. Testing will primarily be accomplished via Opbeans.
 Each Agent team should update their Opbeans app so that it only relies on this
-configuration option to format ECS logs that will be picked up by filebeat.
+configuration option to format ECS logs that will be picked up by Filebeat.
