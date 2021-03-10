@@ -12,8 +12,8 @@ Configures the agent to automatically format application logs as ECS-compatible 
 (if possible).
 
 |----------------|---|
-| Valid options  | `on`, `off` |
-| Default        | `off`  |
+| Valid options  | `override`, `off` |
+| Default        | `off`   |
 | Dynamic        | `false` |
 | Central config | `false` |
 
@@ -23,7 +23,7 @@ agents should not implement this configuration option.
 For some agents, additional options makes sense. For example, the Java agent
 also accepts the values `shade` and `replace`.
 
-When this option is set to `on`, the agent should format all logs from the
+When this option is set to `override`, the agent should format all logs from the
 app as ECS-compatible json, as shown in the
 [spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
 
