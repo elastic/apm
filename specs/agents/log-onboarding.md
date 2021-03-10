@@ -67,6 +67,11 @@ log appender.
 If an agent doesn't have reasonable options for this field, it should be set
 to `${service.name}.log`.
 
+Some examples:
+- opbeans.log
+- opbeans.checkout
+- opbeans.login
+- opbeans.audit
 ## Testing
 
 Due to differences in the possible Agent implementations of this feature, no
