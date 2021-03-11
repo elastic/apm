@@ -11,6 +11,7 @@ In future iterations, the shipping of ECS logs will become more automated by aut
 Configures the agent to automatically format application logs as ECS-compatible JSON
 (if possible).
 
+|                |   |
 |----------------|---|
 | Valid options  | `override`, `off` |
 | Default        | `off`   |

@@ -6,6 +6,7 @@ Sets the logging level for the agent.
 
 This option is case-insensitive.
 
+|                |   |
 |----------------|---|
 | Valid options  | `trace`, `debug`, `info`, `warning`, `error`, `critical`, `off` |
 | Default        | `info` (soft default) |
