@@ -1,6 +1,6 @@
-# Agent logging
+## Agent logging
 
-## `log_level` configuration
+### `log_level` configuration
 
 Sets the logging level for the agent.
 
