@@ -13,7 +13,7 @@ Configures the agent to automatically format application logs as ECS-compatible 
 
 |                |   |
 |----------------|---|
-| Valid options  | `override`, `off` |
+| Valid options  | `override`, `off` (case insensitive) |
 | Default        | `off`   |
 | Dynamic        | `false` |
 | Central config | `false` |
