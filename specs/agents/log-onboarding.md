@@ -22,7 +22,8 @@ Not all agents will be able to automatically format logs in this way. Those
 agents should not implement this configuration option.
 
 For some agents, additional options makes sense. For example, the Java agent
-also accepts the values `shade` and `replace`.
+also accepts the values `shade` and `replace`, where ECS-reformatted logs are written to a dedicated `.ecs.json` 
+file in addition to (`shade`) or instead of (`replace`) the original log stream.
 
 When this option is set to `override`, the agent should format all logs from the
 app as ECS-compatible json, as shown in the
