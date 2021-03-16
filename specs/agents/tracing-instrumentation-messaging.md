@@ -103,3 +103,7 @@ queues/topics/exchanges will be ignored.
 | Default        | empty |
 | Dynamic        | `true` |
 | Central config | `true` |
+
+
+### AWS messaging systems
+The instrumentation of [SQS](tracing-instrumentation-aws.md#sqs-simple-queue-service) and [SNS](tracing-instrumentation-aws.md#sns-aws-simple-notification-service) services generally follow this spec, with some nuances specified in the linked specs.
