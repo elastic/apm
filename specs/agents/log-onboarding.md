@@ -11,6 +11,9 @@ In future iterations, the shipping of ECS logs will become more automated by aut
 Configures the agent to automatically format application logs as ECS-compatible JSON
 (if possible).
 
+The configuration option must be marked experimental for now to allow for breaking changes we may need to introduce.
+Once the end-to-end process for seamless log onboarding with Elastic Agent works, we'll remove the experimental flag.
+
 |                |   |
 |----------------|---|
 | Valid options  | `override`, `off` (case insensitive) |
