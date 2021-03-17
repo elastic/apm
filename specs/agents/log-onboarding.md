@@ -14,6 +14,10 @@ Configures the agent to automatically format application logs as ECS-compatible 
 The configuration option must be marked experimental for now to allow for breaking changes we may need to introduce.
 Once the end-to-end process for seamless log onboarding with Elastic Agent works, we'll remove the experimental flag.
 
+As the implementation of this configuration option will be specific for each supported log library,
+the supported technologies documentation should list the supported frameworks (including supported version ranges)
+and the agent version that introduced support for each logging library.
+
 |                |   |
 |----------------|---|
 | Valid options  | `override`, `off` (case insensitive) |
