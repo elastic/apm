@@ -54,7 +54,7 @@ For distributed tracing, the SQS API has "message attributes" that can be used i
 
 Agents should use an attribute name of `Traceparent` or `Elastic-Trace-Parent` when sending the traceparent headers via the SQS message attributes.  Agents should use an attribute name of `Tracecontext` or `Elastic-Trace-Context` if sending tracecontext headers in an SQS message attribute.
 
-Agents should default to using the non-namespaced `Traceparent` and `Tracecontext` versions of the attribute names.Agents should use the namespaced versions of the attribute names only if the `use_elastic_traceparent_header` configuration value is set to `true`.
+Agents should default to using the non-namespaced `Traceparent` and `Tracecontext` versions of the attribute names.  Agents should use the namespaced versions of the attribute names only if the `use_elastic_traceparent_header` configuration value is set to `true`.
 
 If agents attempt to automatically propagate headers when receiving messages they should check first for the non-namespaced versions, and then check for the namespaced version.  If both versions are present, agents should prefer the non-namespaced versions and ignore the namespaced versions.
 
