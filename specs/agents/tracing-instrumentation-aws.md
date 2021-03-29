@@ -5,7 +5,7 @@ Some of the services can use existing specs. When there are differences or addit
 
 ### S3 (Simple Storage Service)
 
-AWS Simple Storage Service offers object storage via a REST API. The objects are organized into buckets, which are 
+AWS Simple Storage Service offers object storage via a REST API. The objects are organized into buckets, which are
 themselves organized into regions.
 
 - `span.name`: The span name should follow this pattern: `S3 <OperationName> <bucket-name>`. For example,
@@ -43,17 +43,25 @@ The format should be `DynamoDB <ActionName> <TableName>`. So for example, `Dynam
 
 ### SQS (Simple Queue Service)
 
-AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can 
+AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can
 be used for instrumenting SQS, but the follow specifications supersede those of the messaging spec.
 
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the queue is.
 
+#### Distributed Tracing
+
 For distributed tracing, the SQS API has "message attributes" that can be used in lieu of headers.
+
+Agents should use an attribute name of `Traceparent` or `Elastic-Trace-Parent` when sending the traceparent headers via the SQS message attributes.  Agents should use an attribute name of `Tracecontext` or `Elastic-Trace-Context` if sending tracecontext headers in an SQS message attribute.  Agents should default to using the non-namespaced `Traceparent` and `Tracecontext` versions of the attribute names.
+
+Agents should use the namespaced versions of the attribute names only if the `use_elastic_traceparent_header` configuration value is set to `true`.  If agents attempt to automatically propagate headers when receiving messages they should check first for the non-namespaced versions, and then check for the namespaced version.  If both are present, agents should prefer the non-namespaced versions.
+
+SQS has a documented limit of ten message attributes per message.  Agents _should not_ add traceparent or tracecontext headers to the message attributes if adding those fields would put an individual message over this limit.
 
 ### SNS (AWS Simple Notification Service)
 
-The AWS Simple Notification Service can be instrumented using the [messaging spec](tracing-instrumentation-messaging.md), 
-but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec: 
+The AWS Simple Notification Service can be instrumented using the [messaging spec](tracing-instrumentation-messaging.md),
+but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec:
 
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
 `SNS PUBLISH MyTopic`.
