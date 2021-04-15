@@ -69,7 +69,8 @@ Azure service endpoints for blob storage have one of the following host names
 
 where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
 
-Rules derived from the [Blob service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api)
+Rules derived from the [Blob service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api). The rules determine the operation name based
+on the presence of data in the HTTP request
 
 | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
 | --------- | ---------- | ------------------- | ------------------------ |
@@ -170,6 +171,9 @@ Rules derived from the [Queue service REST API reference](https://docs.microsoft
 
 | URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
 | --- | --------- | ---------- | ------------------- | ------------------------ |
+| | DELETE    |            |                     | DELETE                   |
+| ends with /messages | DELETE    |            |                     | CLEAR                   |
+| | DELETE    |            | `popreceipt=<value>`| DELETE                   |
 | | GET       |            | `comp=list`         | LISTQUEUES               |
 | | GET       |            | `comp=properties`   | GETPROPERTIES            |
 | | GET       |            | `comp=stats`        | STATS                    |
@@ -177,29 +181,166 @@ Rules derived from the [Queue service REST API reference](https://docs.microsoft
 | | GET       |            | `comp=acl`          | GETACL                   |
 | | GET       |            |                     | RECEIVE                  |
 | | GET       |            | `peekonly=true`     | PEEK                     |
+| | HEAD      |            | `comp=metadata`     | GETMETADATA              |
+| | HEAD      |            | `comp=acl`          | GETACL                   |
+| | OPTIONS   |            |                     | PREFLIGHT                |
+| | POST      |            |                     | SEND                     |
 | | PUT       |            | `comp=acl`          | SETACL                   |
 | | PUT       |            | `comp=properties`   | SETPROPERTIES            |
 | | PUT       |            |                     | CREATE                   |
 | | PUT       |            | `comp=metadata`     | SETMETADATA              |
 | | PUT       |            | `popreceipt=<value>`| UPDATE                   |
-| | POST      |            |                     | SEND                     |
-| | DELETE    |            |                     | DELETE                   |
-| ends with `/messages` | DELETE    |            |                     | CLEAR                   |
-| | DELETE    |            | `popreceipt=<value>`| DELETE                   |
-| | OPTIONS   |            |                     | PREFLIGHT                |
-| | HEAD      |            | `comp=metadata`     | GETMETADATA              |
-| | HEAD      |            | `comp=acl`          | GETACL                   |
-
 
 ### Table storage
 
+The Table service offers non-relational schema-less structured storage in the 
+form of tables. It is a popular service due to its cost-to-capability, though
+messaging in recent years from Microsoft has deprecated Table storage and encouraged
+the use of CosmosDB and its Table storage compatible API.
+
+Tables store data as a collection of entities, where an entity is a collection of properties.
+Entities are similar to rows and properties are similar to columns.
+
+`<ResourceName>` is the name of the resource in the form of the table, or the table and partition key and row key of an entity. For example,
+
+- tablename
+- tablename(PartitionKey='partitionkey', RowKey='rowkey')
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `span.name` | yes | `AzureTable <OperationName> <ResourceName>` | Pascal case Operation name | `AzureTable Insert tablename` |
+| `span.type` | yes | `storage` | | |
+| `span.subtype` | yes | `azuretable` | | |
+| `span.action` | yes | `<OperationName>` | Pascal case | `Insert` |
+
+#### Span context fields
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `context.destination.address` | yes | URL scheme and host | | `https://accountname.table.core.windows.net/` |
+| `context.destination.service.name` | yes | `azuretable` | | | 
+| `context.destination.service.resource` | yes | `azuretable/<ResourceName>` | | `azuretable/foo` |
+| `context.destination.service.type` | yes | `storage` | | |
+
+#### Determining operations
+
+Azure service endpoints for table storage have one of the following host names
+
+| Cloud | Azure Service Endpoint |
+| ----- | ---------------------- |
+| Azure Global | `<account>.table.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.table.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.table.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.table.core.cloudapi.de` |
+
+where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+
+Rules derived from the [Table service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/table-service-rest-api)
+
+| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
+| --- | --------- | ---------- | ------------------- | ------------------------ |
+| | PUT    |            |   `comp=properties`                  | SetProperties    |
+| | GET    |            |   `comp=properties`                  | GetProperties    |
+| | GET    |            |   `comp=stats`                       | Stats            |
+| ends with /Tables | GET    |            |                  | Query           |
+| ends with /Tables | POST    |            |                 | Create           |
+| ends with /Tables('`<table>`') | DELETE    |            |  | Delete           |
+| ends with /`<table>` | OPTIONS    |            |           | Preflight        |
+| | HEAD      |            | `comp=acl`          | GetAcl                   |
+| | GET      |            | `comp=acl`          | GetAcl                   |
+| | PUT      |            | `comp=acl`          | SetAcl                   |
+| ends with /`<table>`() or /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')`  | GET    |            |                  | Query            |
+| ends with /`<table>` | POST      |            |           | Insert                   |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | PUT      |            |           | Update                   |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | MERGE      |            |           | Merge                   |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | DELETE      |            |           | Delete                   |
+
 ### File share storage
+
+Azure file service (known also as AFS or file share storage) is a managed file share service
+that uses Server Message Block (SMB) protocol or Network File System (NFS) protocol
+to provide general purpose file shares. File shares can be mounted concurrently by
+machines in the cloud or on-premises.
+
+The `<ResourceName>` is determined from the path of the URL.
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `span.name` | yes | `AzureFile <OperationName> <ResourceName>` | Pascal case Operation name | `AzureFile Create directoryname` |
+| `span.type` | yes | `storage` | | |
+| `span.subtype` | yes | `azurefile` | | |
+| `span.action` | yes | `<OperationName>` | Pascal case | `Insert` |
+
+#### Span context fields
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `context.destination.address` | yes | URL scheme and host | | `https://accountname.file.core.windows.net/` |
+| `context.destination.service.name` | yes | `azurefile` | | | 
+| `context.destination.service.resource` | yes | `azurefile/<ResourceName>` | | `azurefile/foo` |
+| `context.destination.service.type` | yes | `storage` | | |
+
+#### Determining operations
+
+Azure service endpoints for file share storage have one of the following host names
+
+| Cloud | Azure Service Endpoint |
+| ----- | ---------------------- |
+| Azure Global | `<account>.file.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.file.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.file.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.table.file.cloudapi.de` |
+
+where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+
+Rules derived from the [File service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/file-service-rest-api).
+
+| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
+| --- | --------- | ---------- | ------------------- | ------------------------ |
+| | GET    |            |   `comp=list`                  | List    |
+| | GET    |            |   `comp=list`                  | List    |
+| | PUT    |            |   `comp=properties`                  | SetProperties    |
+| | GET    |            |   `comp=properties`                  | GetProperties    |
+| ends with /`<resource>` | OPTIONS    |            |           | Preflight        |
+| | PUT    |            |                   | Create    |
+| | PUT    |            |   `comp=snapshot`                | Snapshot    |
+| | PUT    |            |   `restype=share` and `comp=properties` | SetProperties    |
+| | GET    |            |   `restype=share`                  | GetProperties    |
+| | HEAD    |            |   `restype=share`                  | GetProperties    |
+| | GET    |            |   `comp=metadata`                  | GetMetadata    |
+| | HEAD    |            |   `comp=metadata`                  | GetMetadata    |
+| | PUT    |            |   `comp=metadata`                  | SetMetadata    |
+| | DELETE    |            |                | Delete    |
+| | PUT    |            |  `comp=undelete`              | Undelete    |
+| | HEAD      |            | `comp=acl`          | GetAcl                   |
+| | GET      |            | `comp=acl`          | GetAcl                   |
+| | PUT      |            | `comp=acl`          | SetAcl                   |
+| | GET    |            |   `comp=stats`                       | Stats            |
+| | GET    |            |   `comp=filepermission`                       | GetPermission            |
+| | PUT    |            |   `comp=filepermission`                       |SetPermission            |
+| | PUT    |            |  `restype=directory`                 | Create    |
+| | GET    |            |  `comp=listhandles`                 | ListHandles    |
+| | PUT    |            |  `comp=forceclosehandles`                 | CloseHandles    |
+| | GET    |            |                  | Download    |
+| | HEAD    |            |                  | GetProperties    |
+| | PUT    |            |   `comp=range` | Upload    |
+| | PUT    | `x-ms-copy-source`           |   | Copy    |
+| | PUT    | `x-ms-copy-action:abort`           | `comp=copy`  | Abort    |
+| | GET    |  |   `comp=rangelist` | ListRanges    |
+| | PUT    |            |  `comp=lease`                 | Lease    |
 
 
 ## Azure Service Bus
 
 Azure Service Bus is a message broker service. The [messaging spec](tracing-instrumentation-messaging.md) can 
 be used for instrumenting Azure Service Bus, but the follow specifications supersede those of the messaging spec.
+
+Azure Service Bus can use the following protocols 
+
+- Advanced Message Queuing Protocol 1.0 (AMQP)
+- Hypertext Transfer Protocol 1.1 with TLS (HTTPS)
+
+The offical Azure SDKs generally use AMQP for sending and receiving messages.
 
 ### Typing
 
@@ -222,12 +363,12 @@ Azure Service Bus supports actions that should be traced in addition to `SEND` a
 
 Messages can be sent to queues and topics, and can be received from queues and topic subscriptions.
 
-Transaction and span names should* follow these patterns:
+Transaction and span names *should* follow these patterns:
 
 For send and schedule,
 
-`AzureServiceBus SEND|SCHEDULE to <QUEUE-NAME>|<TOPIC-NAME>`
+- AzureServiceBus SEND|SCHEDULE to `<queue>`|`<topic>`
 
 For receive and receive deferred,
 
-`AzureServiceBus RECEIVE|RECEIVEDEFERRED from <QUEUE-NAME>|<TOPIC-NAME>/Subscriptions/<SUBSCRIPTION-NAME>`
+- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<queue>`|`<topic>`/Subscriptions/`<subscription>`
