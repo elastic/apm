@@ -295,39 +295,39 @@ where `<account>` is the name of the storage account. New Azure service endpoint
 
 Rules derived from the [File service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/file-service-rest-api).
 
-| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
-| --- | --------- | ---------- | ------------------- | ------------------------ |
-| | GET    |            |   `comp=list`                  | List    |
-| | GET    |            |   `comp=list`                  | List    |
-| | PUT    |            |   `comp=properties`                  | SetProperties    |
-| | GET    |            |   `comp=properties`                  | GetProperties    |
-| ends with /`<resource>` | OPTIONS    |            |           | Preflight        |
-| | PUT    |            |                   | Create    |
-| | PUT    |            |   `comp=snapshot`                | Snapshot    |
-| | PUT    |            |   `restype=share` and `comp=properties` | SetProperties    |
-| | GET    |            |   `restype=share`                  | GetProperties    |
-| | HEAD    |            |   `restype=share`                  | GetProperties    |
-| | GET    |            |   `comp=metadata`                  | GetMetadata    |
-| | HEAD    |            |   `comp=metadata`                  | GetMetadata    |
-| | PUT    |            |   `comp=metadata`                  | SetMetadata    |
-| | DELETE    |            |                | Delete    |
-| | PUT    |            |  `comp=undelete`              | Undelete    |
-| | HEAD      |            | `comp=acl`          | GetAcl                   |
-| | GET      |            | `comp=acl`          | GetAcl                   |
-| | PUT      |            | `comp=acl`          | SetAcl                   |
-| | GET    |            |   `comp=stats`                       | Stats            |
-| | GET    |            |   `comp=filepermission`                       | GetPermission            |
-| | PUT    |            |   `comp=filepermission`                       |SetPermission            |
-| | PUT    |            |  `restype=directory`                 | Create    |
-| | GET    |            |  `comp=listhandles`                 | ListHandles    |
-| | PUT    |            |  `comp=forceclosehandles`                 | CloseHandles    |
-| | GET    |            |                  | Download    |
-| | HEAD    |            |                  | GetProperties    |
-| | PUT    |            |   `comp=range` | Upload    |
-| | PUT    | `x-ms-copy-source`           |   | Copy    |
-| | PUT    | `x-ms-copy-action:abort`           | `comp=copy`  | Abort    |
-| | GET    |  |   `comp=rangelist` | ListRanges    |
-| | PUT    |            |  `comp=lease`                 | Lease    |
+| URL | HTTP verb | HTTP headers | HTTP query string  | Resulting Operation Name  |
+| --- | --------- | ---------- | -------------------- | ------------------------- |
+| | GET    | |   `comp=list`                          | List                      |
+| | GET    | |   `comp=list`                          | List                      |
+| | PUT    | |   `comp=properties`                    | SetProperties             |
+| | GET    | |   `comp=properties`                    | GetProperties             |
+| ends with /`<resource>` | OPTIONS  | |              | Preflight                 |
+| | PUT    | |                                        | Create                    |
+| | PUT    | | `comp=snapshot`                        | Snapshot                  |
+| | PUT    | | `restype=share` and `comp=properties`  | SetProperties             |
+| | GET    | | `restype=share`                        | GetProperties             |
+| | HEAD   | | `restype=share`                        | GetProperties             |
+| | GET    | | `comp=metadata`                        | GetMetadata               |
+| | HEAD   | | `comp=metadata`                        | GetMetadata               |
+| | PUT    | | `comp=metadata`                        | SetMetadata               |
+| | DELETE | |                                        | Delete                    |
+| | PUT    | | `comp=undelete`                        | Undelete                  |
+| | HEAD   | | `comp=acl`                             | GetAcl                    |
+| | GET    | | `comp=acl`                             | GetAcl                    |
+| | PUT    | | `comp=acl`                             | SetAcl                    |
+| | GET    | | `comp=stats`                           | Stats                     |
+| | GET    | | `comp=filepermission`                  | GetPermission             |
+| | PUT    | | `comp=filepermission`                  |SetPermission              |
+| | PUT    | | `restype=directory`                    | Create                    |
+| | GET    | | `comp=listhandles`                     | ListHandles               |
+| | PUT    | | `comp=forceclosehandles`               | CloseHandles              |
+| | GET    | |                                        | Download                  |
+| | HEAD   | |                                        | GetProperties             |
+| | PUT    | | `comp=range`                           | Upload                    |
+| | PUT    | `x-ms-copy-source` |                     | Copy                      |
+| | PUT    | `x-ms-copy-action:abort` | `comp=copy`   | Abort                     |
+| | GET    | |   `comp=rangelist`                     | ListRanges                |
+| | PUT    | |  `comp=lease`                          | Lease                     |
 
 
 ## Azure Service Bus
@@ -344,8 +344,40 @@ The offical Azure SDKs generally use AMQP for sending and receiving messages.
 
 ### Typing
 
-- Spans: 
-  - `span.subtype`: `azureservicebus` 
+A new span is created when there is a current transaction, and when a message is sent or scheduled to a queue or topic subscription
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `span.name` | yes | `AzureServiceBus <OperationName> to <Queue|Topic and Subscription>` | Upper case Operation name | `AzureServiceBus SEND to queuename` |
+| `span.type` | yes | `messaging` | | |
+| `span.subtype` | yes | `azureservicebus` | | |
+| `span.action` | yes | `<OperationName>` | lower case | `send` |
+
+#### Span context fields
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `context.destination.address` | yes | URL scheme and host | | `https://namespace.servicebus.windows.net/` |
+| `context.destination.service.name` | yes | azureservicebus | | | 
+| `context.destination.service.resource` | yes | azureservicebus/`<Queue>`\|`<Topic and Subscription>` | | `azurequeue/myqueue`, `azureservicebus/mytopic/Subscriptions/mysubscription` |
+| `context.destination.service.type` | yes | `messaging` | | | 
+
+----
+
+A new transaction is created when one or more messages are received or receive deferred from a queue
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `transaction.name` | yes | AzureServiceBus `<OperationName>` from `<Queue>`\|`<Topic and Subscription>` | Upper case Operation name | `AzureServiceBus RECEIVE from queuename` |
+| `transaction.type` | yes | `messaging` | | |
+
+
+#### Transaction context fields
+
+| APM field | Required? | Format | Notes | Example |
+| --------- | --------- | ------ | ----- | ------- |
+| `context.service.framework` | yes | `AzureServiceBus` | |  |
+
 
 ### Additional actions
 
@@ -367,8 +399,8 @@ Transaction and span names *should* follow these patterns:
 
 For send and schedule,
 
-- AzureServiceBus SEND|SCHEDULE to `<queue>`|`<topic>`
+- AzureServiceBus SEND|SCHEDULE to `<Queue>`|`<Topic>`
 
 For receive and receive deferred,
 
-- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<queue>`|`<topic>`/Subscriptions/`<subscription>`
+- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<Queue>`|`<Topic>`/Subscriptions/`<Subscription>`
