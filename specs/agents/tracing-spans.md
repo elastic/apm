@@ -70,3 +70,21 @@ To handle edge cases where many spans are captured within a single transaction, 
 ```
 
 Here's how the limit can be configured for [Node.js](https://www.elastic.co/guide/en/apm/agent/nodejs/current/agent-api.html#transaction-max-spans) and [Python](https://www.elastic.co/guide/en/apm/agent/python/current/configuration.html#config-transaction-max-spans).
+
+### Exit spans
+
+Exit spans are spans that describe a call to an external service,
+such as an outgoing HTTP request or a call to a database.
+
+Exit spans MUST not have child spans that have a different `type` and `subtype`.
+For example, when capturing a span representing a query to Elasticsearch,
+there should not be an HTTP span for the same operation.
+Doing that would make [breakdown metrics](https://github.com/elastic/apm/blob/master/specs/agents/metrics.md#transaction-and-span-breakdown)
+less meaningful,
+as most of the time would be attributed to `http` instead of `elasticsearch`.
+
+Agents MAY add information from the lower level transport to the exit span, though.
+For example, the HTTP `context.http.status_code` may be added to an `elasticsearch` span.
+
+Exit spans MAY have child spans that have the same `type` and `subtype`.
+For example, an HTTP exit span may have child spans with the `action` `request`, `response`, `connect`, `dns`.
