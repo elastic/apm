@@ -85,22 +85,25 @@ on the presence of data in the HTTP request
 | GET       | | `comp=blocklist`                        | Download        |
 | GET       |                                         | | Download        |
 | GET       | | `comp=pagelist`                         | GetPageRanges   |
+| GET       | | `comp=stats`                            | Stats           |
+| GET       | | `comp=blobs`                            | FilterBlobs     |
 | HEAD      | |                                         | GetProperties   |
 | HEAD      | | `restype=container` and `comp=metadata` | GetMetadata     |
 | HEAD      | | `restype=container` and `comp=acl`      | GetAcl          |
 | POST      | | `comp=batch`                            | Batch           |
 | POST      | | `comp=query`                            | Query           |
+| POST      | | `comp=userdelegationkey`                | GetUserDelegationKey |
 | PUT       | `x-ms-copy-source`                      | | Copy            |
 | PUT       | `x-ms-copy-source` | `comp=block`         | Copy            |
 | PUT       | `x-ms-copy-source` | `comp=page`          | Copy            |
 | PUT       | `x-ms-copy-source` | `comp=incrementalcopy` | Copy          |
 | PUT       | `x-ms-copy-source` | `comp=appendblock`   | Copy            |
 | PUT       | | `comp=copy`                             | Abort           |
-| PUT       | `x-ms-blob-type`                        | |  Upload         |
-| PUT       | | `comp=block`                            |  Upload         |
-| PUT       | | `comp=blocklist`                        |  Upload         |
-| PUT       | | `comp=page`                             |  Upload         |
-| PUT       | | `comp=appendblock`                      |  Upload         |
+| PUT       | `x-ms-blob-type`                        | | Upload          |
+| PUT       | | `comp=block`                            | Upload          |
+| PUT       | | `comp=blocklist`                        | Upload          |
+| PUT       | | `comp=page`                             | Upload          |
+| PUT       | | `comp=appendblock`                      | Upload          |
 | PUT       |                                         | | Create          |
 | PUT       | | `comp=metadata`                         | SetMetadata     |
 | PUT       | | `restype=container` and `comp=acl`      | SetAcl          |
@@ -111,6 +114,9 @@ on the presence of data in the HTTP request
 | PUT       | | `comp=tags`                             | SetTags         |
 | PUT       | | `comp=tier`                             | SetTier         |
 | PUT       | | `comp=expiry`                           | SetExpiry       |
+| PUT       | | `comp=seal`                             | Seal            |
+| PUT       | | `comp=rename`                           | Rename          |
+| PUT       | `x-ms-page-write` | `comp=page`           | Clear           |
 
 ### Queue storage
 
