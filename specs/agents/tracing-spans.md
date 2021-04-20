@@ -76,6 +76,8 @@ Here's how the limit can be configured for [Node.js](https://www.elastic.co/guid
 Exit spans are spans that describe a call to an external service,
 such as an outgoing HTTP request or a call to a database.
 
+#### Child spans of exit spans
+
 Exit spans MUST not have child spans that have a different `type` and `subtype`.
 For example, when capturing a span representing a query to Elasticsearch,
 there should not be an HTTP span for the same operation.
@@ -90,7 +92,21 @@ Exit spans MAY have child spans that have the same `type` and `subtype`.
 For example, an HTTP exit span may have child spans with the `action` `request`, `response`, `connect`, `dns`.
 These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
 
+Most agents would want to treat exit spans as leaf spans, though.
+This brings the benefit of being able to compress repetitive exit spans (TODO link to span compression spec once available),
+as span compression is only applicable to leaf spans.
+
 Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
 For example, agents MAY implement internal (or even public) APIs to mark a span as an exit or leaf span.
 Agents can then prevent the creation of a child span of a leaf/exit span.
 This can help to drop nested HTTP spans for instrumented calls that use HTTP as the transport layer (for example Elasticsearch).
+
+#### Context propagation
+
+As a general rule, when agents are tracing an exit span, they SHOULD NOT propagate the trace context via the underlying protocol.
+Example: for Elasticsearch requests, which use HTTP as the transport, agents should not add `traceparent` headers to the outgoing HTTP request.
+
+The reason is that spans cannot be compressed (TODO link to span compression spec once available) if the context has been propagated, as it may lead to orphaned transactions.
+That means that the `parent.id` of a transaction may refer to a span that's not available because it has been compressed (merged with another span).
+
+There can, however, be exceptions to this rule whenever it makes sense. For example, if it's known that the backend system can continue the trace.
