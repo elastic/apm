@@ -88,3 +88,8 @@ For example, the HTTP `context.http.status_code` may be added to an `elasticsear
 
 Exit spans MAY have child spans that have the same `type` and `subtype`.
 For example, an HTTP exit span may have child spans with the `action` `request`, `response`, `connect`, `dns`.
+These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
+
+Agents don't need to prevent the creation of exit child spans via the public API.
+Agents MAY implement internal APIs to create an exit span (such as `Span::createExitSpan`) that flags a span as an exit span (`exit=true`).
+Returning `null` from `Span::createExitSpan` when the curren span is flagged with `exit=true` can help to avoid creating nested exit spans.
