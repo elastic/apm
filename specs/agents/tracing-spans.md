@@ -78,7 +78,7 @@ such as an outgoing HTTP request or a call to a database.
 
 #### Child spans of exit spans
 
-Exit spans MUST not have child spans that have a different `type` and `subtype`.
+Exit spans MUST not have child spans that have a different `type` or `subtype`.
 For example, when capturing a span representing a query to Elasticsearch,
 there should not be an HTTP span for the same operation.
 Doing that would make [breakdown metrics](https://github.com/elastic/apm/blob/master/specs/agents/metrics.md#transaction-and-span-breakdown)
