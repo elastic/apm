@@ -90,7 +90,7 @@ Exit spans MAY have child spans that have the same `type` and `subtype`.
 For example, an HTTP exit span may have child spans with the `action` `request`, `response`, `connect`, `dns`.
 These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
 
-Agents don't need to prevent the creation of exit child spans via the public API.
-Agents MAY implement internal APIs to create an exit span (such as `Span::createExitSpan`) that flags a span as an exit span (`exit=true`).
-Returning `null` from `Span::createExitSpan` when the curren span is flagged with `exit=true` can help to avoid creating nested exit spans.
-The `exit` flag can also be useful in tests: if it's `true`, the `context.desitnation` information has to be populated.
+Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
+For example, agents MAY implement internal (or even public) APIs to mark a span as an exit or leaf span.
+Agents can then prevent the creation of a child span of a leaf/exit span.
+This can help to drop nested HTTP spans for instrumented calls that use HTTP as the transport layer (for example Elasticsearch).
