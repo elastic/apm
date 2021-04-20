@@ -93,3 +93,4 @@ These spans MUST NOT have any destination context, so that there's no effect on 
 Agents don't need to prevent the creation of exit child spans via the public API.
 Agents MAY implement internal APIs to create an exit span (such as `Span::createExitSpan`) that flags a span as an exit span (`exit=true`).
 Returning `null` from `Span::createExitSpan` when the curren span is flagged with `exit=true` can help to avoid creating nested exit spans.
+The `exit` flag can also be useful in tests: if it's `true`, the `context.desitnation` information has to be populated.
