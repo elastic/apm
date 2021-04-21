@@ -105,8 +105,11 @@ This can help to drop nested HTTP spans for instrumented calls that use HTTP as 
 
 As a general rule, when agents are tracing an exit span where the downstream service is known not to continue the trace,
 they SHOULD NOT propagate the trace context via the underlying protocol.
+
 Example: for Elasticsearch requests, which use HTTP as the transport, agents should not add `traceparent` headers to the outgoing HTTP request.
-However, when tracing an outgoing HTTP request, and it's unknown whether the downsteam service continues the trace, the trace headers should be added.
+However, when tracing a regular outgoing HTTP request (one that's not initiated by an exit span),
+and it's unknown whether the downsteam service continues the trace,
+the trace headers should be added.
 
 The reason is that spans cannot be compressed (TODO link to span compression spec once available) if the context has been propagated, as it may lead to orphaned transactions.
 That means that the `parent.id` of a transaction may refer to a span that's not available because it has been compressed (merged with another span).
