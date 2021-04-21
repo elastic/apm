@@ -1,5 +1,10 @@
 ## Span destination
 
+The span destination information is relevant for exit spans and helps to identify the downstream service.
+This information is used for the [service map](https://www.elastic.co/guide/en/kibana/current/service-maps.html),
+the [dependencies table](https://www.elastic.co/guide/en/kibana/current/service-overview.html#service-span-duration) in the service overview,
+and the [SIEM integration](APM SIEM integration).
+
 ### Destination service fields
 
 Spans representing an external call MUST have `context.destination.service` information.
@@ -35,7 +40,7 @@ Identifies unique destinations for each service.
 
 **Usage**
 
-Each unique resource will result in a node on the service map.
+Each unique resource will result in a node on the [service map](https://www.elastic.co/guide/en/kibana/current/service-maps.html).
 Also, APM Server will roll up metrics based on the resource.
 These metrics are currently used for the [dependencies table](https://www.elastic.co/guide/en/kibana/current/service-overview.html#service-span-duration)
 on the service overview page.
