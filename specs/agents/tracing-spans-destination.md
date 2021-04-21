@@ -1,13 +1,13 @@
 ## Span destination
 
-Spans representing an external call MUST have `context.destination` information.
+### Destination service fields
+
+Spans representing an external call MUST have `context.destination.service` information.
 If the span represents a call to an in-memory database, the information SHOULD still be set.
 
 Agents SHOULD have a generic component used in all tests that validates that the destination information is present for exit spans.
 Rather than opting into the validation, the testing should provide an opt-out if,
 for whatever reason, the destination information can't or shouldn't be collected for a particular exit span.
-
-### Destination service fields
 
 #### `context.destination.service.name`
 
@@ -15,12 +15,17 @@ ES field: `span.destination.service.name`
 
 The identifier for the destination service.
 
-For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
-For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-
 **Usage**
 
-Currently, this field is not anywhere within the product.
+Currently, this field is not used anywhere within the product.
+The original intent was to use it as a display name of a service in the service map.
+
+**Value**
+
+For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
+For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
+If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
+However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
 #### `context.destination.service.resource`
 
@@ -30,7 +35,7 @@ Identifies unique destinations for each service.
 
 **Usage**
 
-Each unique resource will result in node on the service map.
+Each unique resource will result in a node on the service map.
 Also, APM Server will roll up metrics based on the resource.
 These metrics are currently used for the [dependencies table](https://www.elastic.co/guide/en/kibana/current/service-overview.html#service-span-duration)
 on the service overview page.
@@ -46,10 +51,17 @@ It is used by APM Server to extrapolate the service destination metrics based on
 To avoid a huge impact on storage requirements for metrics,
 and to not "spam" the service map with lots of fine-grained nodes,
 the cardinality has to be kept low.
-However, the cardinality should, not be too low, either,
-so that different clusters, instances, or queues can be displayed separately in the service map.
+However, the cardinality should not be too low, either,
+so that different clusters, instances, and queues can be displayed separately in the service map.
 
-Generally, the value would look something like `${span.type}/${cluster}`.
+The cardinality should be the same or higher as `span.destination.service.name`.
+Higher, if there are individual sub-resources for a service, such as individual queues for a message broker.
+Same cardinality otherwise.
+
+**Value**
+
+Generally, the value would look something like `${span.subtype}/${cluster}`, or `${span.subtype}/${queue}`.
+For HTTP, this is the address, with the port (even when it's the default port), without any scheme.
 The specs for the specific technologies will have more information on how to construct the value for `context.destination.service.resource`.
 
 #### `context.destination.service.type`
@@ -58,12 +70,23 @@ ES field: `span.destination.service.type`
 
 Type of the destination service, e.g. `db`, `elasticsearch`.
 Should typically be the same as `span.type`.
-Used to displaying different icons on the service map. (TODO confirm)
+
+**Usage**
+
+Currently, this field is not used anywhere within the product.
+It was originally intended to be used to display different icons on the service map.
 
 ### Destination fields
 
 These fields are used within the APM/SIEM integration.
 They don't play a role for service maps.
+
+Spans representing an external call SHOULD have `context.destination` information if it is easy to gather.
+
+Examples when the effort of capturing the address and port is not justified:
+* When the underlying protocol-layer code is not readily available in the instrumented code.
+* When the instrumentation captures the exit event,
+  but the actual client is not bound to a specific connection (e.g. a client that does load balancing).
 
 #### `context.destination.address`
 
