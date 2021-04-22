@@ -32,6 +32,13 @@ For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
 If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
 However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
+If unset, agents SHOULD automatically set the field on span end for external spans:
+```
+if      context.db?.instance         "${span.subtype}/${context.db?.instance}"
+else if context.message?.queue?.name "${span.subtype}/${context.message.queue.name}"
+else    span.subtype
+```
+
 #### `context.destination.service.resource`
 
 ES field: `span.destination.service.resource`
@@ -75,6 +82,8 @@ ES field: `span.destination.service.type`
 
 Type of the destination service, e.g. `db`, `elasticsearch`.
 Should typically be the same as `span.type`.
+
+If unset, agents SHOULD automatically set `context.destination.service.type` based on `span.type` on span end for external spans.  
 
 **Usage**
 
