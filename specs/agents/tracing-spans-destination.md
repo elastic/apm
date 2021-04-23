@@ -29,7 +29,6 @@ The original intent was to use it as a display name of a service in the service 
 
 For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
 For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
 However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
 #### `context.destination.service.resource`
@@ -65,7 +64,7 @@ Same cardinality otherwise.
 
 **Value**
 
-Generally, the value would look something like `${span.subtype}/${cluster}`, or `${span.subtype}/${queue}`.
+Usually, the value is just the `span.subtype`.
 For HTTP, this is the host and port (see the [HTTP spec](tracing-instrumentation-http.md#destination) for more details).
 The specs for the specific technologies will have more information on how to construct the value for `context.destination.service.resource`.
 
