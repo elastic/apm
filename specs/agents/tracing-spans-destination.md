@@ -3,7 +3,7 @@
 The span destination information is relevant for exit spans and helps to identify the downstream service.
 This information is used for the [service map](https://www.elastic.co/guide/en/kibana/current/service-maps.html),
 the [dependencies table](https://www.elastic.co/guide/en/kibana/current/service-overview.html#service-span-duration) in the service overview,
-and the [SIEM integration](APM SIEM integration).
+and the [APM SIEM integration](https://www.elastic.co/blog/elastic-apm-7-6-0-released).
 
 ### Destination service fields
 
@@ -29,7 +29,6 @@ The original intent was to use it as a display name of a service in the service 
 
 For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
 For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
 However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
 If unset, agents SHOULD automatically set the field on span end for external spans:
@@ -51,7 +50,7 @@ Each unique resource will result in a node on the [service map](https://www.elas
 Also, APM Server will roll up metrics based on the resource.
 These metrics are currently used for the [dependencies table](https://www.elastic.co/guide/en/kibana/current/service-overview.html#service-span-duration)
 on the service overview page.
-There are plans to use the service desination metrics in the service map, too.
+There are plans to use the service destination metrics in the service map, too.
 
 The metrics are calculated based on the (head-based) sampled span documents that are sent to APM Server.
 That's why agents have to send the [`sample_rate`](tracing-sampling.md#effect-on-metrics)
@@ -72,8 +71,8 @@ Same cardinality otherwise.
 
 **Value**
 
-Generally, the value would look something like `${span.subtype}/${cluster}`, or `${span.subtype}/${queue}`.
-For HTTP, this is the address, with the port (even when it's the default port), without any scheme.
+Usually, the value is just the `span.subtype`.
+For HTTP, this is the host and port (see the [HTTP spec](tracing-instrumentation-http.md#destination) for more details).
 The specs for the specific technologies will have more information on how to construct the value for `context.destination.service.resource`.
 
 #### `context.destination.service.type`
@@ -106,7 +105,7 @@ Examples when the effort of capturing the address and port is not justified:
 
 ES field: [`destination.address`](https://www.elastic.co/guide/en/ecs/current/ecs-destination.html#_destination_field_details)
 
-Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::11`)
+Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::1`)
 
 #### `context.destination.port`
 
