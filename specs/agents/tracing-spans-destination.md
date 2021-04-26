@@ -32,12 +32,13 @@ For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
 If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
 However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
-If unset, agents SHOULD automatically set the field on span end for external spans:
-```
-if      context.db?.instance         "${span.subtype}/${context.db?.instance}"
-else if context.message?.queue?.name "${span.subtype}/${context.message.queue.name}"
-else    span.subtype
-```
+// TODO Remove the field (send empty strings), remove API (always infer), or make it optional (infer if needed)?
+
+Agents MUST NOT manually set this field.
+Agents MUST NOT offer a non-deprecated public API to set it.
+If unset, MUST automatically set or override the value to `span.subtype` on span end, for all external spans.
+
+This field is not used, but we can't just remove it as it's a required field in the intake API.
 
 #### `context.destination.service.resource`
 
@@ -72,9 +73,38 @@ Same cardinality otherwise.
 
 **Value**
 
-Generally, the value would look something like `${span.subtype}/${cluster}`, or `${span.subtype}/${queue}`.
-For HTTP, this is the host and port (see the [HTTP spec](tracing-instrumentation-http.md#destination) for more details).
-The specs for the specific technologies will have more information on how to construct the value for `context.destination.service.resource`.
+For all spans that may represent an exit span,
+agents MUST infer the value of this field based on properties that are set on the span.
+
+This is the logic for how to infer the value for this field.
+
+```
+if      context.destination?.service.?resource context.destination.service.resource # manually set
+else if context.http?.url                      "${context.http.url.host}:${context.http.url.port}"
+else if context.db?.instance                   "${subtype}/${context.db?.instance}"
+else if context.message?.queue?.name           "${subtype}/${context.message.queue.name}"
+else if context.destination || exit            subtype
+else                                           null # this is not an exit span
+```
+
+The inference of this field SHOULD be implemented in a central place within the agent,
+such as an on-span-end-callback or the setter of a dependant property,
+rather than being implemented for each individual library integration/instrumentation.
+
+For specific technologies, the field MAY be set non-centrally.
+However, updating the generic inference logic SHOULD be preferred, if feasible.
+Setting the value within a specific library integration/instrumentation is perfectly fine is if there's only one canonical library for it.
+Examples: gRPC and cloud-provider specific backends.
+
+**API**
+
+Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not sufficient.
+User-supplied values MUST have the highest precedence.
+
+To allow for automatic inference,
+without users having to specify any destination field,
+agents SHOULD offer a dedicated API to start an exit span.
+This API sets the `exit` flag to `true` and returns `null` or a noop span in case the parent already represents an `exit` span.
 
 #### `context.destination.service.type`
 
@@ -83,12 +113,18 @@ ES field: `span.destination.service.type`
 Type of the destination service, e.g. `db`, `elasticsearch`.
 Should typically be the same as `span.type`.
 
-If unset, agents SHOULD automatically set `context.destination.service.type` based on `span.type` on span end for external spans.  
-
 **Usage**
 
 Currently, this field is not used anywhere within the product.
 It was originally intended to be used to display different icons on the service map.
+
+**Value**
+
+// TODO Remove the field (send empty strings), remove API (always infer), or make it optional (infer if needed)?
+
+Agents MUST NOT manually set this field.
+Agents MUST NOT offer a non-deprecated public API to set it.
+If unset, agents MUST automatically set the value to `span.type` on span end for all external spans.
 
 ### Destination fields
 

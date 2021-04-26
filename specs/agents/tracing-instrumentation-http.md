@@ -100,6 +100,4 @@ For both transactions and spans, if there is no HTTP status we set `outcome` fro
 
 - `context.destination.address`: `url.host`
 - `context.destination.port`: `url.port`
-- `context.destination.service.name`: `url.port.isDefault() ? "${url.scheme}://${url.host}" : "${url.scheme}://${url.host}:${url.port}"`
-- `context.destination.service.type`: `"external"`
-- `context.destination.service.resource`: `"${url.host}:${url.port}"`
+- `context.destination.service.*`: See [destination spec](tracing-spans-destination.md)
