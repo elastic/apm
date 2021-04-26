@@ -29,7 +29,6 @@ The original intent was to use it as a display name of a service in the service 
 
 For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
 For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-If cluster information is available, it should be appended `${span.subtype}/${cluster}`.
 However, individual sub-resources of a service, such as the name of a message queue, should not be added.
 
 // TODO Remove the field (send empty strings), remove API (always infer), or make it optional (infer if needed)?
@@ -37,6 +36,8 @@ However, individual sub-resources of a service, such as the name of a message qu
 Agents MUST NOT manually set this field.
 Agents MUST NOT offer a non-deprecated public API to set it.
 If unset, MUST automatically set or override the value to `span.subtype` on span end, for all external spans.
+
+// TODO set to ${subtype}/${context.db.instance} if available?
 
 This field is not used, but we can't just remove it as it's a required field in the intake API.
 
