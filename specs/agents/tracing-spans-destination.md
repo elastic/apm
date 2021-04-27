@@ -20,26 +20,29 @@ ES field: `span.destination.service.name`
 
 The identifier for the destination service.
 
-**Usage**
+**Deprecated**
 
-Currently, this field is not used anywhere within the product.
-The original intent was to use it as a display name of a service in the service map.
+This field is deprecated and scheduled to be removed.
+
+This field is not used anywhere within the product,
+and we don't have plans to do so.
+However, we can't just remove it as it's a required field in the intake API.
+
+Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
+Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
 
 **Value**
 
-For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
-For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-However, individual sub-resources of a service, such as the name of a message queue, should not be added.
-
-// TODO Remove the field (send empty strings), remove API (always infer), or make it optional (infer if needed)?
-
 Agents MUST NOT manually set this field.
 Agents MUST NOT offer a non-deprecated public API to set it.
-If unset, MUST automatically set or override the value to `span.subtype` on span end, for all external spans.
 
-// TODO set to ${subtype}/${context.db.instance} if available?
+The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
+```groovy
+if (context.destination?.service?.resource) context.destination.service.name = subtype ?: type
+```
 
-This field is not used, but we can't just remove it as it's a required field in the intake API.
+The change to automatically set the field mainly has an effect on HTTP and gRPC spans that used to set the value to host and non-default port.
+As the field is not used anywhere, and we want to remove it from the span documents in the future, that's fine.
 
 #### `context.destination.service.resource`
 
@@ -72,31 +75,6 @@ The cardinality should be the same or higher as `span.destination.service.name`.
 Higher, if there are individual sub-resources for a service, such as individual queues for a message broker.
 Same cardinality otherwise.
 
-**Value**
-
-For all spans that may represent an exit span,
-agents MUST infer the value of this field based on properties that are set on the span.
-
-This is the logic for how to infer the value for this field.
-
-```
-if      context.destination?.service.?resource context.destination.service.resource # manually set
-else if context.http?.url                      "${context.http.url.host}:${context.http.url.port}"
-else if context.db?.instance                   "${subtype}/${context.db?.instance}"
-else if context.message?.queue?.name           "${subtype}/${context.message.queue.name}"
-else if context.destination || exit            subtype
-else                                           null # this is not an exit span
-```
-
-The inference of this field SHOULD be implemented in a central place within the agent,
-such as an on-span-end-callback or the setter of a dependant property,
-rather than being implemented for each individual library integration/instrumentation.
-
-For specific technologies, the field MAY be set non-centrally.
-However, updating the generic inference logic SHOULD be preferred, if feasible.
-Setting the value within a specific library integration/instrumentation is perfectly fine is if there's only one canonical library for it.
-Examples: gRPC and cloud-provider specific backends.
-
 **API**
 
 Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not sufficient.
@@ -107,25 +85,60 @@ without users having to specify any destination field,
 agents SHOULD offer a dedicated API to start an exit span.
 This API sets the `exit` flag to `true` and returns `null` or a noop span in case the parent already represents an `exit` span.
 
+**Value**
+
+For all exit spans,
+agents MUST infer the value of this field based on properties that are set on the span.
+
+This is how to determine whether a span is an exit span:
+```groovy
+exit = exit || context.destination || context.db || context.message
+```
+
+For each exit span that does not have a value for `context.destination.service.resource`,
+agents MUST run this logic to infer the value.
+```groovy
+if      (context.http?.url)            "${context.http.url.host}:${context.http.url.port}"
+else if (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
+else if (context.message?.queue?.name) "${subtype ?: type}/${context.message.queue.name}"
+else                                   subtype ?: type
+```
+
+The inference of `context.destination.service.resource` SHOULD be implemented in a central place within the agent,
+such as an on-span-end-callback or the setter of a dependant property,
+rather than being implemented for each individual library integration/instrumentation.
+
+For specific technologies, the field MAY be set non-centrally.
+However, updating the generic inference logic SHOULD be preferred, if feasible.
+Setting the value within a specific library integration/instrumentation is perfectly fine is if there's only one canonical library for it.
+Examples: gRPC and cloud-provider specific backends.
+
 #### `context.destination.service.type`
 
 ES field: `span.destination.service.type`
 
-Type of the destination service, e.g. `db`, `elasticsearch`.
-Should typically be the same as `span.type`.
+Type of the destination service.
 
-**Usage**
+**Deprecated**
 
-Currently, this field is not used anywhere within the product.
-It was originally intended to be used to display different icons on the service map.
+This field is deprecated and scheduled to be removed.
+
+This field is not used anywhere within the product,
+and we don't have plans to do so.
+However, we can't just remove it as it's a required field in the intake API.
+
+Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
+Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
 
 **Value**
 
-// TODO Remove the field (send empty strings), remove API (always infer), or make it optional (infer if needed)?
-
 Agents MUST NOT manually set this field.
 Agents MUST NOT offer a non-deprecated public API to set it.
-If unset, agents MUST automatically set the value to `span.type` on span end for all external spans.
+
+The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
+```groovy
+if (context.destination?.service?.resource) context.destination.service.type = type
+```
 
 ### Destination fields
 
