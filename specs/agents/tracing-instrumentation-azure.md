@@ -350,7 +350,7 @@ The offical Azure SDKs generally use AMQP for sending and receiving messages.
 
 ### Typing
 
-A new span is created when there is a current transaction, and when a message is sent or scheduled to a queue or topic subscription
+A new span is created when there is a current transaction, and when a message is sent or scheduled to a queue or topic
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
@@ -365,12 +365,12 @@ A new span is created when there is a current transaction, and when a message is
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL scheme and host | | `https://namespace.servicebus.windows.net/` |
 | `context.destination.service.name` | yes | azureservicebus | | | 
-| `context.destination.service.resource` | yes | azureservicebus/`<Queue>`\|`<Topic and Subscription>` | | `azurequeue/myqueue`, `azureservicebus/mytopic/Subscriptions/mysubscription` |
+| `context.destination.service.resource` | yes | azureservicebus/`<Queue>`\|`<Topic>` | | `azurequeue/myqueue`, `azureservicebus/mytopic` |
 | `context.destination.service.type` | yes | `messaging` | | | 
 
 ----
 
-A new transaction is created when one or more messages are received or receive deferred from a queue
+A new transaction is created when one or more messages are received or receive deferred from a queue or topic subscription
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
