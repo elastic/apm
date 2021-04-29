@@ -12,7 +12,7 @@
 ## Database and Datastore spans
 
 We capture spans for various types of database/data-stores operations, such as SQL queries, Elasticsearch queries, is commands, etc. 
-Database and datastore spans **must not have child spans** (within the same transaction), e.g. they must be exit spans for the service.
+Database and datastore spans **must not have child spans that have a different `type` or `subtype`** within the same transaction (see [span-spec](tracing-spans.md)).
 
 The following fields are relevant for database and datastore spans. Where possible, agents should provide information for as many as possible of these fields. The semantics of and concrete values for these fields may vary between different technologies. See sections below for details on specific technologies.
 
