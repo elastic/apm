@@ -67,10 +67,10 @@ The following fields are relevant for database and datastore spans. Where possib
 
 | Field | Value / Examples | Comments |
 |-------|:---------------:|----------|
-|`name`| e.g. `S3 GetObject my-bucket`|  The span name should follow this pattern: `S3 <OperationName> <bucket-name>.` Note that the operation name is in CamelCase. |
+|`name`| e.g. `S3 GetObject my-bucket`|  The span name should follow this pattern: `S3 <OperationName> <bucket-name>.` Note that the operation name is in PascalCase. |
 |`type`|`storage`|
 |`subtype`|`s3`|
-|`action`| e.g. `GetObject` | The operation name in CamelCase. |
+|`action`| e.g. `GetObject` | The operation name in PascalCase. |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `us-east-1` | The AWS region where the table is. |
 |`_.statement`| :heavy_minus_sign: |  |
