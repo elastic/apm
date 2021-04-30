@@ -34,8 +34,10 @@ number of containers. Although blob storage is a flat storage scheme
 (only one level of containers), blob names can include path segments (`/`),
 providing a _virtual_ hierarchy.
 
-A resource name is the full name of the container and blob. For example, Given container `foo` and blob `bar/baz`, the resource name
+`<ResourceName>` is the full name of the container and blob. For example, Given container `foo` and blob `bar/baz`, the resource name
 is `foo/bar/baz`.
+
+`<Storage Account Name>` is the leftmost subdomain of the domain of an Azure storage account endpoint.
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
@@ -50,7 +52,7 @@ is `foo/bar/baz`.
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL scheme and host | | `https://accountname.blob.core.windows.net/` |
 | `context.destination.service.name` | yes | `azureblob` | | | 
-| `context.destination.service.resource` | yes | `azureblob/<ResourceName>` | | `azureblob/foo/bar` |
+| `context.destination.service.resource` | yes | `azureblob/<Storage Account Name>` | | `azureblob/storage-account-name` |
 | `context.destination.service.type` | yes | `storage` | | | 
 
 
@@ -62,12 +64,12 @@ Azure service endpoints for blob storage have one of the following host names
 
 | Cloud | Azure Service Endpoint |
 | ----- | ---------------------- |
-| Azure Global | `<account>.blob.core.windows.net` |
-| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.blob.core.usgovcloudapi.net` |
-| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.blob.core.chinacloudapi.cn` |
-| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.blob.core.cloudapi.de` |
+| Azure Global | `<Storage Account Name>.blob.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<Storage Account Name>.blob.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<Storage Account Name>.blob.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<Storage Account Name>.blob.core.cloudapi.de` |
 
-where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+where `<Storage Account Name>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
 
 Rules derived from the [Blob service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api). The rules determine the operation name based
 on the presence of data in the HTTP request
@@ -166,12 +168,12 @@ Azure service endpoints for queue storage have one of the following host names
 
 | Cloud | Azure Service Endpoint |
 | ----- | ---------------------- |
-| Azure Global | `<account>.queue.core.windows.net` |
-| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.queue.core.usgovcloudapi.net` |
-| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.queue.core.chinacloudapi.cn` |
-| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.queue.core.cloudapi.de` |
+| Azure Global | `<Storage Account Name>.queue.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<Storage Account Name>.queue.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<Storage Account Name>.queue.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<Storage Account Name>.queue.core.cloudapi.de` |
 
-where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+where `<Storage Account Name>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
 
 Rules derived from the [Queue service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/queue-service-rest-api)
 
@@ -212,6 +214,8 @@ Entities are similar to rows and properties are similar to columns.
 - tablename
 - tablename(PartitionKey='partitionkey', RowKey='rowkey')
 
+`<Storage Account Name>` is the leftmost subdomain of the domain of an Azure storage account endpoint.
+
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
 | `span.name` | yes | `AzureTable <OperationName> <ResourceName>` | Pascal case Operation name | `AzureTable Insert tablename` |
@@ -225,7 +229,7 @@ Entities are similar to rows and properties are similar to columns.
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL scheme and host | | `https://accountname.table.core.windows.net/` |
 | `context.destination.service.name` | yes | `azuretable` | | | 
-| `context.destination.service.resource` | yes | `azuretable/<ResourceName>` | | `azuretable/foo` |
+| `context.destination.service.resource` | yes | `azuretable/<Storage Account Name>` | | `azuretable/storage-account-name` |
 | `context.destination.service.type` | yes | `storage` | | |
 
 #### Determining operations
@@ -234,12 +238,12 @@ Azure service endpoints for table storage have one of the following host names
 
 | Cloud | Azure Service Endpoint |
 | ----- | ---------------------- |
-| Azure Global | `<account>.table.core.windows.net` |
-| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.table.core.usgovcloudapi.net` |
-| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.table.core.chinacloudapi.cn` |
-| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.table.core.cloudapi.de` |
+| Azure Global | `<Storage Account Name>.table.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<Storage Account Name>.table.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<Storage Account Name>.table.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<Storage Account Name>.table.core.cloudapi.de` |
 
-where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+where `<Storage Account Name>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
 
 Rules derived from the [Table service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/table-service-rest-api)
 
@@ -270,6 +274,8 @@ machines in the cloud or on-premises.
 
 The `<ResourceName>` is determined from the path of the URL.
 
+`<Storage Account Name>` is the leftmost subdomain of the domain of an Azure storage account endpoint.
+
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
 | `span.name` | yes | `AzureFile <OperationName> <ResourceName>` | Pascal case Operation name | `AzureFile Create directoryname` |
@@ -283,7 +289,7 @@ The `<ResourceName>` is determined from the path of the URL.
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL scheme and host | | `https://accountname.file.core.windows.net/` |
 | `context.destination.service.name` | yes | `azurefile` | | | 
-| `context.destination.service.resource` | yes | `azurefile/<ResourceName>` | | `azurefile/foo` |
+| `context.destination.service.resource` | yes | `azurefile/<Storage Account Name>` | | `azurefile/storage-account-name` |
 | `context.destination.service.type` | yes | `storage` | | |
 
 #### Determining operations
@@ -292,12 +298,12 @@ Azure service endpoints for file share storage have one of the following host na
 
 | Cloud | Azure Service Endpoint |
 | ----- | ---------------------- |
-| Azure Global | `<account>.file.core.windows.net` |
-| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<account>.file.core.usgovcloudapi.net` |
-| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<account>.file.core.chinacloudapi.cn` |
-| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<account>.table.file.cloudapi.de` |
+| Azure Global | `<Storage Account Name>.file.core.windows.net` |
+| [Azure Government](https://docs.microsoft.com/en-us/azure/azure-government/documentation-government-developer-guide) | `<Storage Account Name>.file.core.usgovcloudapi.net` |
+| [Azure China](https://docs.microsoft.com/en-us/azure/china/resources-developer-guide) |`<Storage Account Name>.file.core.chinacloudapi.cn` |
+| [Azure Germany](https://docs.microsoft.com/en-us/azure/germany/germany-developer-guide) | `<Storage Account Name>.table.file.cloudapi.de` |
 
-where `<account>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
+where `<Storage Account Name>` is the name of the storage account. New Azure service endpoints may be introduced by Azure later.
 
 Rules derived from the [File service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/file-service-rest-api).
 
