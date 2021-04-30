@@ -352,7 +352,7 @@ Azure Service Bus can use the following protocols
 - Advanced Message Queuing Protocol 1.0 (AMQP)
 - Hypertext Transfer Protocol 1.1 with TLS (HTTPS)
 
-The offical Azure SDKs generally use AMQP for sending and receiving messages.
+The offical Azure SDKs _generally_ use AMQP for sending and receiving messages.
 
 ### Typing
 
@@ -360,7 +360,7 @@ A new span is created when there is a current transaction, and when a message is
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `span.name` | yes | `AzureServiceBus <OperationName> to <Queue|Topic and Subscription>` | Upper case Operation name | `AzureServiceBus SEND to queuename` |
+| `span.name` | yes | `AzureServiceBus <OperationName> to <Queue|Topic>` | Upper case Operation name | `AzureServiceBus SEND to queuename` |
 | `span.type` | yes | `messaging` | | |
 | `span.subtype` | yes | `azureservicebus` | | |
 | `span.action` | yes | `<OperationName>` | lower case | `send` |
@@ -380,7 +380,7 @@ A new transaction is created when one or more messages are received or receive d
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `transaction.name` | yes | AzureServiceBus `<OperationName>` from `<Queue>`\|`<Topic and Subscription>` | Upper case Operation name | `AzureServiceBus RECEIVE from queuename` |
+| `transaction.name` | yes | AzureServiceBus `<OperationName>` from `<Queue>`\|`<Topic Subscription>` | Upper case Operation name | `AzureServiceBus RECEIVE from queuename` |
 | `transaction.type` | yes | `messaging` | | |
 
 
@@ -411,8 +411,10 @@ Transaction and span names *should* follow these patterns:
 
 For send and schedule,
 
-- AzureServiceBus SEND|SCHEDULE to `<Queue>`|`<Topic>`
+- AzureServiceBus SEND|SCHEDULE to `<Queue>`
+- AzureServiceBus SEND|SCHEDULE to `<Topic>`
 
 For receive and receive deferred,
 
-- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<Queue>`|`<Topic>`/Subscriptions/`<Subscription>`
+- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<Queue>`
+- AzureServiceBus RECEIVE|RECEIVEDEFERRED from `<Topic>`/Subscriptions/`<Subscription>`
