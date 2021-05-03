@@ -70,3 +70,48 @@ To handle edge cases where many spans are captured within a single transaction, 
 ```
 
 Here's how the limit can be configured for [Node.js](https://www.elastic.co/guide/en/apm/agent/nodejs/current/agent-api.html#transaction-max-spans) and [Python](https://www.elastic.co/guide/en/apm/agent/python/current/configuration.html#config-transaction-max-spans).
+
+### Exit spans
+
+Exit spans are spans that describe a call to an external service,
+such as an outgoing HTTP request or a call to a database.
+
+#### Child spans of exit spans
+
+Exit spans MUST not have child spans that have a different `type` or `subtype`.
+For example, when capturing a span representing a query to Elasticsearch,
+there should not be an HTTP span for the same operation.
+Doing that would make [breakdown metrics](https://github.com/elastic/apm/blob/master/specs/agents/metrics.md#transaction-and-span-breakdown)
+less meaningful,
+as most of the time would be attributed to `http` instead of `elasticsearch`.
+
+Agents MAY add information from the lower level transport to the exit span, though.
+For example, the HTTP `context.http.status_code` may be added to an `elasticsearch` span.
+
+Exit spans MAY have child spans that have the same `type` and `subtype`.
+For example, an HTTP exit span may have child spans with the `action` `request`, `response`, `connect`, `dns`.
+These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
+
+Most agents would want to treat exit spans as leaf spans, though.
+This brings the benefit of being able to compress repetitive exit spans (TODO link to span compression spec once available),
+as span compression is only applicable to leaf spans.
+
+Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
+For example, agents MAY implement internal (or even public) APIs to mark a span as an exit or leaf span.
+Agents can then prevent the creation of a child span of a leaf/exit span.
+This can help to drop nested HTTP spans for instrumented calls that use HTTP as the transport layer (for example Elasticsearch).
+
+#### Context propagation
+
+As a general rule, when agents are tracing an exit span where the downstream service is known not to continue the trace,
+they SHOULD NOT propagate the trace context via the underlying protocol.
+
+Example: for Elasticsearch requests, which use HTTP as the transport, agents should not add `traceparent` headers to the outgoing HTTP request.
+However, when tracing a regular outgoing HTTP request (one that's not initiated by an exit span),
+and it's unknown whether the downsteam service continues the trace,
+the trace headers should be added.
+
+The reason is that spans cannot be compressed (TODO link to span compression spec once available) if the context has been propagated, as it may lead to orphaned transactions.
+That means that the `parent.id` of a transaction may refer to a span that's not available because it has been compressed (merged with another span).
+
+There can, however, be exceptions to this rule whenever it makes sense. For example, if it's known that the backend system can continue the trace.
