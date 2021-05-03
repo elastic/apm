@@ -98,9 +98,9 @@ exit = exit || context.destination || context.db || context.message
 For each exit span that does not have a value for `context.destination.service.resource`,
 agents MUST run this logic to infer the value.
 ```groovy
-if      (context.http?.url)            "${context.http.url.host}:${context.http.url.port}"
-else if (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
+if      (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
 else if (context.message?.queue?.name) "${subtype ?: type}/${context.message.queue.name}"
+else if (context.http?.url)            "${context.http.url.host}:${context.http.url.port}"
 else                                   subtype ?: type
 ```
 
