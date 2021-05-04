@@ -110,7 +110,7 @@ rather than being implemented for each individual library integration/instrument
 
 For specific technologies, the field MAY be set non-centrally.
 However, updating the generic inference logic SHOULD be preferred, if feasible.
-Setting the value within a specific library integration/instrumentation is perfectly fine is if there's only one canonical library for it.
+Setting the value within a specific library integration/instrumentation is perfectly fine if there's only one canonical library for it.
 Examples: gRPC and cloud-provider specific backends.
 
 #### `context.destination.service.type`
