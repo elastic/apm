@@ -37,7 +37,19 @@ app as ECS-compatible json, as shown in the
 [spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
 
 For all options other than `off`, the [log correlation](log-correlation.md) should be implicitly enabled.
-### Required fields
+
+## `log_ecs_formatter_allow_list` configuration
+
+Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_reformatting` is set to any option other than `OFF`. A "formatter" is a generic name used to describe the logging-framework-specific entity that is responsible for the formatting of log events. For example, in some Java frameworks those would be subtypes of `Layout` or `Encoder`.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | agent specific |
+| Dynamic        | `false` |
+| Central config | `false` |
+
+## Required fields
 
 The following fields are required:
 
@@ -46,12 +58,12 @@ The following fields are required:
 * `message`
 * `ecs.version`
 
-### Recommended fields
+## Recommended fields
 
 The following fields are important for a good user experience in Kibana,
 but will not cause errors if they are omitted:
 
-#### `service.name`
+### `service.name`
 
 Agents should always populate `service.name` even if there is not an active
 transaction.
@@ -60,7 +72,7 @@ The `service.name` is used to be able to add a logs tab to the service view in
 the UI. This lets users quickly get a stream of all logs for a particular
 service.
 
-#### `event.dataset`
+### `event.dataset`
 
 The `event.dataset` field is used  to power the [log anomaly chart in the logs UI](https://www.elastic.co/guide/en/observability/current/inspect-log-anomalies.html#anomalies-chart).
 The dataset can also be useful to filter for different log streams from the same pod, for example.
