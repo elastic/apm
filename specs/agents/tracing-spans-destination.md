@@ -92,7 +92,7 @@ agents MUST infer the value of this field based on properties that are set on th
 
 This is how to determine whether a span is an exit span:
 ```groovy
-exit = exit || context.destination || context.db || context.message
+exit = exit || context.destination || context.db || context.message || context.http
 ```
 
 For each exit span that does not have a value for `context.destination.service.resource`,
