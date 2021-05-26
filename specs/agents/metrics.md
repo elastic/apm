@@ -55,3 +55,8 @@ When capturing runtime metrics, keep in mind the end use-case: how will they be 
 ### Transaction and span breakdown
 
 Agents should record "breakdown metrics", which is a summarisation of how much time is spent per span type/subtype in each transaction group. This is described in detail in the [Breakdown Graphs](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt) document, so we do not repeat it here.
+
+## Shutdown behavior
+
+Agents should make an effort to flush any metrics before shutting down.
+If this cannot be achieved with shutdown hooks provided by the language/runtime, the agent should provide a public API that the user can call to flush any remaining data.
