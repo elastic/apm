@@ -1,0 +1,114 @@
+{
+  "app": {
+    "subtypes": {
+      "inferred": {
+        "comment": "Sampling profiler inferred spans"
+      }
+    }
+  },
+  "custom": {
+    "comment": "API custom instrumentation"
+  },
+  "db": {
+    "comment": "database span",
+    "subtypes": {
+      "cassandra": {
+        "comment": "Cassandra"
+      },
+      "cosmosdb": {
+        "comment": "Azure CosmosDB"
+      },
+      "db2": {
+        "comment": "IBM DB2"
+      },
+      "dynamodb": {
+        "comment": "AWS DynamoDB"
+      },
+      "elasticsearch": {
+        "comment": "Elasticsearch"
+      },
+      "h2": {
+        "comment": "H2"
+      },
+      "mariadb": {
+        "comment": "MariaDB"
+      },
+      "mongodb": {
+        "comment": "MongoDB"
+      },
+      "mysql": {
+        "comment": "MySQL"
+      },
+      "oracle": {
+        "comment": "Oracle Database"
+      },
+      "postgresql": {
+        "comment": "PostgreSQL"
+      },
+      "redis": {
+        "comment": "Redis"
+      },
+      "sqlserver": {
+        "comment": "Microsoft SQL Server"
+      }
+    }
+  },
+  "external": {
+    "subtypes": {
+      "dubbo": {
+        "comment": "Apache Dubbo"
+      },
+      "grpc": {
+        "comment": "gRPC"
+      },
+      "http": {
+        "comment": "HTTP client"
+      }
+    }
+  },
+  "messaging": {
+    "subtypes": {
+      "azurequeue": {
+        "comment": "Azure Queue"
+      },
+      "azureservicebus": {
+        "comment": "Azure Service Bus"
+      },
+      "jms": {
+        "comment": "Java Messaging Service"
+      },
+      "kafka": {
+        "comment": "Apache Kafka"
+      },
+      "rabbitmq": {
+        "comment": "RabbitMQ"
+      },
+      "sns": {
+        "comment": "AWS Simple Notification Service"
+      },
+      "sqs": {
+        "comment": "AWS Simple Queue Service"
+      }
+    }
+  },
+  "process": {
+    "comment": "External process"
+  },
+  "storage": {
+    "subtypes": {
+      "azurefile": {
+        "comment": "Azure Files"
+      },
+      "azuresblob": {
+        "comment": "Azure Blob Storage"
+      },
+      "s3": {
+        "comment": "AWS S3"
+      }
+    }
+  },
+  "template": {
+    "comment": "Template engines (no sub-type as really platform-specific)"
+  }
+}
+
