@@ -12,48 +12,6 @@ Spans will also have a `transaction_id`, which is the `id` of the current
 transaction. While not necessary for distributed tracing, this inclusion allows
 for simpler and more performant UI queries.
 
-### Span type and sub-type
-
-Span `type` is mandatory, `subtype` is optional, both can be set to any value by end-user when creating spans.
-
-For the supported technologies, we have to reuse the same `type` and `subtype` across agents:
-- when `type` is not in this table, then any subtype (or none) can be used
-- when `type` is in this table and `subtype` is `*`, then any sub-type value (or none) is allowed for the type
-- when `type` is in this table and `subtype` is not `*`, then sub-type must be one of the listed values
-
-| `type`        | `subtype`           | Description                       |
-| ------------- | ------------------- | --------------------------------- |
-| `app`         | `inferred`          |  Sampling profiler inferred spans |
-| `custom`      | `*`                 |  API custom instrumentation       |
-| `db`          | `cassandra`         |  Cassandra                        |
-| `db`          | `cosmosdb`          |  Azure CosmosDB                   |
-| `db`          | `db2`               |  IBM DB2                          |
-| `db`          | `dynamodb`          |  AWS DynamoDB                     |
-| `db`          | `elasticsearch`     |  Elasticsearch                    |
-| `db`          | `h2`                |  H2                               |
-| `db`          | `mariadb`           |  MariaDB                          |
-| `db`          | `mongodb`           |  MongoDB                          |
-| `db`          | `mysql`             |  MySQL                            |
-| `db`          | `oracle`            |  Oracle Database                  |
-| `db`          | `postgresql`        |  PostgreSQL                       |
-| `db`          | `redis`             |  Redis                            |
-| `db`          | `sqlserver`         |  Microsoft SQL Server             |
-| `external`    | `dubbo`             |  Apache Dubbo                     |
-| `external`    | `grpc`              |  gRPC                             |
-| `external`    | `http`              |  HTTP client                      |
-| `messaging`   | `azurequeue`        |  Azure Queue                      |
-| `messaging`   | `azureservicebus`   |  Azure Service Bus                |
-| `messaging`   | `jms`               |  Java Messaging Service           |
-| `messaging`   | `kafka`             |  Apache Kafka                     |
-| `messaging`   | `rabbitmq`          |  RabbitMQ                         |
-| `messaging`   | `sns`               |  AWS Simple Notification Service  |
-| `messaging`   | `sqs`               |  AWS Simple Queue Service         |
-| `process`     | `*`                 |  External process                 |
-| `storage`     | `azurefile`         |  Azure Files                      |
-| `storage`     | `azuresblob`        |  Azure Blob Storage               |
-| `storage`     | `s3`                |  AWS S3                           |
-| `template`    | `*`                 |  Template engines                 |
-
 ### Span outcome
 
 The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates

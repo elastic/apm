@@ -152,6 +152,10 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.type`|`db`|
 |`_.service.resource`| `redis` |
 
+### Azure CosmosDB
+
+TODO
+
 ### SQL Databases 
 
 | Field | Common values / patterns for all SQL DBs | Comments |
@@ -170,9 +174,9 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.type`|`db`|
 
-| Field | MySQL | PostgreSQL | MS SQL | Oracle | MariaDB | IBM Db2 |
-|-------|:-----:|:----------:|:------:|:------:|:-------:|:-------:|
-|`subtype`|`mysql`| `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |
-| __**context.destination._**__ |<hr/>|<hr/>|<hr/>|<hr/> |<hr/>|<hr/>|
-|`_.service.name`| `mysql` | `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |
-|`_.service.resource` | `mysql` | `postgresql` | `sqlserver` | `oracle` |`mariadb` | `db2` |
+| Field | MySQL | PostgreSQL | MS SQL | Oracle | MariaDB | IBM Db2 | H2 |
+|-------|:-----:|:----------:|:------:|:------:|:-------:|:-------:|:-------:|
+|`subtype`|`mysql`| `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `h2` |
+| __**context.destination._**__ |<hr/>|<hr/>|<hr/>|<hr/> |<hr/>|<hr/>|<hr/>|
+|`_.service.name`| `mysql` | `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |`h2` |
+|`_.service.resource` | `mysql` | `postgresql` | `sqlserver` | `oracle` |`mariadb` | `db2` |`h2` |
