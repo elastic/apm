@@ -1,5 +1,14 @@
 {
+  "__description": {
+    "<type>": "root element for type identified by '<type>'",
+    "<type>.comment": "description for '<type>' (optional)",
+    "<type>.optional_subtype": "true to allow null subtype, false by default if omitted",
+    "<type>.subtypes": "root element for sub-types of type '<type', if omitted or empty subtype must be null",
+    "<type>.subtypes.<subtype>": "sub-type element for <subtype>",
+    "<type>.subtypes.<subtype>.comment": "description of <subtype> subtype (optional)"
+  },
   "app": {
+    "optional_subtype": true,
     "subtypes": {
       "inferred": {
         "comment": "Sampling profiler inferred spans"
@@ -7,6 +16,7 @@
     }
   },
   "custom": {
+    "optional_subtype": true,
     "comment": "API custom instrumentation"
   },
   "db": {
@@ -21,6 +31,9 @@
       "db2": {
         "comment": "IBM DB2"
       },
+      "derby": {
+        "comment": "Apache Derby"
+      },
       "dynamodb": {
         "comment": "AWS DynamoDB"
       },
@@ -29,6 +42,12 @@
       },
       "h2": {
         "comment": "H2"
+      },
+      "hsqldb": {
+        "comment": "HSQLDB"
+      },
+      "ingres": {
+        "comment": "Ingres"
       },
       "mariadb": {
         "comment": "MariaDB"
@@ -50,6 +69,9 @@
       },
       "sqlserver": {
         "comment": "Microsoft SQL Server"
+      },
+      "unknown": {
+        "comment": "Unknown database"
       }
     }
   },
@@ -67,6 +89,7 @@
     }
   },
   "messaging": {
+    "comment": "Messaging",
     "subtypes": {
       "azurequeue": {
         "comment": "Azure Queue"
@@ -108,7 +131,6 @@
     }
   },
   "template": {
-    "comment": "Template engines (no sub-type as really platform-specific)"
+    "comment": "Template engines (no sub-type for now as really platform-specific)"
   }
 }
-
