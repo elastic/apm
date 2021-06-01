@@ -36,7 +36,12 @@ When this option is set to `override`, the agent should format all logs from the
 app as ECS-compatible json, as shown in the
 [spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
 
-For all options other than `off`, the [log correlation](log-correlation.md) should be implicitly enabled.
+### Implicit effects
+
+Whenever `log_ecs_formatting` is set to anything other than `off`:
+* the [log correlation](log-correlation.md) config option should be implicitly enabled
+* agent logs should be ECS-formatted as well
+
 ### Required fields
 
 The following fields are required:
