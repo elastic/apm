@@ -1,8 +1,8 @@
-# GraphQL transactions and spans
+## GraphQL transactions and spans
 
 **NB:** This document is not guaranteed to be final.
 
-## Problems with our current approach
+### Problems with our current approach
 
 Grouping transactions by HTTP method and path fits perfectly for REST-style APIs and the like.
 
@@ -46,13 +46,13 @@ Content-Type: application/json
 
 **Sidenote:** The Node.js agent already supports GraphQL. This document is written with that in mind but not necessarily with its implementation as a target result.
 
-## Transactions
+### Transactions
 
-### Prefix
+#### Prefix
 
 To distinguish GraphQL transactions from others we prefix them with `GraphQL:`.
 
-### Operation Name
+#### Operation Name
 
 It is common (and [recommended](https://graphql.org/learn/queries/#operation-name)) to provide an _Operation Name_ for queries. Here for example `UserWithComments`:
 
@@ -76,13 +76,13 @@ Transaction name examples:
 - `GraphQL: UserWithComments`
 - `GraphQL: UpdateUser`
 
-#### Sidenote: Multiple endpoints
+##### Sidenote: Multiple endpoints
 
 The Node.js implementation adds the request path to the GraphQL span names.
 
 We do not find serving multiple endpoints and using them with the same Operation Names likely enough to add it to this document.
 
-### Anonymous queries
+#### Anonymous queries
 
 An Operation Name isn't required. When one isn't provided it's hard for us to tell apart the queries.
 
@@ -121,7 +121,7 @@ To further help and nudge developers to use Operation Names for their queries, a
 Transaction name examples:
 - `GraphQL: [unnamed]`
 
-### Batching/Multiplexing queries
+#### Batching/Multiplexing queries
 
 Some clients and servers allow batching/multiplexing queries (see for example [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/#gatsby-focus-wrapper) or [dataloader](https://github.com/graphql/dataloader#batching)) allowing multiple queries to be run from the same HTTP request.
 
@@ -135,7 +135,7 @@ To avoid very long transaction names, if a request has more than five queries, w
 Transaction name examples:
 - `GraphQL: [more-than-five-queries]`
 
-## Spans
+### Spans
 
 The life cycle of responding to a GraphQL query is mostly split in two parts. First, the quer(y/ies) are read, parsed and analyzed. Second, they are executed.
 

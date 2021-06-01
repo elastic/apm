@@ -39,12 +39,14 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - Tracing
   - [Transactions](tracing-transactions.md)
   - [Spans](tracing-spans.md)
+  - [Span destination](tracing-spans-destination.md)
   - [Sampling](tracing-sampling.md)
   - [Distributed tracing](tracing-distributed-tracing.md)
   - [Tracer API](tracing-api.md)
   - Instrumentation
       - [Databases](tracing-instrumentation-db.md)
       - [HTTP](tracing-instrumentation-http.md)
+      - [Messaging systems](tracing-instrumentation-messaging.md)
       - [gRPC](tracing-instrumentation-grpc.md)
       - [GraphQL](tracing-instrumentation-graphql.md)
 - [Error/exception tracking](error-tracking.md)

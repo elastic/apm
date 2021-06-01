@@ -17,3 +17,5 @@ agents:
   - REPO: "apm-agent-ruby"
     FEATURES_PATH: "features"
     JSON_SPECS_PATH: "spec/fixtures"
+  - REPO: "apm-agent-nodejs"
+    JSON_SPECS_PATH: "test/fixtures/json-specs"
