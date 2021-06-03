@@ -50,7 +50,7 @@ is `foo/bar/baz`.
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `context.destination.address` | yes | URL host | | `https://accountname.blob.core.windows.net/` |
+| `context.destination.address` | yes | URL host | | `accountname.blob.core.windows.net` |
 | `context.destination.service.name` | yes | `azureblob` | | | 
 | `context.destination.service.resource` | yes | `azureblob/<Storage Account Name>` | | `azureblob/accountname` |
 | `context.destination.service.type` | yes | `storage` | | | 
@@ -141,7 +141,7 @@ A new span is created when there is a current transaction, and when a message is
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `context.destination.address` | yes | URL host | | `accountname.queue.core.windows.net/` |
+| `context.destination.address` | yes | URL host | | `accountname.queue.core.windows.net` |
 | `context.destination.service.name` | yes | `azurequeue` | | | 
 | `context.destination.service.resource` | yes | `azurequeue/<QueueName>` | | `azurequeue/accountname` |
 | `context.destination.service.type` | yes | `messaging` | | | 
@@ -227,7 +227,7 @@ Entities are similar to rows and properties are similar to columns.
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `context.destination.address` | yes | URL host | | `accountname.table.core.windows.net/` |
+| `context.destination.address` | yes | URL host | | `accountname.table.core.windows.net` |
 | `context.destination.service.name` | yes | `azuretable` | | | 
 | `context.destination.service.resource` | yes | `azuretable/<Storage Account Name>` | | `azuretable/accountname` |
 | `context.destination.service.type` | yes | `storage` | | |
@@ -287,7 +287,7 @@ The `<ResourceName>` is determined from the path of the URL.
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `context.destination.address` | yes | URL host | | `accountname.file.core.windows.net/` |
+| `context.destination.address` | yes | URL host | | `accountname.file.core.windows.net` |
 | `context.destination.service.name` | yes | `azurefile` | | | 
 | `context.destination.service.resource` | yes | `azurefile/<Storage Account Name>` | | `azurefile/accountname` |
 | `context.destination.service.type` | yes | `storage` | | |
@@ -369,7 +369,7 @@ A new span is created when there is a current transaction, and when a message is
 
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
-| `context.destination.address` | yes | URL host | | `namespace.servicebus.windows.net/` |
+| `context.destination.address` | yes | URL host | | `namespace.servicebus.windows.net` |
 | `context.destination.service.name` | yes | azureservicebus | | | 
 | `context.destination.service.resource` | yes | azureservicebus/`<Queue>`\|`<Topic>` | | `azurequeue/myqueue`, `azureservicebus/mytopic` |
 | `context.destination.service.type` | yes | `messaging` | | | 
