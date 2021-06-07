@@ -78,7 +78,7 @@ Same cardinality otherwise.
 **API**
 
 Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not sufficient.
-User-supplied values MUST have the highest precedence.
+User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
 To allow for automatic inference,
 without users having to specify any destination field,
