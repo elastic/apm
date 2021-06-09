@@ -52,9 +52,9 @@ be used for instrumenting SQS, but the follow specifications supersede those of 
 
 For distributed tracing, the SQS API has "message attributes" that can be used in lieu of headers.
 
-Agents should use an attribute name of `traceparent` when sending the traceparent headers via the SQS message attributes.  Agents should use an attribute name of `tracecontext` if sending tracecontext headers in an SQS message attribute.
+Agents should use an attribute name of `traceparent` when sending the trace parent header value via the SQS message attributes.  Agents should use an attribute name of `tracestate` if sending trace state header value in an SQS message attribute.  Agents should not prefix these names with an `elastic-` namespace.
 
-SQS has a documented limit of ten message attributes per message.  Agents _should not_ add traceparent or tracestate headers to the message attributes if adding those fields would put an individual message over this limit.  Agents _should_ log a message if they omit either traceparent or tracestate due to these length limits. 
+SQS has a documented limit of ten message attributes per message.  Agents _should not_ add `traceparent` or `tracestate` headers to the message attributes if adding those fields would put an individual message over this limit.  Agents _should_ log a message if they omit either `traceparent` or `tracestate` due to these length limits. 
 
 ### SNS (AWS Simple Notification Service)
 
