@@ -58,7 +58,7 @@ Agents should default to using the non-namespaced `Traceparent` and `Tracecontex
 
 If agents attempt to automatically propagate headers when receiving messages they should check first for the non-namespaced versions, and then check for the namespaced version.  If both versions are present, agents should prefer the non-namespaced versions and ignore the namespaced versions.
 
-SQS has a documented limit of ten message attributes per message.  Agents _should not_ add traceparent or tracecontext headers to the message attributes if adding those fields would put an individual message over this limit.
+SQS has a documented limit of ten message attributes per message.  Agents _should not_ add traceparent or tracestate headers to the message attributes if adding those fields would put an individual message over this limit.  Agents _should_ log a message if they omit either traceparent or tracestate due to these length limits. 
 
 ### SNS (AWS Simple Notification Service)
 
