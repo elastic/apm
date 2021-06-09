@@ -52,11 +52,7 @@ be used for instrumenting SQS, but the follow specifications supersede those of 
 
 For distributed tracing, the SQS API has "message attributes" that can be used in lieu of headers.
 
-Agents should use an attribute name of `Traceparent` or `Elastic-Trace-Parent` when sending the traceparent headers via the SQS message attributes.  Agents should use an attribute name of `Tracecontext` or `Elastic-Trace-Context` if sending tracecontext headers in an SQS message attribute.
-
-Agents should default to using the non-namespaced `Traceparent` and `Tracecontext` versions of the attribute names.  Agents should use the namespaced versions of the attribute names only if the `use_elastic_traceparent_header` configuration value is set to `true`.
-
-If agents attempt to automatically propagate headers when receiving messages they should check first for the non-namespaced versions, and then check for the namespaced version.  If both versions are present, agents should prefer the non-namespaced versions and ignore the namespaced versions.
+Agents should use an attribute name of `traceparent` when sending the traceparent headers via the SQS message attributes.  Agents should use an attribute name of `tracecontext` if sending tracecontext headers in an SQS message attribute.
 
 SQS has a documented limit of ten message attributes per message.  Agents _should not_ add traceparent or tracestate headers to the message attributes if adding those fields would put an individual message over this limit.  Agents _should_ log a message if they omit either traceparent or tracestate due to these length limits. 
 
