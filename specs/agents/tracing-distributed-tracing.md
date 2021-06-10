@@ -176,3 +176,4 @@ backwards-compatibility issues. New agents do not need to support this legacy
 name. Because `tracestate` was not implemented until the standard was
 finalized, no legacy names exist for this field.
 
+Agents that do support the legacy header MUST give precedence to the `traceparent` header if both are present.
