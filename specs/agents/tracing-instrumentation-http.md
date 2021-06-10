@@ -95,3 +95,9 @@ For both transactions and spans, if there is no HTTP status we set `outcome` fro
 
 - `failure` if an error is reported
 - `success` otherwise
+
+## Destination
+
+- `context.destination.address`: `url.host`
+- `context.destination.port`: `url.port`
+- `context.destination.service.*`: See [destination spec](tracing-spans-destination.md)
