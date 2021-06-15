@@ -33,7 +33,7 @@ polling spans, where we want to capture such as well).
   
 ### Naming
 
-Transaction and span names should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
+Transaction and span names *should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
 Examples:
 - `JMS SEND to MyQueue`
 - `RabbitMQ RECEIVE from MyQueue`**
