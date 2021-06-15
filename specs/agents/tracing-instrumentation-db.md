@@ -11,7 +11,7 @@
 
 ## Database and Datastore spans
 
-We capture spans for various types of database/data-stores operations, such as SQL queries, Elasticsearch queries, is commands, etc. 
+We capture spans for various types of database/data-stores operations, such as SQL queries, Elasticsearch queries, is commands, etc.
 Database and datastore spans **must not have child spans that have a different `type` or `subtype`** within the same transaction (see [span-spec](tracing-spans.md)).
 
 The following fields are relevant for database and datastore spans. Where possible, agents should provide information for as many as possible of these fields. The semantics of and concrete values for these fields may vary between different technologies. See sections below for details on specific technologies.
@@ -47,7 +47,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`name`| e.g. `DynamoDB UpdateItem my_table`|  The span name should capture the operation name (as used by AWS for the action name) and the table name, if available. The format should be `DynamoDB <ActionName> <TableName>`. |
 |`type`|`db`|
 |`subtype`|`dynamodb`|
-|`action`| `query` | 
+|`action`| `query` |
 | __**context.db._**__ |<hr/>|<hr/>|
 |`_.instance`| e.g. `us-east-1` | The AWS region where the table is. |
 |`_.statement`| e.g. `ForumName = :name and Subject = :sub` | For a DynamoDB Query operation, capture the KeyConditionExpression in this field. |
@@ -62,7 +62,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.type`|`db`|
 |`_.service.resource`| `dynamodb` |
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the table is, if available. |
-  
+
 ### AWS S3
 
 | Field | Value / Examples | Comments |
@@ -137,10 +137,10 @@ The following fields are relevant for database and datastore spans. Where possib
 |`name`| e.g. `GET` or `LRANGE` |  The name for Redis spans can simply be set to the command name. |
 |`type`|`db`|
 |`subtype`|`redis`|
-|`action`| `query` | 
+|`action`| `query` |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| :heavy_minus_sign: |
-|`_.statement`|  :heavy_minus_sign: | 
+|`_.statement`|  :heavy_minus_sign: |
 |`_.type`|`redis`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
@@ -152,7 +152,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.type`|`db`|
 |`_.service.resource`| `redis` |
 
-### SQL Databases 
+### SQL Databases
 
 | Field | Common values / patterns for all SQL DBs | Comments |
 |-------|:---------------:|---------------|
