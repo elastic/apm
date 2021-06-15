@@ -67,23 +67,23 @@ The following fields are relevant for database and datastore spans. Where possib
 
 | Field | Value / Examples | Comments |
 |-------|:---------------:|----------|
-|`name`| e.g. `S3 GetObject my-bucket`|  The span name should follow this pattern: `S3 <OperationName> <bucket-name>.` Note that the operation name is in PascalCase. |
+|`name`| e.g. `S3 GetObject my-bucket`|  The span name should follow this pattern: `S3 <OperationName> <bucket-name>`. Note that the operation name is in PascalCase. |
 |`type`|`storage`|
 |`subtype`|`s3`|
 |`action`| e.g. `GetObject` | The operation name in PascalCase. |
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| e.g. `us-east-1` | The AWS region where the table is. |
+|`_.instance`| e.g. `us-east-1` | The AWS region where the bucket is. |
 |`_.statement`| :heavy_minus_sign: |  |
-|`_.type`|`dynamodb`|
+|`_.type`|`s3`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
 |`_.rows_affected`| :heavy_minus_sign: |
 | __**context.destination._**__ |<hr/>|<hr/>|
-|`_.address`|e.g. `dynamodb.us-west-2.amazonaws.com`| Not available in some cases. Only set if the actual connection is available. |
-|`_.port`|e.g. `5432`| Not available in some cases. Only set if the actual connection is available. |
+|`_.address`|e.g. `s3.amazonaws.com`| Not available in some cases. Only set if the actual connection is available. |
+|`_.port`|e.g. `443`| Not available in some cases. Only set if the actual connection is available. |
 |`_.service.name`| `s3` |
 |`_.service.type`|`storage`|
-|`_.service.resource`| e.g. `accesspoint/myendpointslashes` or  `accesspoint:myendpointcolons`| The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
+|`_.service.resource`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons`| The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the bucket is. |
 
 ### Elasticsearch
