@@ -11,6 +11,7 @@
 | APM Server                | [apm-server][]        | [📘 elastic.co][apm-server-docs]        | [📂 contrib][apm-server-contrib]
 | APM UI                    | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            | [📂 contrib][apm-ui-contrib]
 | Go Agent                  | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      | [📂 contrib][apm-agent-go-contrib]
+| iOS Agent (🚧 In Development) | [apm-agent-ios][]     | [📘 elastic.co][apm-agent-ios-docs]     | [📂 contrib][apm-agent-ios-contrib]
 | Java Agent                | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    | [📂 contrib][apm-agent-java-contrib]
 | JavaScript RUM Agent      | [apm-agent-rum-js][]  | [📘 elastic.co][apm-agent-js-base-docs] | [📂 contrib][apm-agent-rum-js-contrib]
 | Node.js Agent             | [apm-agent-nodejs][]  | [📘 elastic.co][apm-agent-nodejs-docs]  | [📂 contrib][apm-agent-nodejs-contrib]
@@ -31,6 +32,10 @@
 [apm-agent-go-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-go
 [apm-agent-go-docs]: https://www.elastic.co/guide/en/apm/agent/go/current/index.html
 [apm-agent-go]: https://github.com/elastic/apm-agent-go
+
+[apm-agent-ios-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-ios
+[apm-agent-ios-docs]: https://www.elastic.co/guide/en/apm/agent/swift/current/index.html
+[apm-agent-ios]: https://github.com/elastic/apm-agent-ios
 
 [apm-agent-java-contrib]: https://github.com/elastic/apm-contrib/tree/master/apm-agent-java
 [apm-agent-java-docs]: https://www.elastic.co/guide/en/apm/agent/java/current/index.html
