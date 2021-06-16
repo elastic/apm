@@ -77,7 +77,9 @@ Same cardinality otherwise.
 
 **API**
 
-Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not sufficient.
+Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not 
+sufficient. This includes the ability to set `null` or empty values in order to entirely disable this field (e.g. in 
+order to remove a node from a service map or an external service from the dependencies table).
 User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
 To allow for automatic inference,
@@ -158,8 +160,16 @@ ES field: [`destination.address`](https://www.elastic.co/guide/en/ecs/current/ec
 
 Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::1`)
 
+Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
+This includes the ability to set `null` or empty value in order to override the automatically-set value.
+User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
+
 #### `context.destination.port`
 
 ES field: [`destination.port`](https://www.elastic.co/guide/en/ecs/current/ecs-destination.html#_destination_field_details)
 
 Port is the destination network port (e.g. 443)
+
+Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
+This includes the ability to set a non-positive value in order to override the automatically-set value.
+User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
