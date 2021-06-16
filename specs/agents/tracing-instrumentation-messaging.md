@@ -33,7 +33,7 @@ polling spans, where we want to capture such as well).
   
 ### Naming
 
-Transaction and span names should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
+Transaction and span names *should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
 Examples:
 - `JMS SEND to MyQueue`
 - `RabbitMQ RECEIVE from MyQueue`**
@@ -81,14 +81,11 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
    - Intake: key-value pairs, same like `context.request.headers`.
 - **`context.service.framework.name`**: same as `span.subtype`, but not in lowercase, e.g. `Kafka`, `RabbitMQ`
 
-#### Span context fields
+#### Span destination fields
 
 - **`context.destination.address`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.port`**: optional. Not available in some cases. Only set if the actual connection is available.
-- **`context.destination.service.name`**: mandatory. Use the framework name in lowercase, e.g. `kafka`, `rabbitmq`.
-- **`context.destination.service.resource`**: mandatory. Use the framework name in lowercase. Wherever the queue/topic/exchange name is
- available, append it with a leading `/`, for example: `kafka/myTopic`, `rabbitmq/myExchange`, `jms`.
-- **`context.destination.service.type`**: mandatory. Use `messaging`.
+- **`context.destination.service.*`**: See [destination spec](tracing-spans-destination.md)
 
 ### `ignore_message_queues` configuration
 
