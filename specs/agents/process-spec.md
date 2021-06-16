@@ -24,6 +24,8 @@ Every change that affects more than one agent should be initiated via a PR again
   After at least one more agent and one PM has approved, others have 1 week to veto by requesting changes.
   If the proposed changes are likely to be problematic for a certain agent,
   an approval from that agent is mandatory.
+  If the author of the PR deems the impact on product as negligible, approval by PM can be skipped.
+  In such a case, make sure to note in the PR that you intend to skip PM approval.
 1. Prioritization \
   At any point in time,
   but before merging the PR,
