@@ -160,9 +160,9 @@ ES field: [`destination.address`](https://www.elastic.co/guide/en/ecs/current/ec
 
 Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::1`)
 
-Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
-This includes the ability to set `null` or empty value in order to override the automatically-set value.
-User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
+Agents MAY offer a public API to set this field so that users can override the automatically discovered one. 
+This includes the ability to set `null` or empty value in order to unset the automatically-set value.
+User-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
 
 #### `context.destination.port`
 
@@ -171,5 +171,5 @@ ES field: [`destination.port`](https://www.elastic.co/guide/en/ecs/current/ecs-d
 Port is the destination network port (e.g. 443)
 
 Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
-This includes the ability to set a non-positive value in order to override the automatically-set value.
-User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
+This includes the ability to set a non-positive value in order to unset the automatically-set value.
+User-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
