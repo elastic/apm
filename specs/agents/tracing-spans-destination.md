@@ -78,8 +78,9 @@ Same cardinality otherwise.
 **API**
 
 Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not 
-sufficient. This includes the ability to set `null` or empty values in order to entirely disable this field (e.g. in 
-order to remove a node from a service map or an external service from the dependencies table).
+sufficient. If set to `null` or an empty value, agents MUST omit the `span.destination.service` field altogether, thus 
+providing a way to manually disable the automatic setting/inference of this field (e.g. in order to remove a node 
+from a service map or an external service from the dependencies table). If set to 
 User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
 To allow for automatic inference,
