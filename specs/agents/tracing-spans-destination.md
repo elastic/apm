@@ -90,8 +90,8 @@ This API sets the `exit` flag to `true` and returns `null` or a noop span in cas
 
 **Value**
 
-For all exit spans, unless the `context.destination.service.resource` was set by the user to `null` or an empty string 
-through API, agents MUST infer the value of this field based on properties that are set on the span. 
+For all exit spans, unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
+string through API, agents MUST infer the value of this field based on properties that are set on the span. 
 
 This is how to determine whether a span is an exit span:
 ```groovy
