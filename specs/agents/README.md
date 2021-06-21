@@ -40,6 +40,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Transactions](tracing-transactions.md)
   - [Spans](tracing-spans.md)
   - [Span destination](tracing-spans-destination.md)
+  - [Handling huge traces](tracing-spans-handling-huge-traces.md)
   - [Sampling](tracing-sampling.md)
   - [Distributed tracing](tracing-distributed-tracing.md)
   - [Tracer API](tracing-api.md)
