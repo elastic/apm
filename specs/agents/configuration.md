@@ -10,6 +10,22 @@ Here's a list of the config options across all agents, their types, default valu
 
 They are provided as environment variables but depending on the language there might be several feasible ways to let the user tweak them. For example besides the environment variable `ELASTIC_APM_SERVER_URL`, the Node.js Agent might also allow the user to configure the server URL via a config option named `serverUrl`, while the Python Agent might also allow the user to configure it via a config option named `server_url`.
 
+### Configuration Value Types
+
+The following table enumerates the available configuration types across the
+agents:
+
+
+| Type | Description (if needed) |
+|------|-------------------------|
+| String   |  |
+| Integer  |  |
+| Float    |  |
+| Boolean  | Encoded as a lower-case boolean string: `"false"`, `"true"` |
+| List     | Encoded as a comma-separated string: `"foo,bar,baz"` |
+| Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas: `"foo=bar,baz=foo"` |
+| Duration | String with millisecond duration encoded with optional suffixes (`ms` for millisecond, `s` for second, `m` for minute): `"5ms"` would convert to `5` in code, and `"5m"` would convert to `300000` in code. |
+
 ### APM Agent Configuration via Kibana
 
 Also known as "central configuration". Agents can query the APM Server for configuration updates; the server proxies and caches requests to Kibana.
