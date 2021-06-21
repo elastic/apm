@@ -90,22 +90,25 @@ This API sets the `exit` flag to `true` and returns `null` or a noop span in cas
 
 **Value**
 
-For all exit spans,
-agents MUST infer the value of this field based on properties that are set on the span.
+For all exit spans, unless the `context.destination.service.resource` was set by the user to `null` or an empty string 
+through API, agents MUST infer the value of this field based on properties that are set on the span. 
 
 This is how to determine whether a span is an exit span:
 ```groovy
 exit = exit || context.destination || context.db || context.message || context.http
 ```
 
-For each exit span that does not have a value for `context.destination.service.resource`,
-agents MUST run this logic to infer the value.
+If no value is set to the `context.destination.service.resource` field otherwise, the logic for automatically inferring 
+it MUST be the following:
 ```groovy
 if      (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
 else if (context.message?.queue?.name) "${subtype ?: type}/${context.message.queue.name}"
 else if (context.http?.url)            "${context.http.url.host}:${context.http.url.port}"
 else                                   subtype ?: type
 ```
+
+If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST 
+omit the `context.destination.service` field from the reported span event.
 
 The inference of `context.destination.service.resource` SHOULD be implemented in a central place within the agent,
 such as an on-span-end-callback or the setter of a dependant property,
