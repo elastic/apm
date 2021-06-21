@@ -72,7 +72,7 @@ This option is case-insensitive.
 
 |                |   |
 |----------------|---|
-| Valid options  | `-1`, `0`, [duration](configuration.md#configuration-value-types) |
+| Valid options  | `-1`, `0`, [duration](configuration.md#configuration-value-types) with default suffix `ms` |
 | Default        | `5ms` (`5`)  |
 | Dynamic        | `true` |
 | Central config | `true` |
