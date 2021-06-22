@@ -90,6 +90,9 @@ and they define properties under the `composite` context.
     - `end`: The end timestamp of the last compressed span.
       The net duration of all compressed spans is equal to the composite spans' `duration`.
       The gross duration (including "whitespace" between the spans) is equal to `compressed.end - timestamp`.
+    - `exact_match`: A boolean flag indicating whether the
+      [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy) or the
+      [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy) has been applied.
 
 #### Turning compressed spans into a composite span
 
@@ -97,12 +100,13 @@ Spans have a `compress` method.
 The first time `compress` is called on a regular span, it becomes a composite span.
 
 ```java
-void compress(Span other) {
+void compress(Span other, boolean exactMatch) {
     if (compressed.count == 0) {
         compressed.count = 2
     } else {
         compressedCount++
     }
+    compressed.exactMatch = compressed.exactMatch && exactMatch
     endTimestamp = max(endTimestamp, other.endTimestamp)
 }
 ```
@@ -173,12 +177,12 @@ we apply the [Consecutive-Exact-Match compression strategy](tracing-spans-compre
 void tryCompress(Span child) {
     if (buffered.isSameKind(child)) {
         if (buffered.name == child.name) {
-            buffered.compress(child)
+            buffered.compress(child, exactMatch: true)
             return
         } else if ( (buffered.duration <= same_kind_compression_max_duration || buffered.composite.count > 1)
                    && child.duration <= same_kind_compression_max_duration) {
             buffered.name = "Calls to $buffered.destination.service.resource"
-            buffered.compress(child)
+            buffered.compress(child, exactMatch: false)
             return
         }
     }
