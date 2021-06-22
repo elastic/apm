@@ -25,7 +25,11 @@ GET /users
  10x SELECT FROM users
 ```
 
-Two spans are considered to be an exact match if they are of the same kind and if their span names are equal.
+Two spans are considered to be an exact match if they are of the [same kind](consecutive-same-kind-compression-strategy) and if their span names are equal:
+- `type`
+- `subtype`
+- `destination.service.resource`
+- `name`
 
 ### Consecutive-Same-Kind compression strategy
 
@@ -65,7 +69,7 @@ The tradeoff is that the statement information will not be collected.
 |                |          |
 |----------------|----------|
 | Type           | `duration`|
-| Default        | `1ms`    |
+| Default        | `5ms`    |
 | Dynamic        | `true`   |
 
 ### Composite span
