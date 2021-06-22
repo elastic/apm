@@ -22,8 +22,8 @@ agents:
 | Integer  |  |
 | Float    |  |
 | Boolean  | Encoded as a lower-case boolean string: `"false"`, `"true"` |
-| List     | Encoded as a comma-separated string: `"foo,bar,baz"` |
-| Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas: `"foo=bar,baz=foo"` |
+| List     | Encoded as a comma-separated string (whitespace surrounding items should be stripped): `"foo,bar,baz"` |
+| Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas (whitespace surrounding items should be stripped): `"foo=bar,baz=foo"` |
 | Duration | String with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). |
 
 #### Duration Config Legacy Considerations

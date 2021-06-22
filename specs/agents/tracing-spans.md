@@ -73,7 +73,7 @@ This option is case-insensitive.
 |                |   |
 |----------------|---|
 | Valid options  | [duration](configuration.md#configuration-value-types) |
-| Default        | `5ms`  |
+| Default        | `5ms` (soft default, agents may modify as needed) |
 | Dynamic        | `true` |
 | Central config | `true` |
 
