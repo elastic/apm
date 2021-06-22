@@ -175,7 +175,7 @@ void tryCompress(Span child) {
         if (buffered.name == child.name) {
             buffered.compress(child)
             return
-        } else if (buffered.duration <= same_kind_compression_max_duration
+        } else if ( (buffered.duration <= same_kind_compression_max_duration || buffered.composite.count > 1)
                    && child.duration <= same_kind_compression_max_duration) {
             buffered.name = "Calls to $buffered.destination.service.resource"
             buffered.compress(child)
