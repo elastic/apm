@@ -15,3 +15,18 @@ Agents can implement several strategies to mitigate these issues:
 - [Dropping fast spans](tracing-spans-drop-fast.md)
 - [Compressing spans](tracing-spans-compress.md)
 
+In a nutshell, this is how the different settings work in combination:
+
+```java
+if (span.transaction.spanCount > transaction_max_spans) {
+    // drop span
+    // collect statistics for dropped spans
+} else if (compression possible) {
+    // apply compression
+} else if (span.duration < span_min_duration) {
+    // drop span
+    // collect statistics for dropped spans
+} else {
+    // report span
+}
+```
