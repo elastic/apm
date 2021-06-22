@@ -24,7 +24,16 @@ agents:
 | Boolean  | Encoded as a lower-case boolean string: `"false"`, `"true"` |
 | List     | Encoded as a comma-separated string: `"foo,bar,baz"` |
 | Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas: `"foo=bar,baz=foo"` |
-| Duration | String with millisecond duration encoded with optional suffixes (`ms` for millisecond, `s` for second, `m` for minute). Note that the default suffix must be defined. With a default suffix of `"m"`, `"5ms"` would convert to `5` in code, and `"5"` would convert to `300000` in code. |
+| Duration | String with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). |
+
+#### Duration Config Legacy Considerations
+
+For duration-formatted config options, some agents allow users to omit the unit
+suffix for backwards compatibility reasons. Going forward, all
+duration-formatted config options should require the unit suffix, falling back
+to the default value if an invalid value is provided.  Existing
+duration-formatted config options should be changed to require the unit suffix
+at the next major version.
 
 ### APM Agent Configuration via Kibana
 

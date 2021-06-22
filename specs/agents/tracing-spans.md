@@ -60,8 +60,8 @@ collected this can cause a significant amount of overhead in the application,
 due to the capture, rendering, and transmission of potentially large stack
 traces. It is possible to limit the recording of span stack traces to only
 spans that are slower than a specified duration, using the config variable
-`ELASTIC_APM_SPAN_STACK_TRACE_MIN_DURATION`. (Previously
-`ELASTIC_APM_SPAN_FRAMES_MIN_DURATION`.)
+`span_stack_trace_min_duration`. (Previously
+`span_frames_min_duration`.)
 
 #### `span_stack_trace_min_duration` configuration
 
@@ -72,17 +72,18 @@ This option is case-insensitive.
 
 |                |   |
 |----------------|---|
-| Valid options  | `-1`, `0`, [duration](configuration.md#configuration-value-types) with default suffix `ms` |
-| Default        | `5ms` (`5`)  |
+| Valid options  | [duration](configuration.md#configuration-value-types) |
+| Default        | `5ms`  |
 | Dynamic        | `true` |
 | Central config | `true` |
 
 A negative value will result in never capturing the stack traces.
 
-A value of 0 will result in always capturing the stack traces.
+A value of `0` (regardless of unit suffix) will result in always capturing the
+stack traces.
 
 A non-default value for this configuration option should override any value
-set for the deprecated `SPAN_FRAMES_MIN_DURATION`.
+set for the deprecated `span_frames_min_duration`.
 
 ### Span count
 
