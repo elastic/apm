@@ -159,7 +159,7 @@ void onSpanEnd() {
 
 On span end, we compare each [compression-eligible](tracing-spans-compress.md#eligibility-for-compression) span to it's previous sibling.
 
-If the spans are of the same kind but have different span names,
+If the spans are of the same kind but have different span names and the compressions-eligible span's `duration` <= `same_kind_compression_max_duration`,
 we compress them using the [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy).
 
 If the spans are of the same kind, and have the same name,
