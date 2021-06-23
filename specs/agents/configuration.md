@@ -10,6 +10,25 @@ Here's a list of the config options across all agents, their types, default valu
 
 They are provided as environment variables but depending on the language there might be several feasible ways to let the user tweak them. For example besides the environment variable `ELASTIC_APM_SERVER_URL`, the Node.js Agent might also allow the user to configure the server URL via a config option named `serverUrl`, while the Python Agent might also allow the user to configure it via a config option named `server_url`.
 
+### Configuration Scope
+
+Configuration can be provided via a number of sources. The sources and their
+precedence are as follows. Sources higher on this list will override values
+provided by sources lower on this list:
+
+ - Central configuration
+ - Environment variables
+ - Inline configuration in code
+ - Config files
+ - Default value
+
+### Invalid Configuration Values
+
+If an invalid value for a configuration option is provided (for example:
+`breakdown_metrics="yes"` or `apiRequestTime="1h"`) then the agent MUST ignore
+the value (falling back to a lower scope or default value) and SHOULD emit a
+log warning about the ignored value.
+
 ### Configuration Value Types
 
 The following table enumerates the available configuration types across the
