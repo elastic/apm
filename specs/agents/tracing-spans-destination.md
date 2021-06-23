@@ -80,8 +80,8 @@ Same cardinality otherwise.
 Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not 
 sufficient. If set to `null` or an empty value, agents MUST omit the `span.destination.service` field altogether, thus 
 providing a way to manually disable the automatic setting/inference of this field (e.g. in order to remove a node 
-from a service map or an external service from the dependencies table). If set to 
-User-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
+from a service map or an external service from the dependencies table).
+A user-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
 To allow for automatic inference,
 without users having to specify any destination field,
@@ -91,14 +91,14 @@ This API sets the `exit` flag to `true` and returns `null` or a noop span in cas
 **Value**
 
 For all exit spans, unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
-string through API, agents MUST infer the value of this field based on properties that are set on the span. 
+string through API, agents MUST infer the value of this field based on properties that are set on the span.
 
 This is how to determine whether a span is an exit span:
 ```groovy
 exit = exit || context.destination || context.db || context.message || context.http
 ```
 
-If no value is set to the `context.destination.service.resource` field otherwise, the logic for automatically inferring 
+If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
 it MUST be the following:
 ```groovy
 if      (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
@@ -166,7 +166,7 @@ Address is the destination network address: hostname (e.g. `localhost`), FQDN (e
 
 Agents MAY offer a public API to set this field so that users can override the automatically discovered one. 
 This includes the ability to set `null` or empty value in order to unset the automatically-set value.
-User-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
+A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
 
 #### `context.destination.port`
 
@@ -176,4 +176,4 @@ Port is the destination network port (e.g. 443)
 
 Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
 This includes the ability to set a non-positive value in order to unset the automatically-set value.
-User-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
+A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
