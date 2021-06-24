@@ -3,7 +3,7 @@
 To mitigate the potential flood of spans to a backend,
 agents SHOULD implement the strategies laid out in this section to avoid sending almost identical and very similar spans.
 
-While compressing multiple similar spans into a single composite span can't fully get rid of all the collection overhead,
+While compressing multiple similar spans into a single composite span can't fully eliminate the collection overhead,
 it can significantly reduce the impact on the following areas,
 with very little loss of information.
 - Agent reporter queue utilization
@@ -43,7 +43,7 @@ GET /users
  10x Calls to mysql
 ```
 
-Two span are considered to be of the same type if the following properties are equal:
+Two spans are considered to be of the same type if the following properties are equal:
 - `type`
 - `subtype`
 - `destination.service.resource`
@@ -91,13 +91,14 @@ and they define properties under the `composite` context.
       The net duration of all compressed spans is equal to the composite spans' `duration`.
       The gross duration (including "whitespace" between the spans) is equal to `compressed.end - timestamp`.
     - `exact_match`: A boolean flag indicating whether the
-      [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy) or the
-      [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy) has been applied.
+      [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy) (`false`) or the
+      [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy) (`true`) has been applied.
 
 #### Turning compressed spans into a composite span
 
 Spans have a `compress` method.
-The first time `compress` is called on a regular span, it becomes a composite span.
+The first time `compress` is called on a regular span, it becomes a composite span,
+incorporating the new span by updating the count and end timestamp.
 
 ```java
 void compress(Span other, boolean exactMatch) {
@@ -123,7 +124,7 @@ APM Server will take `composite.count` into account when tracking span destinati
 #### Eligibility for compression
 
 A span is eligible for compression if all the following conditions are met
-- It's an exit span
+- It's an [exit span](https://github.com/elastic/apm/blob/master/specs/agents/tracing-spans-destination.md#contextdestinationserviceresource)
 - The trace context of this span has not been propagated to a downstream service
 
 The latter condition is important so that we don't remove (compress) a span that may be the parent of a downstream service.
