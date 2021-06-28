@@ -9,16 +9,21 @@ distributed tracing support), or as root
 ### Passive vs. active message reception
 
 Message send/publish events can only be captured as spans if occurring within a traced transaction.
-Message consumption can be divided into two types: passive, where you would implement a listener that is called once a message is available, 
-and active, where the queue/topic is being polled (blocking or non-blocking). 
+
+Message consumption can be divided into two types: 
+
+1. **Passive**: where you would implement a listener that is called once a message is available 
+2. **Active**: where the queue/topic is being polled (blocking or non-blocking). 
 
 Passive consumption typically results in a `messaging` transaction and is pretty straightforward to trace - start at entry and end at exit. 
 
 Message polling can be done within a traced transaction, in which case it should result in a messaging span, or it can be the initiating 
-event for a message handling flow. Capturing polling spans is also mostly straightforward. 
-For polling-based transactions, our goal is to capture the message handling flow, which typically *starts after the polling action exits*, 
-returning a message. This may be tricky if the handling flow is not implemented within a well defined API. Use other agent implementation
-as reference.
+event for a message processing flow. Capturing polling spans is also mostly straightforward. 
+
+For polling-based transactions, our goal is to capture the message processing flow, which typically *starts after the polling action exits*, 
+returning a message. This may be tricky if the processing flow is not implemented within a well defined API. In such cases, it may be
+reasonable to handle message processing as a separate `process` transaction; Use other agent implementation as reference.
+
 The agent should not create a transaction based on polling APIs if the polling action did not result with a message (as opposed to 
 polling spans, where we want to capture such as well).
 
@@ -26,6 +31,7 @@ polling spans, where we want to capture such as well).
 
 - Transactions: 
   - `transaction.type`: `messaging`
+
 - Spans: 
   - `span.type`: `messaging` 
   - `span.subtype`: the name of the framework - e.g. `jms`, `kafka`, `rabbitmq` 
@@ -33,11 +39,12 @@ polling spans, where we want to capture such as well).
   
 ### Naming
 
-Transaction and span names *should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL to/from <QUEUE-NAME>`.
+Transaction and span names *should* follow this pattern: `<MSG-FRAMEWORK> SEND/RECEIVE/POLL/PROCESS to/from <QUEUE-NAME>`.
 Examples:
 - `JMS SEND to MyQueue`
 - `RabbitMQ RECEIVE from MyQueue`**
 - `RabbitMQ POLL from MyExchange`**
+- `AzureServiceBus PROCESS from MyQueue`**
 
 Agents may deviate from this pattern, as long as they ensure a proper cardinality is maintained, that is- neither too low nor too high. 
 For example, agents may choose to name all transactions/spans reading-from/sending-to temporary queues equally. 
