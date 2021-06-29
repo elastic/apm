@@ -123,31 +123,3 @@ By default, agents should send data to the APM Server at `http://localhost:8200/
 If possible, agents should detect sensible defaults for `service.name` and `service.version`.
 Even if detecting these values is not possible, a default value for `service.name` should be provided for frictionless onboarding.
 
-### Configuration options
-
-This section specifies *some* configuration options common to two or more APM
-agents. Some configuration options are discussed elsewhere in this repository
-if they better match a particular section -- for example
-[`transaction_ignore_urls`](./tracing-instrumentation-http.md#transaction_ignore_urls-configuration).
-
-#### `ELASTIC_APM_DISABLE_SEND`
-
-`ELASTIC_APM_DISABLE_SEND` is a boolean configuration option to have an APM agent
-be enabled but not communicate with an APM server. Use cases for setting this
-`true` include getting the following, **without** having deployed an APM server
-for event collection.
-
-- maintaining the ability to create traces and log trace/transaction/span IDs
-  through the log correlation feature, and
-- getting automatic distributed tracing via the https://w3c.github.io/trace-context/[W3C HTTP headers]
-
-Agents that implement this configuration option:
-
-- MUST NOT attempt to communicate with APM server. This includes central configuration.
-- MUST NOT log warnings/errors related to failures to communicate with APM server.
-- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
-  per normal.
-- MUST continue to support [log correlation](./log-correlation.md)
-- SHOULD attempt to reduce runtime overhead where possible. For example,
-  because events will be dropped there is no need to collect stack traces,
-  collect metrics, or to calculate breakdown metrics.

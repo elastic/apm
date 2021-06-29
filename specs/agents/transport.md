@@ -48,3 +48,27 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 - gzip data format (`Content-Encoding: gzip`)
 
 Agents should compress the HTTP payload by default, optimising for speed over compactness (typically known as the "best speed" level).
+
+### `disable_send` configuration
+
+`disable_send` is a boolean configuration option to have an APM agent be
+enabled, but not communicate with an APM server. Use cases for setting this
+`true` include getting the following, **without** having deployed an APM server
+for event collection.
+
+- maintaining the ability to create traces and log trace/transaction/span IDs
+  through the log correlation feature, and
+- getting automatic distributed tracing via the
+  [W3C trace-context headers](https://w3c.github.io/trace-context/)
+
+Agents that implement this configuration option:
+
+- MUST NOT attempt to communicate with APM server. This includes central configuration.
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
+  per normal.
+- MUST continue to support [log correlation](./log-correlation.md)
+- SHOULD attempt to reduce runtime overhead where possible. For example,
+  because events will be dropped there is no need to collect stack traces,
+  collect metrics, or to calculate breakdown metrics.
+
