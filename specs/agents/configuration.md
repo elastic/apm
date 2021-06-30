@@ -44,14 +44,15 @@ agents:
 | List     | Encoded as a comma-separated string (whitespace surrounding items should be stripped): `"foo,bar,baz"` |
 | Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas (whitespace surrounding items should be stripped): `"foo=bar,baz=foo"` |
 | Duration | String with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). |
+| Size     | String with size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes). |
 
-#### Duration Config Legacy Considerations
+#### Duration/Size Config Legacy Considerations
 
-For duration-formatted config options, some agents allow users to omit the unit
+For duration/size-formatted config options, some agents allow users to omit the unit
 suffix for backwards compatibility reasons. Going forward, all
-duration-formatted config options should require the unit suffix, falling back
+duration/size-formatted config options should require the unit suffix, falling back
 to the default value if an invalid value is provided.  Existing
-duration-formatted config options should be changed to require the unit suffix
+duration/size-formatted config options should be changed to require the unit suffix
 at the next major version.
 
 ### APM Agent Configuration via Kibana
