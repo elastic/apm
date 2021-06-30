@@ -103,15 +103,13 @@ This can help to drop nested HTTP spans for instrumented calls that use HTTP as 
 
 #### Context propagation
 
-As a general rule, when agents are tracing an exit span where the downstream service is known not to continue the trace,
-they SHOULD NOT propagate the trace context via the underlying protocol.
+When tracing an exit span, agents SHOULD propagate the trace context via the underlying protocol wherever possible.
 
-Example: for Elasticsearch requests, which use HTTP as the transport, agents should not add `traceparent` headers to the outgoing HTTP request.
-However, when tracing a regular outgoing HTTP request (one that's not initiated by an exit span),
-and it's unknown whether the downsteam service continues the trace,
-the trace headers should be added.
+Example: for Elasticsearch requests, which use HTTP as the transport, agents SHOULD add `traceparent` headers to the outgoing HTTP request.
 
-The reason is that spans cannot be compressed (TODO link to span compression spec once available) if the context has been propagated, as it may lead to orphaned transactions.
-That means that the `parent.id` of a transaction may refer to a span that's not available because it has been compressed (merged with another span).
-
-There can, however, be exceptions to this rule whenever it makes sense. For example, if it's known that the backend system can continue the trace.
+This means that such spans cannot be compressed (TODO link to span compression spec once available) if the context has 
+been propagated, because the `parent.id` of the downstream transaction may refer to a span that's not available.
+For now, the implication would be the inability to compress HTTP spans. Should we decide to enable that in the future, 
+following are two options how to do that:
+- Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default. For example, such list could contain `type == storage, subtype == s3`, preventing context propagation at S3 queries, even though those rely on HTTP/S.
+- Add a list of child IDs to compressed exit spans that can be used when looking up `parent.id` of downstream transactions.
