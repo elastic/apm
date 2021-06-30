@@ -68,7 +68,7 @@ spans that are slower than a specified duration, using the config variable
 Sets the minimum duration of a span for which stack frames/traces will be
 captured.
 
-This option is case-insensitive.
+This values for this option are case-sensitive.
 
 |                |   |
 |----------------|---|
