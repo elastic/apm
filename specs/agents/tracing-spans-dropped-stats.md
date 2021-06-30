@@ -1,3 +1,5 @@
+[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md)
+
 ## Collecting statistics about dropped spans
 
 To still retain some information about dropped spans (for example due to `transaction_max_spans` or `span_min_duration`),

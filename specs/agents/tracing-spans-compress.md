@@ -1,3 +1,5 @@
+[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Compressing spans](tracing-spans-compress.md)
+
 ## Compressing spans
 
 To mitigate the potential flood of spans to a backend,

@@ -1,3 +1,5 @@
+[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Hard limit on number of spans to collect](tracing-spans-limit.md)
+
 ## Hard limit on number of spans to collect
 
 This is the last line of defense that comes with the highest amount of data loss.
