@@ -45,8 +45,8 @@ agents:
 | Boolean  | Encoded as a lower-case boolean string: `"false"`, `"true"` |
 | List     | Encoded as a comma-separated string (whitespace surrounding items should be stripped): `"foo,bar,baz"` |
 | Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas (whitespace surrounding items should be stripped): `"foo=bar,baz=foo"` |
-| Duration | String with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). Validating regex: `^(-)?(\d+)(ms|s|m)$` |
-| Size     | String with a positive size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes). Validating regex: `^(\d+)(b|kb|mb|gb)$` |
+| Duration | Case-sensitive string with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). Validating regex: `^(-)?(\d+)(ms|s|m)$` |
+| Size     | Case-insensitive string with a positive size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes, with a 1024 multiplier between each unit). Validating regex: `^(\d+)(b|kb|mb|gb)$` |
 
 #### Duration/Size Config Legacy Considerations
 
