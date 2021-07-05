@@ -2,7 +2,7 @@
 
 ## Collecting statistics about dropped spans
 
-To still retain some information about dropped spans (for example due to `transaction_max_spans` or `span_min_duration`),
+To still retain some information about dropped spans (for example due to [`transaction_max_spans`](tracing-spans-limit.md) or [`span_min_duration`](tracing-spans-drop-fast.md)),
 agents SHOULD collect statistics on the corresponding transaction about dropped spans.
 These statistics MUST only be sent for sampled transactions.
 
@@ -44,7 +44,10 @@ This is an example of the statistics that are added do the `transaction` events 
 ```
 
 ### Limits
-TODO: limit the number of `dropped_spans_stats` elements?
+
+To avoid the structures from growing without bounds (which is only expected in pathological cases),
+agents MUST limit the size of the `dropped_spans_stats` to 128 entries per transaction.
+Any entries that would exceed the limit are silently dropped.
 
 ### Effects on destination service metrics
 
