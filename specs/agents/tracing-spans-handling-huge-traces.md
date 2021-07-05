@@ -11,11 +11,20 @@ Instrumenting applications that make lots of requests (such as 10k+) to backends
 - Decreased performance of the Elastic APM UI due to slow searches and rendering of huge traces.
 - Loss of clarity and overview (--> decreased user experience) in the UI when analyzing the traces.
 
-Agents can implement several strategies to mitigate these issues:
-- [Hard limit on number of spans to collect](tracing-spans-limit.md)
-- [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md)
-- [Dropping fast spans](tracing-spans-drop-fast.md)
-- [Compressing spans](tracing-spans-compress.md)
+Agents can implement several strategies to mitigate these issues.
+These strategies are designed to capture significant information about relevant spans while at the same time limiting the trace to a manageable size.
+Applying any of these strategies inevitably lead to a loss of information.
+However, they aim to provide a better tradeoff between cost and insight by not capturing or summarizing less relevant data.
+
+- [Hard limit on number of spans to collect](tracing-spans-limit.md) \
+  Even after applying the most advanced strategies, there must always be a hard limit on the number of spans we collect.
+  This is the last line of defense that comes with the highest amount of data loss.
+- [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md) \
+  Makes sure even if drop spans, we at least have stats about them.
+- [Dropping fast spans](tracing-spans-drop-fast.md) \
+  If a span was blazingly fast, it's probably not worth the cost to send and store it.
+- [Compressing spans](tracing-spans-compress.md) \
+  If there are a bunch of very similar spans, we can represent them in a single document - a composite span.
 
 In a nutshell, this is how the different settings work in combination:
 
