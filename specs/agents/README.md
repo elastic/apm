@@ -43,7 +43,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Handling huge traces](tracing-spans-handling-huge-traces.md)
     - [Hard limit on number of spans to collect](tracing-spans-limit.md)
     - [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md)
-    - [Dropping fast spans](tracing-spans-drop-fast.md)
+    - [Dropping fast exit spans](tracing-spans-drop-fast-exit.md)
     - [Compressing spans](tracing-spans-compress.md)
   - [Sampling](tracing-sampling.md)
   - [Distributed tracing](tracing-distributed-tracing.md)

@@ -21,7 +21,7 @@ However, they aim to provide a better tradeoff between cost and insight by not c
   This is the last line of defense that comes with the highest amount of data loss.
 - [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md) \
   Makes sure even if drop spans, we at least have stats about them.
-- [Dropping fast spans](tracing-spans-drop-fast.md) \
+- [Dropping fast exit spans](tracing-spans-drop-fast-exit.md) \
   If a span was blazingly fast, it's probably not worth the cost to send and store it.
 - [Compressing spans](tracing-spans-compress.md) \
   If there are a bunch of very similar spans, we can represent them in a single document - a composite span.
@@ -34,7 +34,7 @@ if (span.transaction.spanCount > transaction_max_spans) {
     // collect statistics for dropped spans
 } else if (compression possible) {
     // apply compression
-} else if (span.duration < span_min_duration) {
+} else if (span.duration < exit_span_min_duration) {
     // drop span
     // collect statistics for dropped spans
 } else {
