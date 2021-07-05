@@ -76,6 +76,11 @@ Here's how the limit can be configured for [Node.js](https://www.elastic.co/guid
 Exit spans are spans that describe a call to an external service,
 such as an outgoing HTTP request or a call to a database.
 
+A span is considered an exit span if it has explicitly been marked as such or if it has context fields that are indicative of it being an exit span:
+```groovy
+exit = exit || context.destination || context.db || context.message || context.http
+```
+
 #### Child spans of exit spans
 
 Exit spans MUST not have child spans that have a different `type` or `subtype`.
@@ -100,6 +105,13 @@ Agents MAY implement mechanisms to prevent the creation of child spans of exit s
 For example, agents MAY implement internal (or even public) APIs to mark a span as an exit or leaf span.
 Agents can then prevent the creation of a child span of a leaf/exit span.
 This can help to drop nested HTTP spans for instrumented calls that use HTTP as the transport layer (for example Elasticsearch).
+
+#### Exit span API
+
+Agents SHOULD offer a dedicated API to start an exit span.
+This API sets the `exit` flag to `true` and returns `null` or a noop span in case the parent already represents an `exit` span.
+This helps with the automatic inference of [`context.destination.service.resource`](tracing-spans-destination.md#contextdestinationserviceresource)
+without users having to specify any destination field.
 
 #### Context propagation
 
