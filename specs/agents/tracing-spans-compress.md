@@ -18,7 +18,7 @@ with very little loss of information.
 
 One of the biggest sources of excessive data collection are n+1 type queries and repetitive requests to a cache server.
 This strategy detects consecutive spans that hold the same information (except for the duration)
-and creates a single [composite span](tracing-spans-compress.md#composite-span).
+and creates a single [composite span](#composite-span).
 
 ```
 [                              ]
@@ -27,7 +27,7 @@ GET /users
  10x SELECT FROM users
 ```
 
-Two spans are considered to be an exact match if they are of the [same kind](consecutive-same-kind-compression-strategy) and if their span names are equal:
+Two spans are considered to be an exact match if they are of the [same kind](#consecutive-same-kind-compression-strategy) and if their span names are equal:
 - `type`
 - `subtype`
 - `destination.service.resource`
@@ -65,6 +65,7 @@ The rest of the context, such as the `db.statement` will be determined by the fi
 #### Configuration option `same_kind_compression_max_duration`
 
 Consecutive spans to the same destination that are under this threshold will be compressed into a single composite span.
+This option does not apply to [composite spans](#composite-span).
 This reduces the collection, processing, and storage overhead, and removes clutter from the UI.
 The tradeoff is that the statement information will not be collected. 
 
@@ -126,7 +127,7 @@ APM Server will take `composite.count` into account when tracking span destinati
 #### Eligibility for compression
 
 A span is eligible for compression if all the following conditions are met
-- It's an [exit span](https://github.com/elastic/apm/blob/master/specs/agents/tracing-spans-destination.md#contextdestinationserviceresource)
+- It's an [exit span](tracing-spans.md#exit-spans)
 - The trace context of this span has not been propagated to a downstream service
 
 The latter condition is important so that we don't remove (compress) a span that may be the parent of a downstream service.
