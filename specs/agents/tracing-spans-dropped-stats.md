@@ -18,7 +18,7 @@ This also allows the transaction details view (aka. waterfall) to show a summary
 
 ### Data model
 
-This is an example of the statistics that are added do the `transaction` events sent via the intake v2 protocol.
+This is an example of the statistics that are added to the `transaction` events sent via the intake v2 protocol.
 
 ```json
 {

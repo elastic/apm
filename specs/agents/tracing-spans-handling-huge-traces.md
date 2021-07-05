@@ -13,7 +13,7 @@ Instrumenting applications that make lots of requests (such as 10k+) to backends
 
 Agents can implement several strategies to mitigate these issues.
 These strategies are designed to capture significant information about relevant spans while at the same time limiting the trace to a manageable size.
-Applying any of these strategies inevitably lead to a loss of information.
+Applying any of these strategies inevitably leads to a loss of information.
 However, they aim to provide a better tradeoff between cost and insight by not capturing or summarizing less relevant data.
 
 - [Hard limit on number of spans to collect](tracing-spans-limit.md) \
