@@ -44,6 +44,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Distributed tracing](tracing-distributed-tracing.md)
   - [Tracer API](tracing-api.md)
   - Instrumentation
+      - [AWS](tracing-instrumentation-aws.md)
       - [Databases](tracing-instrumentation-db.md)
       - [HTTP](tracing-instrumentation-http.md)
       - [Messaging systems](tracing-instrumentation-messaging.md)
