@@ -101,18 +101,6 @@ exit = exit || context.destination || context.db || context.message || context.h
 If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
 it MUST be the following:
 
-OPTION I:
-```groovy
-if      (context.db?.instance)         "${subtype ?: type}/${context.db.instance}"
-else if (context.db)                   subtype ?: type
-else if (context.message?.queue?.name) "${subtype ?: type}/${context.message.queue.name}"
-else if (context.message)              subtype ?: type
-else if (context.http?.url?.port > 0)  "${context.http.url.host}:${context.http.url.port}"
-else if (context.http?.url?.host)      context.http.url.host
-else                                   subtype ?: type
-```
-
-OPTION II:
 ```groovy
 if (context.db)
   if (context.db.instance)
