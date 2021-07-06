@@ -58,7 +58,7 @@ for event collection.
 
 - maintaining the ability to create traces and log trace/transaction/span IDs
   through the log correlation feature, and
-- getting automatic distributed tracing via the
+- getting automatic context propagation via the
   [W3C trace-context headers](https://w3c.github.io/trace-context/)
 
 Agents that implement this configuration option:
@@ -71,4 +71,3 @@ Agents that implement this configuration option:
 - SHOULD attempt to reduce runtime overhead where possible. For example,
   because events will be dropped there is no need to collect stack traces,
   collect metrics, or to calculate breakdown metrics.
-
