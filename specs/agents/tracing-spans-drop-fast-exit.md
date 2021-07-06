@@ -4,6 +4,7 @@
 
 If an exit span was really fast, chances are that it's not relevant for analyzing latency issues.
 Therefore, agents SHOULD implement the strategy laid out in this section to let users choose the level of detail/cost tradeoff that makes sense for them.
+If an agent implements this strategy, it MUST also implement [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md).
 
 ## `exit_span_min_duration` configuration
 
