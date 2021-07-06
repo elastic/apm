@@ -22,34 +22,79 @@ Setting an upper limit will prevent overloading the agent and the APM server wit
 
 ### Implementation
 
+#### Span count
+
+When a span is put in the agent's reporter queue, a counter should be incremented on its transaction, in order to later identify the _expected_ number of spans.
+In this way we can identify data loss, e.g. because events have been dropped.
+
+This counter SHOULD internally be named `reported` and MUST be mapped to `span_count.started` in the intake API.
+The word `started` is a misnomer but needs to be used for backward compatibility.
+The rest of the spec will refer to this field as `span_count.reported`.
+
+When a span is dropped, it is not reported to the APM Server,
+instead another counter is incremented to track the number of spans dropped.
+In this case the above mentioned counter for `reported` spans is not incremented.
+
+```json
+"span_count": {
+  "reported": 500,
+  "dropped": 42
+}
+```
+
+The total number of spans that an agent created within a transaction is equal to `span_count.started + span_count.dropped`. 
+
+#### Checking the limit
+
 Before creating a span,
 agents must determine whether creating that span would exceed the span limit.
-The limit is reached when the total number of created spans minus the number of dropped spans is greater or equals to the max number of spans.
+The limit is reached when the number of reported spans is greater or equal to the max number of spans.
 In other words, the limit is reached if this condition is true:
 
-    span_count.total - span_count.dropped >= transaction_max_spans
+    span_count.reported >= transaction_max_spans
 
-The `span_count.total` counter is not part of the intake API,
-but it helps agents to determine whether the limit has been reached.
-It reflects the total amount of started spans within a transaction.
+On span end, agents that support the concurrent creation of spans need to check the condition again.
+That is because any number of spans may be started before any of them end.
+Agents SHOULD guard against race conditions and SHOULD prefer lock-free CAS loops over using locks.
+
+Example with lock:
+```java
+boolean report
+lock()
+report = span_count.reported < transaction_max_spans
+if (report) {
+    span_count.reported++
+}
+unlock()
+```
+
+Example CAS loop:
+```java
+boolean report
+while (true) {
+    int reported = span_count.reported.atomic_get()
+    report = reported < transaction_max_spans
+    if (report && !span_count.reported.compareAndSet(reported, reported + 1)) {
+        // race condition - retry
+        continue
+    }
+    break
+}
+```
+
+#### Configuration snapshot
 
 To ensure consistent behavior within one transaction,
 the `transaction_max_spans` option should be read once on transaction start.
 Even if the option is changed via remote config during the lifetime of a transaction,
 the value that has been read at the start of the transaction should be used.
 
-Note that it's not enough to just consider this condition on span start:
-
-    span_count.sent >= transaction_max_spans
-
-That's because there may be any number of concurrent spans that are started but not yet ended.
-While the condition could potentially be evaluated on span end,
-it's preferable to know at the start of the span whether the span should be dropped.
-The reason being that agents can omit heavy operations, such as capturing a request body.
-
-### Metric collection
+#### Metric collection
 
 Even though we can determine whether to drop a span before starting it, it's not legal to return a `null` or noop span in that case.
 That's because we're [collecting statistics about dropped spans](tracing-spans-dropped-stats.md) as well as 
 [breakdown metrics](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt)
 even for spans that exceed `transaction_max_spans`.
+
+For spans that are known to be dropped upfront, Agents SHOULD NOT collect information that is expensive to get and not needed for metrics collection.
+This includes capturing headers, request bodies, and summarizing SQL statements, for example.
