@@ -18,13 +18,38 @@
         "__used_by": [
           "java"
         ]
+      },
+      "controller": {
+        "__description": "Application controller actions",
+        "__used_by": [
+          "ruby"
+        ]
+      },
+      "graphql": {
+        "__description": "Incoming GraphQL requests",
+        "__used_by": [
+          "ruby"
+        ]
+      },
+      "mailer": {
+        "__description": "Application mailer actions",
+        "__used_by": [
+          "ruby"
+        ]
+      },
+      "resource": {
+        "__description": "Application resource actions",
+        "__used_by": [
+          "ruby"
+        ]
       }
     }
   },
   "custom": {
     "__description": "API custom instrumentation",
     "__used_by": [
-      "java"
+      "java",
+      "ruby"
     ],
     "allow_null_subtype": true
   },
@@ -53,12 +78,16 @@
         ]
       },
       "dynamodb": {
-        "__description": "AWS DynamoDB"
+        "__description": "AWS DynamoDB",
+        "__used_by": [
+          "ruby"
+        ]
       },
       "elasticsearch": {
         "__description": "Elasticsearch",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
         ]
       },
       "h2": {
@@ -79,19 +108,22 @@
       "mariadb": {
         "__description": "MariaDB",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
         ]
       },
       "mongodb": {
         "__description": "MongoDB",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
         ]
       },
       "mysql": {
         "__description": "MySQL",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
         ]
       },
       "oracle": {
@@ -101,12 +133,28 @@
         ]
       },
       "postgresql": {
-        "__description": "PostgreSQL"
+        "__description": "PostgreSQL",
+        "__used_by": [
+          "ruby"
+        ]
       },
       "redis": {
         "__description": "Redis",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
+        ]
+      },
+      "sqlite": {
+        "__description": "SQLite",
+        "__used_by": [
+          "ruby"
+        ]
+      },
+      "sqlite3": {
+        "__description": "SQLite 3",
+        "__used_by": [
+          "ruby"
         ]
       },
       "sqlserver": {
@@ -118,7 +166,8 @@
       "unknown": {
         "__description": "Unknown database",
         "__used_by": [
-          "java"
+          "java",
+          "ruby"
         ]
       }
     }
@@ -129,12 +178,32 @@
         "__description": "Apache Dubbo"
       },
       "grpc": {
-        "__description": "gRPC"
+        "__description": "gRPC",
+        "__used_by": [
+          "ruby"
+        ]
       },
       "http": {
-        "__description": "HTTP client"
+        "__description": "HTTP client",
+        "__used_by": [
+          "ruby"
+        ]
       }
     }
+  },
+  "json": {
+    "__description": "JSON parsing and generation",
+    "subtypes": {
+      "parse": {
+        "__description": "JSON parsing"
+      },
+      "generate": {
+        "__description": "JSON generation"
+      }
+    },
+    "__used_by": [
+      "ruby"
+    ]
   },
   "messaging": {
     "__description": "Messaging",
@@ -164,10 +233,16 @@
         ]
       },
       "sns": {
-        "__description": "AWS Simple Notification Service"
+        "__description": "AWS Simple Notification Service",
+        "__used_by": [
+          "ruby"
+        ]
       },
       "sqs": {
-        "__description": "AWS Simple Queue Service"
+        "__description": "AWS Simple Queue Service",
+        "__used_by": [
+          "ruby"
+        ]
       }
     }
   },
@@ -186,14 +261,18 @@
         "__description": "Azure Blob Storage"
       },
       "s3": {
-        "__description": "AWS S3"
+        "__description": "AWS S3",
+        "__used_by": [
+          "ruby"
+        ]
       }
     }
   },
   "template": {
     "__description": "Template engines (no sub-type for now as really platform-specific)",
     "__used_by": [
-      "java"
+      "java",
+      "ruby"
     ],
     "allow_unlisted_subtype": true
   }
