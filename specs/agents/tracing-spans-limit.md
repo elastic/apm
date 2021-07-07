@@ -6,6 +6,8 @@ This is the last line of defense that comes with the highest amount of data loss
 This strategy MUST be implemented by all agents.
 Ideally, the other mechanisms limit the amount of spans enough so that the hard limit does not kick in.
 
+Agents SHOULD also [collect statistics about dropped spans](tracing-spans-dropped-stats.md) when implementing this spec.
+
 ### Configuration option `transaction_max_spans`
 
 Limits the amount of spans that are recorded per transaction.
@@ -47,7 +49,7 @@ The total number of spans that an agent created within a transaction is equal to
 #### Checking the limit
 
 Before creating a span,
-agents must determine whether creating that span would exceed the span limit.
+agents must determine whether that span would exceed the span limit.
 The limit is reached when the number of reported spans is greater or equal to the max number of spans.
 In other words, the limit is reached if this condition is true:
 
@@ -55,32 +57,21 @@ In other words, the limit is reached if this condition is true:
 
 On span end, agents that support the concurrent creation of spans need to check the condition again.
 That is because any number of spans may be started before any of them end.
-Agents SHOULD guard against race conditions and SHOULD prefer lock-free CAS loops over using locks.
 
-Example with lock:
 ```java
-boolean report
-lock()
-report = span_count.reported < transaction_max_spans
-if (report) {
-    span_count.reported++
-}
-unlock()
-```
-
-Example CAS loop:
-```java
-boolean report
-while (true) {
-    int reported = span_count.reported.atomic_get()
-    report = reported < transaction_max_spans
-    if (report && !span_count.reported.compareAndSet(reported, reported + 1)) {
-        // race condition - retry
-        continue
-    }
-    break
+if (atomic_get(transaction.span_count.eligible_for_reporting) <= transaction_max_spans // optional optimization 
+    && atomic_get_and_increment(transaction.span_count.eligible_for_reporting) <= transaction_max_spans ) {
+    should_be_reported = true
+    atomic_increment(transaction.span_count.reported)
+} else {
+    should_be_reported = false
+    atomic_increment(transaction.span_count.dropped)
+    transaction.track_dropped_stats(this)
 }
 ```
+
+`eligible_for_reporting` is another counter in the span_count object, but it's not reported to APM Server.
+It's similar to `reported` but the value may be higher.
 
 #### Configuration snapshot
 
