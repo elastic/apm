@@ -254,11 +254,17 @@
   },
   "storage": {
     "subtypes": {
+      "azureblob": {
+        "__description": "Azure Blob Storage"
+      },
       "azurefile": {
         "__description": "Azure Files"
       },
-      "azuresblob": {
-        "__description": "Azure Blob Storage"
+      "azuretable": {
+        "__description": "Azure Storage Table",
+        "__used_by": [
+          "ruby"
+        ]
       },
       "s3": {
         "__description": "AWS S3",
