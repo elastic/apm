@@ -39,7 +39,7 @@ In this case the above mentioned counter for `reported` spans is not incremented
 
 ```json
 "span_count": {
-  "reported": 500,
+  "started": 500,
   "dropped": 42
 }
 ```
@@ -53,7 +53,7 @@ agents must determine whether that span would exceed the span limit.
 The limit is reached when the number of reported spans is greater or equal to the max number of spans.
 In other words, the limit is reached if this condition is true:
 
-    span_count.reported >= transaction_max_spans
+    atomic_get(transaction.span_count.eligible_for_reporting) >= transaction_max_spans
 
 On span end, agents that support the concurrent creation of spans need to check the condition again.
 That is because any number of spans may be started before any of them end.
