@@ -14,8 +14,8 @@ They are provided as environment variables but depending on the language there m
 
 Configuration can be provided via a number of sources. Values from central
 configuration MUST have the highest precedence, and default values MUST have
-the lowest precedence. Otherwise, agents SHOULD adopt the following config
-source precendence. Sources higher on this list will override values provided
+the lowest precedence. Otherwise, agents MAY adopt the following config
+source precedence. Sources higher on this list will override values provided
 by sources lower on this list:
 
  - Central configuration
