@@ -177,20 +177,50 @@ If the spans are of the same kind, and have the same name,
 we apply the [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy).
 
 ```java
-void tryCompress(Span child) {
-    if (buffered.isSameKind(child)) {
-        if (buffered.name == child.name) {
-            buffered.compress(child, exactMatch: true)
-            return
-        } else if ( (buffered.duration <= same_kind_compression_max_duration || buffered.composite.count > 1)
-                   && child.duration <= same_kind_compression_max_duration) {
-            buffered.name = "Calls to $buffered.destination.service.resource"
-            buffered.compress(child, exactMatch: false)
-            return
-        }
+bool tryCompress(Span child) {
+    if (buffered == null) {
+        buffered = child
+        return true
     }
-    report(buffered)
-    buffered = child
+
+    if (!buffered.isSameKind(child)) {
+        return false
+    }
+
+    return buffered.isComposite() ? tryCompressWithComposite(child) : tryCompressWithRegular(child);
+}
+
+bool tryCompressWithRegular(Span child) {
+    if (buffered.name == child.name) {
+        buffered.composite.exactMatch = true
+        return true
+    }
+
+    if (buffered.duration <= same_kind_compression_max_duration && child.duration <= same_kind_compression_max_duration) {
+        buffered.composite.exactMatch = false
+        buffered.name = "Calls to $buffered.destination.service.resource"
+        return true
+    }
+
+    return false
+}
+
+bool tryCompressWithComposite(Span child) {
+    if (buffered.composite.exactMatch) {
+        if (buffered.name == child.name) {
+            buffered.compress(child)
+            return true
+        }
+
+        return false
+    }
+
+    if (child.duration <= same_kind_compression_max_duration) {
+        buffered.compress(child)
+        return true
+    }
+
+    return false
 }
 ```
 
