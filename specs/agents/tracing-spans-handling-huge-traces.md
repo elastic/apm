@@ -20,7 +20,7 @@ However, they aim to provide a better tradeoff between cost and insight by not c
   Even after applying the most advanced strategies, there must always be a hard limit on the number of spans we collect.
   This is the last line of defense that comes with the highest amount of data loss.
 - [Collecting statistics about dropped spans](tracing-spans-dropped-stats.md) \
-  Makes sure even if drop spans, we at least have stats about them.
+  Makes sure even if dropping spans, we at least have stats about them.
 - [Dropping fast exit spans](tracing-spans-drop-fast-exit.md) \
   If a span was blazingly fast, it's probably not worth the cost to send and store it.
 - [Compressing spans](tracing-spans-compress.md) \
