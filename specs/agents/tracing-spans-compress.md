@@ -153,16 +153,15 @@ A buffered span gets reported when
 2. a non-compressible sibling ends
 
 ```java
-void onSpanEnd() {
-    if (isCompressionEligible()) {
-        if (parent.hasBufferedSpan()) {
-            parent.tryCompress(this)
-        } else {
-            parent.buffered = this
+void onChildSpanEnd(Span child) {
+    if (child.isCompressionEligible()) {
+        if (!tryCompress(child)) {
+            report(buffered)
+            buffered = child
         }
     } else { 
         report(buffered)
-        report(this)
+        report(child)
     }
 }
 ```
