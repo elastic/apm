@@ -44,13 +44,13 @@ The following fields are relevant for database and datastore spans. Where possib
 
 | Field | Value / Examples | Comments |
 |-------|:---------------:|----------|
-|`name`| e.g. `DynamoDB UpdateItem my_table`|  The span name should capture the operation name (as used by AWS for the action name) and the table name, if available. The format should be `DynamoDB <ActionName> <TableName>`. TableName MAY be omitted from the name for operations (`batchWriteItem`, `batchGetItem`, PartiQL-related methods like `executeStatement` etc.) that are acting on more than a single table. If `TableName` is not available, agents SHOULD also check the `TableArn` or `SourceTableArn` query params for a table name.|
+|`name`| e.g. `DynamoDB UpdateItem my_table`|  The span name should capture the operation name (as used by AWS for the action name) and the table name, if available. The format should be `DynamoDB <ActionName> <TableName>`. TableName MAY be omitted from the name for operations (`batchWriteItem`, `batchGetItem`, PartiQL-related methods like `executeStatement` etc.) that are acting on more than a single table. If `TableName` is not available, agents SHOULD also check the `TableArn` or `SourceTableArn` query params for a table name and extract the table name from the AWS ARN value.|
 |`type`|`db`|
 |`subtype`|`dynamodb`|
 |`action`| `query` |
 | __**context.db._**__ |<hr/>|<hr/>|
 |`_.instance`| e.g. `us-east-1` | The AWS region where the table is. |
-|`_.statement`| e.g. `ForumName = :name and Subject = :sub` | For a DynamoDB Query operation, capture the KeyConditionExpression in this field. Agents MAY include the full SQL statment for PartiQL-related methods like `executeStatment.|
+|`_.statement`| e.g. `ForumName = :name and Subject = :sub` | For a DynamoDB Query operation, capture the KeyConditionExpression in this field. In order to avoid a high cardinality of collected values, agents SHOULD NOT include the full SQL statment for PartiQL-related methods like `executeStatment.|
 |`_.type`|`dynamodb`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
