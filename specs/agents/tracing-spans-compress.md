@@ -266,7 +266,7 @@ However, if there can be a situation where multiple spans may end concurrently, 
 To do that, agents should prefer [lock-free algorithms](https://en.wikipedia.org/wiki/Non-blocking_algorithm)
 paired with retry loops over blocking algorithms that use mutexes or locks.
 
-In particular, operations that work with the buffer require special attention.
+In particular, operations that work with the buffer require special attention:
 - Setting a span into the buffer must be handled atomically.
 - Retrieving a span from the buffer must be handled atomically.
   Retrieving includes atomically getting and clearing the buffer.
