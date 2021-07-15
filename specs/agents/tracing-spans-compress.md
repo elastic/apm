@@ -110,13 +110,12 @@ The `timestamp` and `duration` have slightly similar semantics,
 and they define properties under the `composite` context.
 
 - `timestamp`: The start timestamp of the first span.
-- `duration`: The sum of durations of all spans.
+- `duration`: gross duration (i.e., _<last compressed span's end timestamp>_ - _<first compressed span's start timestamp>_).
 - `composite`
     - `count`: The number of compressed spans this composite span represents.
       The minimum count is 2 as a composite span represents at least two spans.
-    - `end`: The end timestamp of the last compressed span.
-      The net duration of all compressed spans is equal to the composite spans' `duration`.
-      The gross duration (including "whitespace" between the spans) is equal to `compressed.end - timestamp`.
+    - `sum.us`: sum of durations of all compressed spans this composite span represents in microseconds.
+      Thus `sum.us` is the net duration of all the compressed spans while `duration` is the gross duration (including "whitespace" between the spans).
     - `exact_match`: A boolean flag indicating whether the
       [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy) (`false`) or the
       [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy) (`true`) has been applied.
