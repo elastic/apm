@@ -142,7 +142,7 @@ This would orphan the sub-graph started by the downstream service and cause it t
 
 ```java
 boolean isCompressionEligible() {
-    return exit && !context.hasPropagated
+    return exit && !context.hasPropagated && (outcome == null || outcome == "success") 
 }
 ```
 
