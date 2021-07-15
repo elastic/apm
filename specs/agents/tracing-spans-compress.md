@@ -62,7 +62,7 @@ When applying this compression strategy, the `span.name` is set to `Calls to $sp
 The rest of the context, such as the `db.statement` will be determined by the first compressed span, which is turned into a composite span.
 
 
-#### Configuration option `same_kind_compression_max_duration`
+#### Configuration option `span_compression_same_kind_max_duration`
 
 Consecutive spans to the same destination that are under this threshold will be compressed into a single composite span.
 This option does not apply to [composite spans](#composite-span).
@@ -170,7 +170,7 @@ void onChildSpanEnd(Span child) {
 
 On span end, we compare each [compression-eligible](tracing-spans-compress.md#eligibility-for-compression) span to it's previous sibling.
 
-If the spans are of the same kind but have different span names and the compressions-eligible span's `duration` <= `same_kind_compression_max_duration`,
+If the spans are of the same kind but have different span names and the compressions-eligible span's `duration` <= `span_compression_same_kind_max_duration`,
 we compress them using the [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy).
 
 If the spans are of the same kind, and have the same name,
@@ -196,7 +196,7 @@ bool tryCompressWithRegular(Span child) {
         return true
     }
 
-    if (buffered.duration <= same_kind_compression_max_duration && child.duration <= same_kind_compression_max_duration) {
+    if (buffered.duration <= span_compression_same_kind_max_duration && child.duration <= span_compression_same_kind_max_duration) {
         buffered.composite.exactMatch = false
         buffered.name = "Calls to $buffered.destination.service.resource"
         return true
@@ -215,7 +215,7 @@ bool tryCompressWithComposite(Span child) {
         return false
     }
 
-    if (child.duration <= same_kind_compression_max_duration) {
+    if (child.duration <= span_compression_same_kind_max_duration) {
         buffered.compress(child)
         return true
     }
