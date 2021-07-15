@@ -83,7 +83,7 @@ For example, an HTTP exit span may have child spans with the `action` `request`,
 These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
 
 Most agents would want to treat exit spans as leaf spans, though.
-This brings the benefit of being able to compress repetitive exit spans (TODO link to span compression spec once available),
+This brings the benefit of being able to [compress](tracing-spans-compress.md) repetitive exit spans,
 as span compression is only applicable to leaf spans.
 
 Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
@@ -108,7 +108,7 @@ However, when tracing a regular outgoing HTTP request (one that's not initiated 
 and it's unknown whether the downsteam service continues the trace,
 the trace headers should be added.
 
-The reason is that spans cannot be compressed (TODO link to span compression spec once available) if the context has been propagated, as it may lead to orphaned transactions.
+The reason is that spans cannot be [compressed](tracing-spans-compress.md) if the context has been propagated, as it may lead to orphaned transactions.
 That means that the `parent.id` of a transaction may refer to a span that's not available because it has been compressed (merged with another span).
 
 There can, however, be exceptions to this rule whenever it makes sense. For example, if it's known that the backend system can continue the trace.
