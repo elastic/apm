@@ -251,10 +251,10 @@ bool tryToCompressRegular(Span sibling) {
 bool tryToCompressComposite(Span sibling) {
     switch (composite.compressionStrategy) {
         case "exact_match":
-            return name == sibling.name && sibling.duration <= span_compression_exact_match_max_duration
+            return isSameKind(sibling) && name == sibling.name && sibling.duration <= span_compression_exact_match_max_duration
                      
         case "same_kind":
-            return sibling.duration <= span_compression_same_kind_max_duration
+            return isSameKind(sibling) && sibling.duration <= span_compression_same_kind_max_duration
     }
 }
 ```
