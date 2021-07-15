@@ -116,27 +116,9 @@ and they define properties under the `composite` context.
       The minimum count is 2 as a composite span represents at least two spans.
     - `sum.us`: sum of durations of all compressed spans this composite span represents in microseconds.
       Thus `sum.us` is the net duration of all the compressed spans while `duration` is the gross duration (including "whitespace" between the spans).
-    - `exact_match`: A boolean flag indicating whether the
-      [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy) (`false`) or the
-      [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy) (`true`) has been applied.
-
-#### Turning compressed spans into a composite span
-
-Spans have a `compress` method.
-The first time `compress` is called on a regular span, it becomes a composite span,
-incorporating the new span by updating the count and end timestamp.
-
-```java
-void compress(Span other, boolean exactMatch) {
-    if (compressed.count == 0) {
-        compressed.count = 2
-    } else {
-        compressedCount++
-    }
-    compressed.exactMatch = compressed.exactMatch && exactMatch
-    endTimestamp = max(endTimestamp, other.endTimestamp)
-}
-```
+    - `compression_strategy`: A string value indicating which compression strategy was used. The valid values are:
+        - `exact_match` - [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy)
+        - `same_kind` - [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy)
 
 #### Effects on metric processing
 
@@ -176,74 +158,102 @@ A buffered span gets reported when
 2. a non-compressible sibling ends
 
 ```java
-void onChildSpanEnd(Span child) {
-    if (child.isCompressionEligible()) {
-        if (!tryCompress(child)) {
-            report(buffered)
-            buffered = child
-        }
-    } else { 
+void onEnd() {
+    if (buffered != null) {
         report(buffered)
+    }
+}
+
+void onChildEnd(Span child) {
+    if (!child.isCompressionEligible()) {
+        if (buffered != null) {
+            report(buffered)
+            buffered = null
+        }
         report(child)
+        return
+    }
+
+    if (buffered == null) {
+        buffered = child
+        return
+    }
+    
+    if (!buffered.tryToCompress(child)) {
+        report(buffered)
+        buffered = child
     }
 }
 ```
 
-#### Compression
+#### Turning compressed spans into a composite span
 
-On span end, we compare each [compression-eligible](tracing-spans-compress.md#eligibility-for-compression) span to it's previous sibling.
+Spans have `tryToCompress` method that is called on a span buffered by its parent.
+On the first call the span checks if it can be compressed with the given sibling and it selects the best compression strategy.
+Note that the compression strategy selected only once based on the first two spans of the sequence.
+The compression strategy cannot be changed by the rest the spans in the sequence.
+So when the current sibling span cannot be added to the ongoing sequence under the selected compression strategy
+then the ongoing is terminated, it is sent out as a composite span and the current sibling span is buffered. 
 
-If the spans are of the same kind but have different span names and the compressions-eligible span's `duration` <= `span_compression_same_kind_max_duration`,
+If the spans are of the same kind, and have the same name and both spans `duration` <= `span_compression_exact_match_max_duration`,
+we apply the [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy).
+Note that if the spans are _exact match_
+but duration threshold requirement is not satisfied we just stop compression sequence.
+In particular it means that the implementation should not proceed to try _same kind_ strategy.
+Otherwise user would have to lower both `span_compression_exact_match_max_duration` and `span_compression_same_kind_max_duration`
+to prevent longer _exact match_ spans from being compressed. 
+
+If the spans are of the same kind but have different span names and both spans `duration` <= `span_compression_same_kind_max_duration`,
 we compress them using the [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy).
 
-If the spans are of the same kind, and have the same name,
-we apply the [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy).
-
 ```java
-bool tryCompress(Span child) {
-    if (buffered == null) {
-        buffered = child
-        return true
+bool tryToCompress(Span sibling) {
+    isAlreadyComposite = composite != null
+    canBeCompressed = isAlreadyComposite ? tryToCompressComposite(sibling) : tryToCompressRegular(sibling)  
+    if (!canBeCompressed) {
+        return false
     }
+    
+    if (!isAlreadyComposite) {
+        composite.count = 1
+        composite.sumUs = duration
+    }
+    
+    ++composite.count
+    composite.sumUs += other.duration
+    return true 
+}
 
-    if (!buffered.isSameKind(child)) {
+bool tryToCompressRegular(Span sibling) {
+    if (!isSameKind(sibling)) {
         return false
     }
 
-    return buffered.isComposite() ? tryCompressWithComposite(child) : tryCompressWithRegular(child);
-}
-
-bool tryCompressWithRegular(Span child) {
-    if (buffered.name == child.name) {
-        buffered.composite.exactMatch = true
-        return true
-    }
-
-    if (buffered.duration <= span_compression_same_kind_max_duration && child.duration <= span_compression_same_kind_max_duration) {
-        buffered.composite.exactMatch = false
-        buffered.name = "Calls to $buffered.destination.service.resource"
-        return true
-    }
-
-    return false
-}
-
-bool tryCompressWithComposite(Span child) {
-    if (buffered.composite.exactMatch) {
-        if (buffered.name == child.name) {
-            buffered.compress(child)
+    if (name == sibling.name) {
+        if (duration <= span_compression_exact_match_max_duration && sibling.duration <= span_compression_exact_match_max_duration) {
+            composite.compressionStrategy = "exact_match"
             return true
         }
-
         return false
     }
 
-    if (child.duration <= span_compression_same_kind_max_duration) {
-        buffered.compress(child)
+    if (duration <= span_compression_same_kind_max_duration && sibling.duration <= span_compression_same_kind_max_duration) {
+        composite.compressionStrategy = "same_kind"
+        name = "Calls to " + destination.service.resource
         return true
     }
-
+    
     return false
+}
+
+bool tryToCompressComposite(Span sibling) {
+    switch (composite.compressionStrategy) {
+        case "exact_match":
+            return name == sibling.name && sibling.duration <= span_compression_exact_match_max_duration
+                     
+        case "same_kind":
+            return sibling.duration <= span_compression_same_kind_max_duration
+    }
 }
 ```
 
