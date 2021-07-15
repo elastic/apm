@@ -13,6 +13,18 @@ with very little loss of information.
 - Potential to re-use span objects, significantly reducing allocations
 - Downstream effects like reducing impact on APM Server, ES storage, and UI performance
 
+#### Configuration option `span_compression_enabled`
+
+Setting this option to true will enable span compression feature.
+Span compression reduces the collection, processing, and storage overhead, and removes clutter from the UI.
+The tradeoff is that some information such as DB statements of all the compressed spans will not be collected.
+
+|                |          |
+|----------------|----------|
+| Type           | `boolean`|
+| Default        | `false`  |
+| Dynamic        | `true`   |
+
 
 ### Consecutive-Exact-Match compression strategy
 
