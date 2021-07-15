@@ -7,7 +7,7 @@ agents SHOULD implement the strategies laid out in this section to avoid sending
 
 While compressing multiple similar spans into a single composite span can't fully eliminate the collection overhead,
 it can significantly reduce the impact on the following areas,
-with very little loss of information.
+with very little loss of information:
 - Agent reporter queue utilization
 - Capturing stack traces, serialization, compression, and sending events to APM Server
 - Potential to re-use span objects, significantly reducing allocations
