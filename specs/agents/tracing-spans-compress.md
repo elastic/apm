@@ -33,6 +33,19 @@ Two spans are considered to be an exact match if they are of the [same kind](#co
 - `destination.service.resource`
 - `name`
 
+#### Configuration option `span_compression_exact_match_max_duration`
+
+Consecutive spans that are exact match and that are under this threshold will be compressed into a single composite span.
+This option does not apply to [composite spans](#composite-span).
+This reduces the collection, processing, and storage overhead, and removes clutter from the UI.
+The tradeoff is that the DB statements of all the compressed spans will not be collected.
+
+|                |          |
+|----------------|----------|
+| Type           | `duration`|
+| Default        | `5ms`    |
+| Dynamic        | `true`   |
+
 ### Consecutive-Same-Kind compression strategy
 
 Another pattern that often occurs is a high amount of alternating queries to the same backend.
@@ -61,13 +74,12 @@ boolean isSameKind(Span other) {
 When applying this compression strategy, the `span.name` is set to `Calls to $span.destination.service.resource`.
 The rest of the context, such as the `db.statement` will be determined by the first compressed span, which is turned into a composite span.
 
-
 #### Configuration option `span_compression_same_kind_max_duration`
 
 Consecutive spans to the same destination that are under this threshold will be compressed into a single composite span.
 This option does not apply to [composite spans](#composite-span).
 This reduces the collection, processing, and storage overhead, and removes clutter from the UI.
-The tradeoff is that the statement information will not be collected. 
+The tradeoff is that the DB statements of all the compressed spans will not be collected. 
 
 |                |          |
 |----------------|----------|
