@@ -83,7 +83,7 @@ For example, an HTTP exit span may have child spans with the `action` `request`,
 These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
 
 Most agents would want to treat exit spans as leaf spans, though.
-This brings the benefit of being able to [compress](tracing-spans-compress.md) repetitive exit spans,
+This brings the benefit of being able to [compress](handling-huge-traces/tracing-spans-compress.md) repetitive exit spans,
 as span compression is only applicable to leaf spans.
 
 Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
