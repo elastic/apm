@@ -13,7 +13,7 @@ In general, to instrument Lambda functions, we create transactions that wrap the
 
 Field | Value | Description 
 ---   | ---   | ---
-`transaction.name` | e.g. `MyFunctionName` | The name of the Lambda function. This can be retrieveed either from the `context` object or from the environment variable `AWS_LAMBDA_FUNCTION_NAME`
+`transaction.name` | e.g. `MyFunctionName` | The name of the Lambda function. This can be retrieved either from the `context` object or from the environment variable `AWS_LAMBDA_FUNCTION_NAME`
 `service.framework.name` | `AWS Lambda` | 
 `transaction.type` | `request` |  
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not.
