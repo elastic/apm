@@ -2,7 +2,7 @@
 This spec specifies the instrumentation of applications / services running on AWS Lambda.
 
 An AWS Lambda application needs to implement a **handler method** that is called whenever that Lambda function is invoked. A handler method receives (at least) two objects with useful information:
-- `event`: Depending on the trigger type of the Lambda function this object contains different, trigger-specific data. For some trigger types this object might be even missing / being a void object.
+- `event`: Depending on the trigger type of the Lambda function this object contains different, trigger-specific data. For some trigger types this object may be empty/null.
 - `context`: This object provides generic (trigger agnostic) meta information about the Lambda function.
 
 In our instrumentation we use these objects to derive useful meta and context information.
