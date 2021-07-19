@@ -53,7 +53,7 @@ The tradeoff is that the DB statements of all the compressed spans will not be c
 |                |          |
 |----------------|----------|
 | Type           | `duration`|
-| Default        | `5ms`    |
+| Default        | `50ms`    |
 | Dynamic        | `true`   |
 
 ## Consecutive-Same-Kind compression strategy
