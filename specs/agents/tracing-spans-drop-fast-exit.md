@@ -11,8 +11,8 @@ If an agent implements this strategy, it MUST also implement [Collecting statist
 Sets the minimum duration of exit spans.
 Exit spans that execute faster than this threshold are attempted to be discarded.
 
-The attempt fails if they lead up to a span that can't be discarded.
-Spans that propagate the trace context to downstream services,
+In some cases exit spans cannot be discarded.
+For example, spans that propagate the trace context to downstream services,
 such as outgoing HTTP requests,
 can't be discarded.
 However, external calls that don't propagate context,
