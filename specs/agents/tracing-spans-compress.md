@@ -134,7 +134,7 @@ APM Server will take `composite.count` into account when tracking span destinati
 A span is eligible for compression if all the following conditions are met
 1. It's an [exit span](tracing-spans.md#exit-spans)
 2. The trace context of this span has not been propagated to a downstream service
-- If the span has `outcome` (i.e., `outcome` is present and it's not `null`) then it should be `success`.
+3. If the span has `outcome` (i.e., `outcome` is present and it's not `null`) then it should be `success`.
   It means spans with outcome indicating an issue of potential interest should not be compressed.    
 
 The second condition is important so that we don't remove (compress) a span that may be the parent of a downstream service.
