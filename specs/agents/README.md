@@ -40,7 +40,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
   - [Transactions](tracing-transactions.md)
   - [Spans](tracing-spans.md)
   - [Span destination](tracing-spans-destination.md)
-  - [Handling huge traces](handling-huge-traces/tracing-spans-handling-huge-traces.md)
+  - [Handling huge traces](handling-huge-traces/)
     - [Hard limit on number of spans to collect](handling-huge-traces/tracing-spans-limit.md)
     - [Collecting statistics about dropped spans](handling-huge-traces/tracing-spans-dropped-stats.md)
     - [Dropping fast exit spans](handling-huge-traces/tracing-spans-drop-fast-exit.md)
