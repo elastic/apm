@@ -12,7 +12,7 @@ Sets the minimum duration of exit spans.
 Exit spans that execute faster than this threshold are attempted to be discarded.
 
 In some cases exit spans cannot be discarded.
-Spans that propagate the trace context to downstream services,
+For example, spans that propagate the trace context to downstream services,
 such as outgoing HTTP requests,
 can't be discarded.
 However, external calls that don't propagate context,
