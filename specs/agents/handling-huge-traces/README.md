@@ -1,5 +1,3 @@
-[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md)
-
 # Handling huge traces
 
 Instrumenting applications that make lots of requests (such as 10k+) to backends like caches or databases can lead to several issues:

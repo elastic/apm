@@ -1,5 +1,3 @@
-[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Dropping fast exit spans](tracing-spans-drop-fast-exit.md)
-
 # Dropping fast exit spans
 
 If an exit span was really fast, chances are that it's not relevant for analyzing latency issues.

@@ -1,6 +1,4 @@
-[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Compressing spans](tracing-spans-compress.md)
-
-## Compressing spans
+# Compressing spans
 
 To mitigate the potential flood of spans to a backend,
 agents SHOULD implement the strategies laid out in this section to avoid sending almost identical and very similar spans.
@@ -13,7 +11,7 @@ with very little loss of information:
 - Potential to re-use span objects, significantly reducing allocations
 - Downstream effects like reducing impact on APM Server, ES storage, and UI performance
 
-#### Configuration option `span_compression_enabled`
+### Configuration option `span_compression_enabled`
 
 Setting this option to true will enable span compression feature.
 Span compression reduces the collection, processing, and storage overhead, and removes clutter from the UI.
@@ -26,7 +24,7 @@ The tradeoff is that some information such as DB statements of all the compresse
 | Dynamic        | `true`   |
 
 
-### Consecutive-Exact-Match compression strategy
+## Consecutive-Exact-Match compression strategy
 
 One of the biggest sources of excessive data collection are n+1 type queries and repetitive requests to a cache server.
 This strategy detects consecutive spans that hold the same information (except for the duration)
@@ -45,7 +43,7 @@ Two spans are considered to be an exact match if they are of the [same kind](#co
 - `destination.service.resource`
 - `name`
 
-#### Configuration option `span_compression_exact_match_max_duration`
+### Configuration option `span_compression_exact_match_max_duration`
 
 Consecutive spans that are exact match and that are under this threshold will be compressed into a single composite span.
 This option does not apply to [composite spans](#composite-span).
@@ -58,7 +56,7 @@ The tradeoff is that the DB statements of all the compressed spans will not be c
 | Default        | `5ms`    |
 | Dynamic        | `true`   |
 
-### Consecutive-Same-Kind compression strategy
+## Consecutive-Same-Kind compression strategy
 
 Another pattern that often occurs is a high amount of alternating queries to the same backend.
 Especially if the individual spans are quite fast, recording every single query is likely to not be worth the overhead.
@@ -86,7 +84,7 @@ boolean isSameKind(Span other) {
 When applying this compression strategy, the `span.name` is set to `Calls to $span.destination.service.resource`.
 The rest of the context, such as the `db.statement` will be determined by the first compressed span, which is turned into a composite span.
 
-#### Configuration option `span_compression_same_kind_max_duration`
+### Configuration option `span_compression_same_kind_max_duration`
 
 Consecutive spans to the same destination that are under this threshold will be compressed into a single composite span.
 This option does not apply to [composite spans](#composite-span).
@@ -99,12 +97,12 @@ The tradeoff is that the DB statements of all the compressed spans will not be c
 | Default        | `5ms`    |
 | Dynamic        | `true`   |
 
-### Composite span
+## Composite span
 
 Compressed spans don't have a physical span document.
 Instead, multiple compressed spans are represented by a composite span.
 
-#### Data model
+### Data model
 
 The `timestamp` and `duration` have slightly similar semantics,
 and they define properties under the `composite` context.
@@ -120,16 +118,16 @@ and they define properties under the `composite` context.
         - `exact_match` - [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy)
         - `same_kind` - [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy)
 
-#### Effects on metric processing
+### Effects on metric processing
 
 As laid out in the [span destination spec](tracing-spans-destination.md#contextdestinationserviceresource),
 APM Server tracks span destination metrics.
 To avoid compressed spans to skew latency metrics and cause throughput metrics to be under-counted,
 APM Server will take `composite.count` into account when tracking span destination metrics.
 
-### Compression algorithm
+## Compression algorithm
 
-#### Eligibility for compression
+### Eligibility for compression
 
 A span is eligible for compression if all the following conditions are met
 1. It's an [exit span](tracing-spans.md#exit-spans)
@@ -146,7 +144,7 @@ boolean isCompressionEligible() {
 }
 ```
 
-#### Span buffering
+### Span buffering
 
 Non-compression-eligible spans may be reported immediately after they have ended.
 When a compression-eligible span ends, it does not immediately get reported.
@@ -188,7 +186,7 @@ void onChildEnd(Span child) {
 }
 ```
 
-#### Turning compressed spans into a composite span
+### Turning compressed spans into a composite span
 
 Spans have `tryToCompress` method that is called on a span buffered by its parent.
 On the first call the span checks if it can be compressed with the given sibling and it selects the best compression strategy.
@@ -259,7 +257,7 @@ bool tryToCompressComposite(Span sibling) {
 }
 ```
 
-#### Concurrency
+### Concurrency
 
 The pseudo-code in this spec is intentionally not written in a thread-safe manner to make it more concise.
 Also, thread safety is highly platform/runtime dependent, and some don't support parallelism or concurrency.

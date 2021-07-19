@@ -1,6 +1,4 @@
-[Agent spec home](README.md) > [Handling huge traces](tracing-spans-handling-huge-traces.md) > [Hard limit on number of spans to collect](tracing-spans-limit.md)
-
-## Hard limit on number of spans to collect
+# Hard limit on number of spans to collect
 
 This is the last line of defense that comes with the highest amount of data loss.
 This strategy MUST be implemented by all agents.
@@ -8,7 +6,7 @@ Ideally, the other mechanisms limit the amount of spans enough so that the hard 
 
 Agents SHOULD also [collect statistics about dropped spans](tracing-spans-dropped-stats.md) when implementing this spec.
 
-### Configuration option `transaction_max_spans`
+## Configuration option `transaction_max_spans`
 
 Limits the amount of spans that are recorded per transaction.
 
@@ -22,9 +20,9 @@ Setting an upper limit will prevent overloading the agent and the APM server wit
 | Default        | `500`    |
 | Dynamic        | `true`   |
 
-### Implementation
+## Implementation
 
-#### Span count
+### Span count
 
 When a span is put in the agent's reporter queue, a counter should be incremented on its transaction, in order to later identify the _expected_ number of spans.
 In this way we can identify data loss, e.g. because events have been dropped.
@@ -46,7 +44,7 @@ In this case the above mentioned counter for `reported` spans is not incremented
 
 The total number of spans that an agent created within a transaction is equal to `span_count.started + span_count.dropped`. 
 
-#### Checking the limit
+### Checking the limit
 
 Before creating a span,
 agents must determine whether that span would exceed the span limit.
@@ -73,14 +71,14 @@ if (atomic_get(transaction.span_count.eligible_for_reporting) <= transaction_max
 `eligible_for_reporting` is another counter in the span_count object, but it's not reported to APM Server.
 It's similar to `reported` but the value may be higher.
 
-#### Configuration snapshot
+### Configuration snapshot
 
 To ensure consistent behavior within one transaction,
 the `transaction_max_spans` option should be read once on transaction start.
 Even if the option is changed via remote config during the lifetime of a transaction,
 the value that has been read at the start of the transaction should be used.
 
-#### Metric collection
+### Metric collection
 
 Even though we can determine whether to drop a span before starting it, it's not legal to return a `null` or noop span in that case.
 That's because we're [collecting statistics about dropped spans](tracing-spans-dropped-stats.md) as well as 
