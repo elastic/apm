@@ -68,6 +68,8 @@ Service metadata relates to the service/application being monitored:
 
 For official Elastic agents, the agent name should just be the name of the language for which the agent is written, in lower case.
 
+Services running on AWS Lambda [require specific values](tracing-instrumentation-aws-lambda.md) for some of the above mentioned fields.
+
 ### Cloud Provider Metadata
 
 [Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/metadata.json)
@@ -98,6 +100,8 @@ metadata is available.
 
 A sample implementation of this metadata collection is available in
 [the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
+
+Fetching of cloud metadata for services running as AWS Lambda functions follow a [different approach defined in the tracing-instrumentation-was-lambda spec](tracing-instrumentation-aws-lambda.md).
 
 #### AWS metadata
 
