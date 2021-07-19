@@ -112,8 +112,8 @@ and they define properties under the `composite` context.
 - `composite`
     - `count`: The number of compressed spans this composite span represents.
       The minimum count is 2 as a composite span represents at least two spans.
-    - `sum.us`: sum of durations of all compressed spans this composite span represents in microseconds.
-      Thus `sum.us` is the net duration of all the compressed spans while `duration` is the gross duration (including "whitespace" between the spans).
+    - `sum`: sum of durations of all compressed spans this composite span represents in milliseconds.
+      Thus `sum` is the net duration of all the compressed spans while `duration` is the gross duration (including "whitespace" between the spans).
     - `compression_strategy`: A string value indicating which compression strategy was used. The valid values are:
         - `exact_match` - [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy)
         - `same_kind` - [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy)
@@ -216,11 +216,11 @@ bool tryToCompress(Span sibling) {
     
     if (!isAlreadyComposite) {
         composite.count = 1
-        composite.sumUs = duration
+        composite.sum = duration
     }
     
     ++composite.count
-    composite.sumUs += other.duration
+    composite.sum += other.duration
     return true 
 }
 
