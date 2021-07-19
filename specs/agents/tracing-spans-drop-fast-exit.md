@@ -65,7 +65,7 @@ The default value is `true` for [exit spans](tracing-spans.md#exit-spans) and `f
 
 According to the [limitations](#Limitations),
 there are certain situations where the `discardable` flag of a span is set to `false`:
-- the span has `outcome` (i.e., `outcome` is present and it's not `null`) `outcome` is not `success`.
+- the span's `outcome` field is set to anything other than `success`.
   So spans with outcome indicating an issue of potential interest are not discardable 
 - On out-of-process context propagation
 
