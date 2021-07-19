@@ -91,13 +91,6 @@ For example, agents MAY implement internal (or even public) APIs to mark a span 
 Agents can then prevent the creation of a child span of a leaf/exit span.
 This can help to drop nested HTTP spans for instrumented calls that use HTTP as the transport layer (for example Elasticsearch).
 
-#### Exit span API
-
-Agents SHOULD offer a dedicated API to start an exit span.
-This API sets the `exit` flag to `true` and returns `null` or a noop span in case the parent already represents an `exit` span.
-This helps with the automatic inference of [`context.destination.service.resource`](tracing-spans-destination.md#contextdestinationserviceresource)
-without users having to specify any destination field.
-
 #### Context propagation
 
 As a general rule, when agents are tracing an exit span where the downstream service is known not to continue the trace,
