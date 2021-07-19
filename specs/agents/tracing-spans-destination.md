@@ -85,7 +85,7 @@ A user-supplied value MUST have the highest precedence, regardless if it was set
 
 **Value**
 
-For all [exit spans](tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
+For all [exit spans](handling-huge-traces/tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
 string through API, agents MUST infer the value of this field based on properties that are set on the span.
 
 If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
