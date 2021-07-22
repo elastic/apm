@@ -54,7 +54,36 @@ The documentation should clarify that spans with `unknown` outcomes are ignored 
 
 ### Span stack traces
 
-Spans may have an associated stack trace, in order to locate the associated source code that caused the span to occur. If there are many spans being collected this can cause a significant amount of overhead in the application, due to the capture, rendering, and transmission of potentially large stack traces. It is possible to limit the recording of span stack traces to only spans that are slower than a specified duration, using the config variable `ELASTIC_APM_SPAN_FRAMES_MIN_DURATION`.
+Spans may have an associated stack trace, in order to locate the associated
+source code that caused the span to occur. If there are many spans being
+collected this can cause a significant amount of overhead in the application,
+due to the capture, rendering, and transmission of potentially large stack
+traces. It is possible to limit the recording of span stack traces to only
+spans that are slower than a specified duration, using the config variable
+`span_stack_trace_min_duration`. (Previously
+`span_frames_min_duration`.)
+
+#### `span_stack_trace_min_duration` configuration
+
+Sets the minimum duration of a span for which stack frames/traces will be
+captured.
+
+This values for this option are case-sensitive.
+
+|                |   |
+|----------------|---|
+| Valid options  | [duration](configuration.md#configuration-value-types) |
+| Default        | `5ms` (soft default, agents may modify as needed) |
+| Dynamic        | `true` |
+| Central config | `true` |
+
+A negative value will result in never capturing the stack traces.
+
+A value of `0` (regardless of unit suffix) will result in always capturing the
+stack traces.
+
+A non-default value for this configuration option should override any value
+set for the deprecated `span_frames_min_duration`.
 
 ### Exit spans
 
