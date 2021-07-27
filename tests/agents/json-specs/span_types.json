@@ -90,6 +90,12 @@
           "ruby"
         ]
       },
+      "graphql": {
+        "__description": "GraphQL",
+        "__used_by": [
+          "nodejs"
+        ]
+      },
       "h2": {
         "__description": "H2",
         "__used_by": [
@@ -112,11 +118,23 @@
           "ruby"
         ]
       },
+      "memcached": {
+        "__description": "Memcached",
+        "__used_by": [
+          "nodejs"
+        ]
+      },
       "mongodb": {
         "__description": "MongoDB",
         "__used_by": [
           "java",
           "ruby"
+        ]
+      },
+      "mssql": {
+        "__description": "Microsoft SQL Server",
+        "__used_by": [
+          "nodejs"
         ]
       },
       "mysql": {
@@ -281,5 +299,15 @@
       "ruby"
     ],
     "allow_unlisted_subtype": true
+  },
+  "websocket": {
+    "__description": "Websockets",
+    "subtypes": {
+      "send": {
+        "__used_by": [
+          "nodejs"
+        ]
+      }
+    }
   }
 }
