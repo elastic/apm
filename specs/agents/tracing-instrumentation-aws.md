@@ -53,7 +53,7 @@ For distributed tracing, the SQS API has "message attributes" that can be used i
 ### SNS (AWS Simple Notification Service)
 
 The AWS Simple Notification Service can be instrumented using the [messaging spec](tracing-instrumentation-messaging.md), 
-but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec:
+but the only action that is instrumented is [Publish](https://docs.aws.amazon.com/sns/latest/api/API_Publish.html). These specifications supersede those of the messaging spec:
 
 - `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
 `SNS PUBLISH MyTopic`. The publish API allows a topic to be specified as a topic arn, target arn, or phone number.
