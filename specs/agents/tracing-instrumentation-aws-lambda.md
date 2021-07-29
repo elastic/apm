@@ -19,7 +19,7 @@ Field | Value | Description | Source
 `service.version` | e.g. `${LATEST}` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | 
-`source.cloud.provider` | `aws` | Constant value for the source cloud provider. | 
+`cloud.origin.provider` | `aws` | Constant value for the origin cloud provider. | 
 `cloud.region` | e.g. `us-east-1` | The cloud region. | `AWS_REGION`
 `cloud.service.name` | `lambda` |  Constant value for the AWS service.
 `transaction.type` | `request` | - | -
@@ -28,8 +28,8 @@ Field | Value | Description | Source
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
 `transaction.name` | e.g. `MyFunctionName` | Use function name if trigger type is `other`. | `context.functionName` 
 `faas.trigger.reuqest_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
-`source.service.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific. 
-`source.cloud.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.  
+`service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific. 
+`cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.  
 
 ### Overwriting Metadata
 Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). 
@@ -66,11 +66,11 @@ Field | Value | Description | Source
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
 `transaction.name` | e.g. `GET MyFunction` | Http method followed by a whitespace and the function name. | - 
 `faas.trigger.reuqest_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId` 
-`source.service.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` 
-`source.service.id` | e.g. `gy415nu...` | `event.requestContext.apiId` | 
-`source.service.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
-`source.cloud.service.name` | `api gateway` | Fix value for API gateway. | -
-`source.cloud.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
+`service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` 
+`service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` | 
+`service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
+`cloud.service.origin.name` | `api gateway` | Fix value for API gateway. | -
+`cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 
 ### SQS / SNS
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one ore more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`. 
@@ -87,12 +87,12 @@ Field | Value | Description | Source
 `faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
 `transaction.name` | e.g. `RECEIVE SomeQueue` | Follow the [messaging spec](./tracing-instrumentation-messaging.md) for transaction naming. | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
 `faas.trigger.reuqest_id` | e.g. `someMessageId` | SQS message ID. | `record.messageId`
-`source.service.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
-`source.service.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
-`source.service.version` | e.g. `2.1` | SQS event version | `record.eventVersion`
-`source.cloud.service.name` | `sqs` | Fix value for SQS. | -
-`source.cloud.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
-`source.cloud.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
+`service.origin.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
+`service.origin.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
+`service.origin.version` | e.g. `2.1` | SQS event version | `record.eventVersion`
+`cloud.origin.service.name` | `sqs` | Fix value for SQS. | -
+`cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
+`cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
 `message.queue` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
 `message.age` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`. 
 `message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.body`
@@ -104,11 +104,11 @@ Field | Value | Description | Source
 `faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
 `transaction.name` | e.g. `RECEIVE SomeTopic` | Follow the [messaging spec](./tracing-instrumentation-messaging.md) for transaction naming. | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
 `faas.trigger.reuqest_id` | e.g. `someMessageId` | SNS message ID. | `record.sns.messageId`
-`source.service.name` | e.g. `my-topic` | SNS topic name | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
-`source.service.id` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `record.sns.topicArn`
-`source.cloud.service.name` | `sns` | Fix value for SNS. | -
-`source.cloud.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `record.sns.topicArn`.
-`source.cloud.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `record.sns.topicArn`.
+`service.origin.name` | e.g. `my-topic` | SNS topic name | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
+`service.origin.id` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `record.sns.topicArn`
+`cloud.origin.service.name` | `sns` | Fix value for SNS. | -
+`cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `record.sns.topicArn`.
+`cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `record.sns.topicArn`.
 `message.queue` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `record.sns.topicArn`
 `message.age` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `snsTimestamp`.  | `record.sns.timestamp`
 `message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.sns.message`
@@ -126,11 +126,11 @@ Field | Value | Description | Source
 `faas.trigger.type` | `datasource` | Constant value. | -
 `transaction.name` | e.g. `MyFunction` | Use function name. | `context.functionName`
 `faas.trigger.reuqest_id` | e.g. `arn:aws:s3:::mybucket/ObjectCreated:Put/` | S3 event identifier. | `${record.s3.bucket.arn}/${record.eventName}/${record.eventTime}`
-`source.service.name` | e.g. `mybucket` | S3 bucket name. | `record.s3.bucket.name`
-`source.service.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
-`source.cloud.service.name` | `s3` | Fix value for S3. | -
-`source.cloud.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
-`source.service.version` | e.g. `2.1` | S3 schema version. | `record.s3.s3SchemaVersion`
+`service.origin.name` | e.g. `mybucket` | S3 bucket name. | `record.s3.bucket.name`
+`service.origin.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
+`cloud.origin.service.name` | `s3` | Fix value for S3. | -
+`cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
+`service.origin.version` | e.g. `2.1` | S3 schema version. | `record.s3.s3SchemaVersion`
 
 ## Data Flushing
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
