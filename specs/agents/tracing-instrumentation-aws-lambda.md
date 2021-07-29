@@ -15,7 +15,7 @@ Field | Value | Description | Source
 `service.name` | e.g. `MyFunctionName` | The name of the Lambda function. | `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
 `service.framework.name` | `AWS Lambda` | Constant value for the framework name. | -
 `service.runtime.name`| e.g. `AWS_Lambda_java8` | The lambda runtime. | `AWS_EXECUTION_ENV`
-`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | The ARN of the function **without alias postfix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias postfix.
+`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | The ARN of the function **without alias suffix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
 `service.version` | e.g. `${LATEST}` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | 
