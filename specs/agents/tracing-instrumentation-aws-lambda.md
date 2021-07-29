@@ -69,7 +69,7 @@ Field | Value | Description | Source
 `service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` 
 `service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` | 
 `service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
-`cloud.service.origin.name` | `api gateway` | Fix value for API gateway. | -
+`cloud.origin.service.name` | `api gateway` | Fix value for API gateway. | -
 `cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 
 ### SQS / SNS
