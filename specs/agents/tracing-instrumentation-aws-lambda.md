@@ -89,7 +89,6 @@ Field | Value | Description | Source
 `faas.trigger.reuqest_id` | e.g. `someMessageId` | SQS message ID. | `record.messageId`
 `service.origin.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
 `service.origin.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
-`service.origin.version` | e.g. `2.1` | SQS event version | `record.eventVersion`
 `cloud.origin.service.name` | `sqs` | Fix value for SQS. | -
 `cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
 `cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
@@ -106,6 +105,7 @@ Field | Value | Description | Source
 `faas.trigger.reuqest_id` | e.g. `someMessageId` | SNS message ID. | `record.sns.messageId`
 `service.origin.name` | e.g. `my-topic` | SNS topic name | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
 `service.origin.id` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `record.sns.topicArn`
+`service.origin.version` | e.g. `2.1` | SNS event version | `record.eventVersion`
 `cloud.origin.service.name` | `sns` | Fix value for SNS. | -
 `cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `record.sns.topicArn`.
 `cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `record.sns.topicArn`.
