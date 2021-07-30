@@ -124,8 +124,8 @@ In addition the following fields should be set for Lambda functions triggered by
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `faas.trigger.type` | `datasource` | Constant value. | -
-`transaction.name` | e.g. `MyFunction` | Use function name. | `context.functionName`
-`faas.trigger.reuqest_id` | e.g. `arn:aws:s3:::mybucket/ObjectCreated:Put/1627629323616` | S3 event identifier. | `${record.s3.bucket.arn}/${record.eventName}/${record.eventTime}`, eventTime in millis.
+`transaction.name` | e.g. `ObjectCreated:Put mybucket` | Use event name and bucket name. | `${record.eventName} ${record.s3.bucket.name}`
+`faas.trigger.reuqest_id` | e.g. `C3D13FE58DE4C810`| S3 event request ID. | `record.responseElements.xAmzRequestId`
 `service.origin.name` | e.g. `mybucket` | S3 bucket name. | `record.s3.bucket.name`
 `service.origin.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
 `cloud.origin.service.name` | `s3` | Fix value for S3. | -
