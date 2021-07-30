@@ -40,7 +40,7 @@ Some metadata fields are not available at startup (e.g. `invokedFunctionArn`). I
 A cold start occurs if AWS needs first to initialize the Lambda runtime (including the Lambda process, such as JVM, Node.js process, etc.) in oder to handle a request. This happens for the first request and after long function idle times. Lambda functions are always called sequentially (there is no concurrency). Thus, detecting a cold start is as simple as detecting whether the invocation of a __handler method__ is the **first since process startup** or not. This can be achieved with a global / process-scoped flag that is flipped at the first execution of the handler method.
 
 ## Trigger-specific Instrumentation
-Lambda functions can be triggered in many different ways. A generic transaction for a Lambda invocation can be create independently of the actual trigger. However, depending on the trigger type different information might be available that can be used to capture additional transaction data or allows to derive additional, valuable spans. The most common triggers that we want dedicated instrumentation support for are the following:  
+Lambda functions can be triggered in many different ways. A generic transaction for a Lambda invocation can be created independently of the actual trigger. However, depending on the trigger type, different information might be available that can be used to capture additional transaction data or that allows additional, valuable spans to be derived. The most common triggers that we want dedicated instrumentation support for are the following:  
 
 - API Gateway V1 
 - API Gateway V2 
