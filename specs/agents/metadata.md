@@ -101,7 +101,7 @@ metadata is available.
 A sample implementation of this metadata collection is available in
 [the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
 
-Fetching of cloud metadata for services running as AWS Lambda functions follow a [different approach defined in the tracing-instrumentation-was-lambda spec](tracing-instrumentation-aws-lambda.md).
+Fetching of cloud metadata for services running as AWS Lambda functions follow a [different approach defined in the tracing-instrumentation-aws-lambda spec](tracing-instrumentation-aws-lambda.md).
 
 #### AWS metadata
 
