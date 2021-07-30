@@ -125,7 +125,7 @@ Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `faas.trigger.type` | `datasource` | Constant value. | -
 `transaction.name` | e.g. `MyFunction` | Use function name. | `context.functionName`
-`faas.trigger.reuqest_id` | e.g. `arn:aws:s3:::mybucket/ObjectCreated:Put/` | S3 event identifier. | `${record.s3.bucket.arn}/${record.eventName}/${record.eventTime}`
+`faas.trigger.reuqest_id` | e.g. `arn:aws:s3:::mybucket/ObjectCreated:Put/1627629323616` | S3 event identifier. | `${record.s3.bucket.arn}/${record.eventName}/${record.eventTime}`, eventTime in millis.
 `service.origin.name` | e.g. `mybucket` | S3 bucket name. | `record.s3.bucket.name`
 `service.origin.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
 `cloud.origin.service.name` | `s3` | Fix value for S3. | -
