@@ -130,7 +130,7 @@ Field | Value | Description | Source
 `service.origin.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
 `cloud.origin.service.name` | `s3` | Fix value for S3. | -
 `cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
-`service.origin.version` | e.g. `2.1` | S3 schema version. | `record.s3.s3SchemaVersion`
+`service.origin.version` | e.g. `2.1` | S3 event version. | `record.eventVersion`
 
 ## Data Flushing
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
