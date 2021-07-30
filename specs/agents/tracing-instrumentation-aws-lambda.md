@@ -51,7 +51,7 @@ Lambda functions can be triggered in many different ways. A generic transaction 
 If none of the above apply, the fallback should be a generic instrumentation (as described above) that can deal with any type of trigger (thus capturing only the minimal available information).
 
 ### API Gateway (V1 & V2)
-There are two different API Gateway versions (V1 & V2) that slightly differ in the information (`event` object) that is passed to the Lambda handler function. 
+There are two different API Gateway versions (V1 & V2) that differ slightly in the information (`event` object) that is passed to the Lambda handler function. 
 
 With both versions, the `event` object contains information about the http request.
 Usually API Gateway-based Lambda functions return an object that contains the HTTP response information.
