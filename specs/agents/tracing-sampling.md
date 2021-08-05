@@ -63,10 +63,12 @@ Metrics will be more accurate when the sampling rate is high.
 With lower sampling rates the server is able to calculate representative, but less accurate, metrics.
 If the sampling rate is 0 then no metrics will be calculated at all.
 
-Agents MUST record the sampling rate on transactions and spans as `sample_rate`. e.g.
+When the sampling rate is available Agents _must_ record the sampling rate on transactions and spans as `sample_rate`, e.g.
 
     {"transaction":{"name":"GET /","sample_rate":0.1,...}}
     {"span":{"name":"SELECT FROM table","sample_rate":0.1,...}}
+
+For one the cases when the sampling rate is not available see [Propagation section of this document](#propagation).
 
 For non-sampled transactions the `sample_rate` field _must_ be set to 0,
 to ensure non-sampled transactions are not counted in transaction metrics.
