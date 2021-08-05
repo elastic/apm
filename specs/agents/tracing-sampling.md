@@ -63,7 +63,7 @@ Metrics will be more accurate when the sampling rate is high.
 With lower sampling rates the server is able to calculate representative, but less accurate, metrics.
 If the sampling rate is 0 then no metrics will be calculated at all.
 
-When the sampling rate is available Agents _must_ record the sampling rate on transactions and spans as `sample_rate`, e.g.
+When the sampling rate is available Agents MUST record the sampling rate on transactions and spans as `sample_rate`, e.g.
 
     {"transaction":{"name":"GET /","sample_rate":0.1,...}}
     {"span":{"name":"SELECT FROM table","sample_rate":0.1,...}}
