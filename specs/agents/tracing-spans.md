@@ -90,10 +90,8 @@ set for the deprecated `span_frames_min_duration`.
 Exit spans are spans that describe a call to an external service,
 such as an outgoing HTTP request or a call to a database.
 
-A span is considered an exit span if it has explicitly been marked as such or if it has context fields that are indicative of it being an exit span:
-```groovy
-exit = exit || context.destination || context.db || context.message || context.http
-```
+A span is considered an exit span if it has explicitly been marked as such; a
+span's status should not be inferred.
 
 #### Child spans of exit spans
 
