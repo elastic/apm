@@ -27,7 +27,7 @@ Field | Value | Description | Source
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
 `transaction.name` | e.g. `MyFunctionName` | Use function name if trigger type is `other`. | `context.functionName` 
-`faas.trigger.reuqest_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
+`faas.trigger.request_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
 `service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific. 
 `cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.  
 
@@ -65,7 +65,7 @@ Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
 `transaction.name` | e.g. `GET MyFunction` | Http method followed by a whitespace and the function name. | - 
-`faas.trigger.reuqest_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId` 
+`faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId` 
 `service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` 
 `service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` | 
 `service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
@@ -73,9 +73,9 @@ Field | Value | Description | Source
 `cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 
 ### SQS / SNS
-Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one ore more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`. 
+Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`. 
 
-Thus, in case that an SQS / SNS `event` contains **exactly one** SQS / SNS message, the agents must apply the following, messaging-specific retrieval of information. Otherwise, the agents should apply the [Generic Lambda Instrumentation](generic-lambda-instrumentation) as desribed above.
+Thus, in case that an SQS / SNS `event` contains **exactly one** SQS / SNS message, the agents must apply the following, messaging-specific retrieval of information. Otherwise, the agents should apply the [Generic Lambda Instrumentation](generic-lambda-instrumentation) as described above.
 
 With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from `record.messageAttributes` and use it for starting the lambda transaction. 
 
