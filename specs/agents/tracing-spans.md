@@ -128,5 +128,6 @@ This means that such spans cannot be [compressed](handling-huge-traces/tracing-s
 been propagated, because the `parent.id` of the downstream transaction may refer to a span that's not available.
 For now, the implication would be the inability to compress HTTP spans. Should we decide to enable that in the future, 
 following are two options how to do that:
-- Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default. For example, such list could contain `type == storage, subtype == s3`, preventing context propagation at S3 queries, even though those rely on HTTP/S.
+- Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default. 
+For example, such list could contain `type == storage, subtype == s3`, preventing context propagation at S3 queries, even though those rely on HTTP/S.
 - Add a list of child IDs to compressed exit spans that can be used when looking up `parent.id` of downstream transactions.
