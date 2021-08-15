@@ -124,7 +124,7 @@ When tracing an exit span, agents SHOULD propagate the trace context via the und
 
 Example: for Elasticsearch requests, which use HTTP as the transport, agents SHOULD add `traceparent` headers to the outgoing HTTP request.
 
-This means that such spans cannot be compressed (TODO link to span compression spec once available) if the context has 
+This means that such spans cannot be [compressed](handling-huge-traces/tracing-spans-compress.md) if the context has 
 been propagated, because the `parent.id` of the downstream transaction may refer to a span that's not available.
 For now, the implication would be the inability to compress HTTP spans. Should we decide to enable that in the future, 
 following are two options how to do that:
