@@ -83,28 +83,32 @@ providing a way to manually disable the automatic setting/inference of this fiel
 from a service map or an external service from the dependencies table).
 A user-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
-To allow for automatic inference,
-without users having to specify any destination field,
-agents SHOULD offer a dedicated API to start an exit span.
-This API sets the `exit` flag to `true` and returns `null` or a noop span in case the parent already represents an `exit` span.
-
 **Value**
 
-For all exit spans, unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
+For all [exit spans](handling-huge-traces/tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
 string through API, agents MUST infer the value of this field based on properties that are set on the span.
-
-This is how to determine whether a span is an exit span:
-```groovy
-exit = exit || context.destination || context.db || context.message || context.http
-```
 
 If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
 it MUST be the following:
+
 ```groovy
-if      (context.db?.instance)         "${subtype ?: type}/${context.db?.instance}"
-else if (context.message?.queue?.name) "${subtype ?: type}/${context.message.queue.name}"
-else if (context.http?.url)            "${context.http.url.host}:${context.http.url.port}"
-else                                   subtype ?: type
+if (context.db)
+  if (context.db.instance)
+    "${subtype ?: type}/${context.db.instance}"
+  else
+    subtype ?: type
+else if (context.message)
+  if (context.message.queue?.name) 
+    "${subtype ?: type}/${context.message.queue.name}"
+  else
+    subtype ?: type
+else if (context.http?.url)
+  if (context.http.url.port > 0)  
+    "${context.http.url.host}:${context.http.url.port}"
+  else if (context.http.url.host)
+    context.http.url.host
+else 
+  subtype ?: type
 ```
 
 If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST 

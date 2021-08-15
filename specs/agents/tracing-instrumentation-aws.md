@@ -33,10 +33,13 @@ SQS has a documented limit of ten message attributes per message.  Agents _shoul
 ### SNS (AWS Simple Notification Service)
 
 The AWS Simple Notification Service can be instrumented using the [messaging spec](tracing-instrumentation-messaging.md),
-but the only action that is instrumented is `PUBLISH`. These specifications supersede those of the messaging spec:
+but the only action that is instrumented is [Publish](https://docs.aws.amazon.com/sns/latest/api/API_Publish.html). These specifications supersede those of the messaging spec:
 
-- `span.name`: The span name should follow this pattern: `SNS PUBLISH <TOPIC-NAME>`. For example,
-`SNS PUBLISH MyTopic`.
+- `span.name`:
+    - For a publish action including a `TopicArn`, the span name MUST be `SNS PUBLISH to <topic-name>`. For example, for a TopicArn of `arn:aws:sns:us-east-2:123456789012:My-Topic` the topic-name is `My-Topic`. (Implementation note: this can extracted with the equivalent of this Python expression: `topicArn.split(':').pop()`.)
+    - For a publish action including a `TargetArn` (an endpoint ARN created via [CreatePlatformEndpoint](https://docs.aws.amazon.com/sns/latest/api/API_CreatePlatformEndpoint.html)), the span name MUST be `SNS PUBLISH to <application-name>`. For example, for a TargetArn of `arn:aws:sns:us-west-2:123456789012:endpoint/GCM/gcmpushapp/5e3e9847-3183-3f18-a7e8-671c3a57d4b3` the application-name is `endpoint/GCM/gcmpushapp`. The endpoint UUID represents a device and mobile app. For manageable cardinality, the UUID must be excluded from the span name. (Implementation note: this can be extracted with the equivalent of this Python expression: `targetArn.split(':').pop().rsplit('/', 1)[0]`)
+    - For a publish action including a `PhoneNumber`, the span name MUST be `SNS PUBLISH to [PHONENUMBER]`. The actual phone number MUST NOT be included because it is [PII](https://en.wikipedia.org/wiki/Personal_data) and cardinality is too high. 
+- `span.action`: 'publish'
 
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the topic is.
 

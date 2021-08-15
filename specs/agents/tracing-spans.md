@@ -54,27 +54,44 @@ The documentation should clarify that spans with `unknown` outcomes are ignored 
 
 ### Span stack traces
 
-Spans may have an associated stack trace, in order to locate the associated source code that caused the span to occur. If there are many spans being collected this can cause a significant amount of overhead in the application, due to the capture, rendering, and transmission of potentially large stack traces. It is possible to limit the recording of span stack traces to only spans that are slower than a specified duration, using the config variable `ELASTIC_APM_SPAN_FRAMES_MIN_DURATION`.
+Spans may have an associated stack trace, in order to locate the associated
+source code that caused the span to occur. If there are many spans being
+collected this can cause a significant amount of overhead in the application,
+due to the capture, rendering, and transmission of potentially large stack
+traces. It is possible to limit the recording of span stack traces to only
+spans that are slower than a specified duration, using the config variable
+`span_stack_trace_min_duration`. (Previously
+`span_frames_min_duration`.)
 
-### Span count
+#### `span_stack_trace_min_duration` configuration
 
-When a span is started a counter should be incremented on its transaction, in order to later identify the _expected_ number of spans. In this way we can identify data loss, e.g. because events have been dropped, or because of instrumentation errors.
+Sets the minimum duration of a span for which stack frames/traces will be
+captured.
 
-To handle edge cases where many spans are captured within a single transaction, the agent should enable the user to start dropping spans when the associated transaction exeeds a configurable number of spans. When a span is dropped, it is not reported to the APM Server, but instead another counter is incremented to track the number of spans dropped. In this case the above mentioned counter for started spans is not incremented.
+This values for this option are case-sensitive.
 
-```json
-"span_count": {
-  "started": 500,
-  "dropped": 42
-}
-```
+|                |   |
+|----------------|---|
+| Valid options  | [duration](configuration.md#configuration-value-types) |
+| Default        | `5ms` (soft default, agents may modify as needed) |
+| Dynamic        | `true` |
+| Central config | `true` |
 
-Here's how the limit can be configured for [Node.js](https://www.elastic.co/guide/en/apm/agent/nodejs/current/agent-api.html#transaction-max-spans) and [Python](https://www.elastic.co/guide/en/apm/agent/python/current/configuration.html#config-transaction-max-spans).
+A negative value will result in never capturing the stack traces.
+
+A value of `0` (regardless of unit suffix) will result in always capturing the
+stack traces.
+
+A non-default value for this configuration option should override any value
+set for the deprecated `span_frames_min_duration`.
 
 ### Exit spans
 
 Exit spans are spans that describe a call to an external service,
 such as an outgoing HTTP request or a call to a database.
+
+A span is considered an exit span if it has explicitly been marked as such; a
+span's status should not be inferred.
 
 #### Child spans of exit spans
 
@@ -93,7 +110,7 @@ For example, an HTTP exit span may have child spans with the `action` `request`,
 These spans MUST NOT have any destination context, so that there's no effect on destination metrics.
 
 Most agents would want to treat exit spans as leaf spans, though.
-This brings the benefit of being able to compress repetitive exit spans (TODO link to span compression spec once available),
+This brings the benefit of being able to [compress](handling-huge-traces/tracing-spans-compress.md) repetitive exit spans,
 as span compression is only applicable to leaf spans.
 
 Agents MAY implement mechanisms to prevent the creation of child spans of exit spans.
