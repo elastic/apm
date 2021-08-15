@@ -120,7 +120,7 @@ and they define properties under the `composite` context.
 
 ### Effects on metric processing
 
-As laid out in the [span destination spec](tracing-spans-destination.md#contextdestinationserviceresource),
+As laid out in the [span destination spec](../tracing-spans-destination.md#contextdestinationserviceresource),
 APM Server tracks span destination metrics.
 To avoid compressed spans to skew latency metrics and cause throughput metrics to be under-counted,
 APM Server will take `composite.count` into account when tracking span destination metrics.
@@ -130,7 +130,7 @@ APM Server will take `composite.count` into account when tracking span destinati
 ### Eligibility for compression
 
 A span is eligible for compression if all the following conditions are met
-1. It's an [exit span](tracing-spans.md#exit-spans)
+1. It's an [exit span](../tracing-spans.md#exit-spans)
 2. The trace context of this span has not been propagated to a downstream service
 3. If the span has `outcome` (i.e., `outcome` is present and it's not `null`) then it should be `success`.
   It means spans with outcome indicating an issue of potential interest should not be compressed.    
