@@ -20,16 +20,29 @@ ES field: `span.destination.service.name`
 
 The identifier for the destination service.
 
-**Usage**
+**Deprecated**
 
-Currently, this field is not used anywhere within the product.
-The original intent was to use it as a display name of a service in the service map.
+This field is deprecated and scheduled to be removed.
+
+This field is not used anywhere within the product,
+and we don't have plans to do so.
+However, we can't just remove it as it's a required field in the intake API.
+
+Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
+Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
 
 **Value**
 
-For HTTP, use scheme, host, and non-default port (e.g. `http://elastic.co`, `http://apm.example.com:8200`).
-For anything else, use `span.subtype` (e.g. `postgresql`, `elasticsearch`).
-However, individual sub-resources of a service, such as the name of a message queue, should not be added.
+Agents MUST NOT manually set this field.
+Agents MUST NOT offer a non-deprecated public API to set it.
+
+The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
+```groovy
+if (context.destination?.service?.resource) context.destination.service.name = subtype ?: type
+```
+
+The change to automatically set the field mainly has an effect on HTTP and gRPC spans that used to set the value to host and non-default port.
+As the field is not used anywhere, and we want to remove it from the span documents in the future, that's fine.
 
 #### `context.destination.service.resource`
 
@@ -62,23 +75,80 @@ The cardinality should be the same or higher as `span.destination.service.name`.
 Higher, if there are individual sub-resources for a service, such as individual queues for a message broker.
 Same cardinality otherwise.
 
+**API**
+
+Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not 
+sufficient. If set to `null` or an empty value, agents MUST omit the `span.destination.service` field altogether, thus 
+providing a way to manually disable the automatic setting/inference of this field (e.g. in order to remove a node 
+from a service map or an external service from the dependencies table).
+A user-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
+
 **Value**
 
-Usually, the value is just the `span.subtype`.
-For HTTP, this is the host and port (see the [HTTP spec](tracing-instrumentation-http.md#destination) for more details).
-The specs for the specific technologies will have more information on how to construct the value for `context.destination.service.resource`.
+For all [exit spans](handling-huge-traces/tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
+string through API, agents MUST infer the value of this field based on properties that are set on the span.
+
+If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
+it MUST be the following:
+
+```groovy
+if (context.db)
+  if (context.db.instance)
+    "${subtype ?: type}/${context.db.instance}"
+  else
+    subtype ?: type
+else if (context.message)
+  if (context.message.queue?.name) 
+    "${subtype ?: type}/${context.message.queue.name}"
+  else
+    subtype ?: type
+else if (context.http?.url)
+  if (context.http.url.port > 0)  
+    "${context.http.url.host}:${context.http.url.port}"
+  else if (context.http.url.host)
+    context.http.url.host
+else 
+  subtype ?: type
+```
+
+If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST 
+omit the `context.destination.service` field from the reported span event.
+
+The inference of `context.destination.service.resource` SHOULD be implemented in a central place within the agent,
+such as an on-span-end-callback or the setter of a dependant property,
+rather than being implemented for each individual library integration/instrumentation.
+
+For specific technologies, the field MAY be set non-centrally.
+However, updating the generic inference logic SHOULD be preferred, if feasible.
+Setting the value within a specific library integration/instrumentation is perfectly fine if there's only one canonical library for it.
+Examples: gRPC and cloud-provider specific backends.
 
 #### `context.destination.service.type`
 
 ES field: `span.destination.service.type`
 
-Type of the destination service, e.g. `db`, `elasticsearch`.
-Should typically be the same as `span.type`.
+Type of the destination service.
 
-**Usage**
+**Deprecated**
 
-Currently, this field is not used anywhere within the product.
-It was originally intended to be used to display different icons on the service map.
+This field is deprecated and scheduled to be removed.
+
+This field is not used anywhere within the product,
+and we don't have plans to do so.
+However, we can't just remove it as it's a required field in the intake API.
+
+Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
+Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
+
+**Value**
+
+Agents MUST NOT manually set this field.
+Agents MUST NOT offer a non-deprecated public API to set it.
+
+The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
+```groovy
+if (context.destination?.service?.resource) context.destination.service.type = type
+```
 
 ### Destination fields
 
@@ -98,8 +168,16 @@ ES field: [`destination.address`](https://www.elastic.co/guide/en/ecs/current/ec
 
 Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::1`)
 
+Agents MAY offer a public API to set this field so that users can override the automatically discovered one. 
+This includes the ability to set `null` or empty value in order to unset the automatically-set value.
+A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
+
 #### `context.destination.port`
 
 ES field: [`destination.port`](https://www.elastic.co/guide/en/ecs/current/ecs-destination.html#_destination_field_details)
 
 Port is the destination network port (e.g. 443)
+
+Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
+This includes the ability to set a non-positive value in order to unset the automatically-set value.
+A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.

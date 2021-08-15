@@ -10,6 +10,53 @@ Here's a list of the config options across all agents, their types, default valu
 
 They are provided as environment variables but depending on the language there might be several feasible ways to let the user tweak them. For example besides the environment variable `ELASTIC_APM_SERVER_URL`, the Node.js Agent might also allow the user to configure the server URL via a config option named `serverUrl`, while the Python Agent might also allow the user to configure it via a config option named `server_url`.
 
+### Configuration Source Precedence
+
+Configuration can be provided via a number of sources. Values from central
+configuration MUST have the highest precedence, and default values MUST have
+the lowest precedence. Otherwise, agents MAY adopt the following config
+source precedence. Sources higher on this list will override values provided
+by sources lower on this list:
+
+ - Central configuration
+ - Environment variables
+ - Inline configuration in code
+ - Config files
+ - Default value
+
+### Invalid Configuration Values
+
+If an invalid value for a configuration option is provided (for example:
+`breakdown_metrics="yes"` or `apiRequestTime="1h"`) then the agent MUST ignore
+the value (falling back to a config source with lower precedence) and SHOULD
+emit a log warning about the ignored value.
+
+### Configuration Value Types
+
+The following table enumerates the available configuration types across the
+agents:
+
+
+| Type | Description (if needed) |
+|------|-------------------------|
+| String   |  |
+| Integer  |  |
+| Float    |  |
+| Boolean  | Encoded as a lower-case boolean string: `"false"`, `"true"` |
+| List     | Encoded as a comma-separated string (whitespace surrounding items should be stripped): `"foo,bar,baz"` |
+| Mapping  | Encoded as a string, with `"key=value"` pairs separated by commas (whitespace surrounding items should be stripped): `"foo=bar,baz=foo"` |
+| Duration | Case-sensitive string with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). Validating regex: `^(-)?(\d+)(ms|s|m)$` |
+| Size     | Case-insensitive string with a positive size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes, with a 1024 multiplier between each unit). Validating regex: `^(\d+)(b|kb|mb|gb)$` |
+
+#### Duration/Size Config Legacy Considerations
+
+For duration/size-formatted config options, some agents allow users to omit the unit
+suffix for backwards compatibility reasons. Going forward, all
+duration/size-formatted config options should require the unit suffix, falling back
+to the default value if an invalid value is provided.  Existing
+duration/size-formatted config options should be changed to require the unit suffix
+at the next major version.
+
 ### APM Agent Configuration via Kibana
 
 Also known as "central configuration". Agents can query the APM Server for configuration updates; the server proxies and caches requests to Kibana.
