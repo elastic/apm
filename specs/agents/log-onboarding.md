@@ -39,7 +39,7 @@ app as ECS-compatible json, as shown in the
 ### Implicit effects
 
 Whenever `log_ecs_formatting` is set to anything other than `off`:
-* the [log correlation](log-correlation.md) config option should be implicitly enabled
+* the [log correlation](log-correlation.md) feature should be implicitly enabled, if it is not already
 * agent logs should be ECS-formatted as well
 
 ### Required fields
