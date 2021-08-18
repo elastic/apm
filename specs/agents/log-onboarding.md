@@ -40,7 +40,7 @@ For all options other than `off`, the [log correlation](log-correlation.md) shou
 
 ## `log_ecs_formatter_allow_list` configuration
 
-Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_reformatting` is set to any option other than `OFF`. A "formatter" is a generic name used to describe the logging-framework-specific entity that is responsible for the formatting of log events. For example, in some Java frameworks those would be subtypes of `Layout` or `Encoder`.
+Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_formatting` is set to any option other than `off`. A "formatter" is a generic name used to describe the logging-framework-specific entity that is responsible for the formatting of log events. For example, in some Java frameworks those would be subtypes of `Layout` or `Encoder`.
 
 |                |   |
 |----------------|---|
