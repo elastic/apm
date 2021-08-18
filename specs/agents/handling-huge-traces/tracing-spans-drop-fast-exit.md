@@ -59,7 +59,7 @@ Propagating the trace context to downstream services is also known as out-of-pro
 ### `discardable` flag
 
 Spans store an additional `discardable` flag in order to determine whether a span can be discarded.
-The default value is `true` for [exit spans](tracing-spans.md#exit-spans) and `false` for any other span.
+The default value is `true` for [exit spans](../tracing-spans.md#exit-spans) and `false` for any other span.
 
 According to the [limitations](#Limitations),
 there are certain situations where the `discardable` flag of a span is set to `false`:
