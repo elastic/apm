@@ -14,35 +14,29 @@ Agents SHOULD have a generic component used in all tests that validates that the
 Rather than opting into the validation, the testing should provide an opt-out if,
 for whatever reason, the destination information can't or shouldn't be collected for a particular exit span.
 
-#### `context.destination.service.name`
+#### `context.destination.service.name`/`context.destination.service.type`
 
-ES field: `span.destination.service.name`
+ES field: `span.destination.service.name`/`span.destination.service.type`
 
 The identifier for the destination service.
 
 **Deprecated**
 
-This field is deprecated and scheduled to be removed.
+These fields are deprecated removed from the Elasticsearch documents.
 
-This field is not used anywhere within the product,
-and we don't have plans to do so.
-However, we can't just remove it as it's a required field in the intake API.
-
-Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
-Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
+However, we can't just remove them from the intake payloads as they're a required field in the intake API.
 
 **Value**
 
-Agents MUST NOT manually set this field.
-Agents MUST NOT offer a non-deprecated public API to set it.
+Agents MUST NOT manually set these fields.
+Agents MUST NOT offer a non-deprecated public APIs to set them.
 
-The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
-```groovy
-if (context.destination?.service?.resource) context.destination.service.name = subtype ?: type
-```
+The intake JSON spec (up until at least 7.15) requires the fields to be present if `context.destination.service.resource` is set.
+Future versions of APM Server will remove the fields from the intake API and drop it if sent by agents.
 
-The change to automatically set the field mainly has an effect on HTTP and gRPC spans that used to set the value to host and non-default port.
-As the field is not used anywhere, and we want to remove it from the span documents in the future, that's fine.
+Agents MAY omit the fields when sending spans to an APM Server version that doesn't require the field.
+Otherwise, the field MUST be serialized as an empty string if `context.destination.service.resource` is set.
+Both options result in the fields being omitted from the Elasticsearch document.
 
 #### `context.destination.service.resource`
 
@@ -122,33 +116,6 @@ For specific technologies, the field MAY be set non-centrally.
 However, updating the generic inference logic SHOULD be preferred, if feasible.
 Setting the value within a specific library integration/instrumentation is perfectly fine if there's only one canonical library for it.
 Examples: gRPC and cloud-provider specific backends.
-
-#### `context.destination.service.type`
-
-ES field: `span.destination.service.type`
-
-Type of the destination service.
-
-**Deprecated**
-
-This field is deprecated and scheduled to be removed.
-
-This field is not used anywhere within the product,
-and we don't have plans to do so.
-However, we can't just remove it as it's a required field in the intake API.
-
-Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
-Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
-
-**Value**
-
-Agents MUST NOT manually set this field.
-Agents MUST NOT offer a non-deprecated public API to set it.
-
-The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
-```groovy
-if (context.destination?.service?.resource) context.destination.service.type = type
-```
 
 ### Destination fields
 
