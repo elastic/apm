@@ -63,12 +63,14 @@ Metrics will be more accurate when the sampling rate is high.
 With lower sampling rates the server is able to calculate representative, but less accurate, metrics.
 If the sampling rate is 0 then no metrics will be calculated at all.
 
-Agents will record the sampling rate on transactions and spans as `sample_rate`. e.g.
+When the sampling rate is available Agents MUST record the sampling rate on transactions and spans as `sample_rate`, e.g.
 
     {"transaction":{"name":"GET /","sample_rate":0.1,...}}
     {"span":{"name":"SELECT FROM table","sample_rate":0.1,...}}
 
-For non-sampled transactions the `sample_rate` field _must_ be set to 0,
+See [Propagation section of this document](#propagation) for details about the case when the sampling rate is not available.
+
+For non-sampled transactions the `sample_rate` field MUST be set to 0,
 to ensure non-sampled transactions are not counted in transaction metrics.
 This is important to avoid double-counting,
 as non-sampled transactions will be represented in metrics calculated from sampled transactions.
@@ -98,7 +100,7 @@ In the future we may introduce options to agents to stop sending non-sampled tra
 As mentioned above, the sampling decision must be propagated throughout the trace.
 We adhere to the W3C Trace-Context spec for this, propagating the decision through trace-flags: https://www.w3.org/TR/trace-context/#sampled-flag
 
-In addition to propagating the sampling decision (boolean), agents must also propagate the sampling rate to ensure it is consistently attached to to all events in the trace.
+In addition to propagating the sampling decision (boolean), agents MUST also propagate the sampling rate to ensure it is consistently attached to to all events in the trace.
 This is achieved by adding an `s` attribute to our [`es` `tracestate` key](tracing-distributed-tracing.md#tracestate) with the value of the sampling rate.
 e.g.
 
@@ -107,7 +109,7 @@ e.g.
 As `tracestate` has modest size limits we must keep the size down.
 This is ensured as the `transaction_sample_rate` configuration option has a maximum precision of 4 decimal places.
 
-For non-root transactions the agent must parse incoming `tracestate` headers to identify the `es` entry and extract the `s` attribute.
+For non-root transactions the agent MUST parse incoming `tracestate` headers to identify the `es` entry and extract the `s` attribute.
 The `s` attribute value should be used to populate the `sample_rate` field of transactions and spans.
 If there is no `tracestate` or no valid `es` entry with an `s` attribute,
-then the agent must omit `sample_rate` from non-root transactions and their spans.
+then the agent MUST omit `sample_rate` from non-root transactions and their spans.

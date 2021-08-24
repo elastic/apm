@@ -32,8 +32,6 @@ The following fields are relevant for database and datastore spans. Where possib
 | <hr/> |<hr/>|<hr/>|
 |`context.destination.address`|The hostname / address of the database.| :x: |
 |`context.destination.port`|The port under which the database is accessible.| :x: |
-|`context.destination.service.name`| The `destination.service.name` is used to denote "sameness" of the service. E.g. multiple instances of Oracle databases have all the same name `oracle`. For databases and storages the same value as for the `span.subtype` should be used.| :white_check_mark:|
-|`context.destination.service.type`| Should be the same as the `span.type`. Value: `db`| :white_check_mark:|
 |`context.destination.service.resource`|  Used to detect unique destinations from each service. This field should contain all information that is needed to differentiate different database / storage instances (e.g. in the service map). See details below on how to set this field for specific technologies.| :white_check_mark:|
 |`context.destination.cloud.region`| The cloud region in case the datastore is hosted in a public cloud or is a managed datasatore / database. E.g. AWS regions, such as `us-east-1` | :x: |
 

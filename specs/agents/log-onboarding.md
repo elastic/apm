@@ -1,12 +1,14 @@
 # Log Onboarding
 
 The Agents will be a critical part of log collection onboarding for their
-application logs. This is primarily accomplished via the `log_ecs_formatting`
+application logs. This is primarily accomplished via the `log_ecs_reformatting`
 configuration option, described below.
 
-In future iterations, the shipping of ECS logs will become more automated by auto-parsing ECS-JSON logs in Filebeat and [automatically shipping log files](https://github.com/elastic/apm/issues/374) that got reformatted via `log_ecs_formatting`.
+In future iterations, the shipping of ECS logs will become more automated by auto-parsing ECS-JSON logs in Filebeat 
+and [automatically shipping log files](https://github.com/elastic/apm/issues/374) that got reformatted via 
+`log_ecs_reformatting`.
 
-## `log_ecs_formatting` configuration
+## `log_ecs_reformatting` configuration
 
 Configures the agent to automatically format application logs as ECS-compatible JSON
 (if possible).
@@ -37,7 +39,22 @@ app as ECS-compatible json, as shown in the
 [spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
 
 For all options other than `off`, the [log correlation](log-correlation.md) should be implicitly enabled.
-### Required fields
+
+## `log_ecs_formatter_allow_list` configuration
+
+Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_reformatting` is 
+set to any option other than `off`. A "formatter" is a generic name used to describe the logging-framework-specific entity 
+that is responsible for the formatting of log events. Currently this option is only implemented in the Java agent, where 
+formatters are subtypes of `Layout` or `Encoder`, depending on the logging framework.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | agent specific |
+| Dynamic        | `false` |
+| Central config | `false` |
+
+## Required fields
 
 The following fields are required:
 
@@ -46,12 +63,12 @@ The following fields are required:
 * `message`
 * `ecs.version`
 
-### Recommended fields
+## Recommended fields
 
 The following fields are important for a good user experience in Kibana,
 but will not cause errors if they are omitted:
 
-#### `service.name`
+### `service.name`
 
 Agents should always populate `service.name` even if there is not an active
 transaction.
@@ -60,7 +77,7 @@ The `service.name` is used to be able to add a logs tab to the service view in
 the UI. This lets users quickly get a stream of all logs for a particular
 service.
 
-#### `event.dataset`
+### `event.dataset`
 
 The `event.dataset` field is used  to power the [log anomaly chart in the logs UI](https://www.elastic.co/guide/en/observability/current/inspect-log-anomalies.html#anomalies-chart).
 The dataset can also be useful to filter for different log streams from the same pod, for example.
