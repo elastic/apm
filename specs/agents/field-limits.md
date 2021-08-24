@@ -21,8 +21,8 @@ the user to configure this maximum length.
 
 |                |   |
 |----------------|---|
-| Type           | [`Size`](./configuration.md#configuration-value-types) |
-| Default        | `"10000b"` |
+| Type           | `Integer` |
+| Default        | `10000` |
 | Dynamic        | `true` |
 | Central config | `true` |
 
