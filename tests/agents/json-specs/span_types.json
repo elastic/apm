@@ -11,6 +11,7 @@
     "<type>.subtypes.<subtype>.__used_by": "list of agents that use <subtype> to help document alignment (optional)"
   },
   "app": {
+    "__description": "Spans within application (usually not calling an external system)",
     "allow_null_subtype": true,
     "subtypes": {
       "inferred": {
@@ -191,20 +192,26 @@
     }
   },
   "external": {
+    "__description": "Request to external service, usually in request/response pattern",
     "subtypes": {
       "dubbo": {
-        "__description": "Apache Dubbo"
+        "__description": "Apache Dubbo",
+        "__used_by": [
+          "java"
+        ]
       },
       "grpc": {
         "__description": "gRPC",
         "__used_by": [
-          "ruby"
+          "ruby",
+          "java"
         ]
       },
       "http": {
         "__description": "HTTP client",
         "__used_by": [
-          "ruby"
+          "ruby",
+          "java"
         ]
       }
     }
