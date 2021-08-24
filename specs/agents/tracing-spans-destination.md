@@ -22,7 +22,7 @@ The identifier for the destination service.
 
 **Deprecated**
 
-These fields are deprecated removed from the Elasticsearch documents.
+These fields are deprecated and removed from Elasticsearch documents.
 
 However, we can't just remove them from the intake payloads as they're a required field in the intake API.
 
