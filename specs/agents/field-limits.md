@@ -17,7 +17,8 @@ Agents SHOULD limit the maximum length of the following fields by truncating.
 - `error.log.message`
 
 Agents MAY support the `long_field_max_length` configuration option to allow
-the user to configure this maximum length.
+the user to configure this maximum length. This option defines a maximum number
+of unicode characters for each field.
 
 |                |   |
 |----------------|---|
