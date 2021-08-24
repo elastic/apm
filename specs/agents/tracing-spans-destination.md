@@ -29,20 +29,14 @@ and we don't have plans to do so.
 However, we can't just remove it as it's a required field in the intake API.
 
 Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
-Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
 
 **Value**
 
 Agents MUST NOT manually set this field.
 Agents MUST NOT offer a non-deprecated public API to set it.
 
-The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
-```groovy
-if (context.destination?.service?.resource) context.destination.service.name = subtype ?: type
-```
-
-The change to automatically set the field mainly has an effect on HTTP and gRPC spans that used to set the value to host and non-default port.
-As the field is not used anywhere, and we want to remove it from the span documents in the future, that's fine.
+Agents MAY omit the field when sending spans to an APM Server version that doesn't require the field.
+Otherwise, the value of this field MUST be serialized as an empty string.
 
 #### `context.destination.service.resource`
 
@@ -138,17 +132,14 @@ and we don't have plans to do so.
 However, we can't just remove it as it's a required field in the intake API.
 
 Future versions of APM Server will remove the field from the intake API and drop it if sent by agents.
-Agents MAY omit the field when sending spans to an APM Server that doesn't require the field.
 
 **Value**
 
 Agents MUST NOT manually set this field.
 Agents MUST NOT offer a non-deprecated public API to set it.
 
-The value is automatically set on span end, after the value of `context.destination.service.resource` has been determined.
-```groovy
-if (context.destination?.service?.resource) context.destination.service.type = type
-```
+Agents MAY omit the field when sending spans to an APM Server version that doesn't require the field.
+Otherwise, the value of this field MUST be serialized as an empty string.
 
 ### Destination fields
 
