@@ -24,12 +24,12 @@ The identifier for the destination service.
 
 These fields are deprecated and removed from Elasticsearch documents.
 
-However, we can't just remove them from the intake payloads as they're a required field in the intake API.
+However, we can't just remove them from the intake payloads as they're required fields in the intake API.
 
 **Value**
 
 Agents MUST NOT manually set these fields.
-Agents MUST NOT offer a non-deprecated public APIs to set them.
+Agents MUST NOT offer non-deprecated public APIs to set them.
 
 The intake JSON spec (up until at least 7.15) requires the fields to be present if `context.destination.service.resource` is set.
 Future versions of APM Server will remove the fields from the intake API and drop it if sent by agents.
