@@ -61,6 +61,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - [Agent Configuration](configuration.md)
 - [Agent logging](logging.md)
 - [Data sanitization](sanitization.md)
+- [Field limits](field-limits.md)
 
 # Processes
 
