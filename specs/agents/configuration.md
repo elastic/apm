@@ -124,5 +124,5 @@ but that should not stand in the way of the initial onboarding process.
 
 Agents should be able to auto-detect the APM Server endpoint
 by just defaulting to `http://localhost:8200/`.
-Furthermore, if it's possible, agents should detect a sensible defaults for `service.name`
-as well as the `service.version`.
+Furthermore, if it's possible, agents should detect sensible defaults for `service.name`
+and `service.version`.
