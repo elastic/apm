@@ -115,12 +115,9 @@ Agents should implement a [configuration option](https://docs.google.com/spreads
 
 ### Zero-configuration support
 
-To decrease initial setup costs per application,
-APM agents should not require any configuration to be set
-in order to start sending data to a local APM Server.
-After the initial onboarding, users can still customize settings
-if the defaults aren't fitting
-but that should not stand in the way of the initial onboarding process.
+To decrease onboarding friction,
+APM agents should not require any configuration to send data to a local APM Server.
+After onboarding, users can customize settings for which the defaults aren't appropriate.
 
 Agents should be able to auto-detect the APM Server endpoint
 by just defaulting to `http://localhost:8200/`.
