@@ -112,3 +112,14 @@ Failure to process one config attribute should not affect processing of others.
 #### Feature flag
 
 Agents should implement a [configuration option](https://docs.google.com/spreadsheets/d/1JJjZotapacA3FkHc2sv_0wiChILi3uKnkwLTjtBmxwU), (`CENTRAL_CONFIG`) which lets users disable the central configuration polling.
+
+### Zero-configuration support
+
+To decrease onboarding friction,
+APM agents should not require any configuration to send data to a local APM Server.
+After onboarding, users can customize settings for which the defaults aren't appropriate.
+
+Agents should be able to auto-detect the APM Server endpoint
+by just defaulting to `http://localhost:8200/`.
+Furthermore, if it's possible, agents should detect sensible defaults for `service.name`
+and `service.version`.
