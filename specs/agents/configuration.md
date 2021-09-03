@@ -119,7 +119,6 @@ To decrease onboarding friction,
 APM agents should not require any configuration to send data to a local APM Server.
 After onboarding, users can customize settings for which the defaults aren't appropriate.
 
-Agents should be able to auto-detect the APM Server endpoint
-by just defaulting to `http://localhost:8200/`.
-Furthermore, if it's possible, agents should detect sensible defaults for `service.name`
-and `service.version`.
+By default, agents should send data to the APM Server at `http://localhost:8200/`.
+If possible, agents should detect sensible defaults for `service.name` and `service.version`.
+Even if detecting these values is not possible, a default value for `service.name` should be provided for frictionless onboarding.
