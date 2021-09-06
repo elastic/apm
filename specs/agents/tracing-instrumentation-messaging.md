@@ -28,8 +28,18 @@ polling spans, where we want to capture such as well).
   - `transaction.type`: `messaging`
 - Spans: 
   - `span.type`: `messaging` 
-  - `span.subtype`: the name of the framework - e.g. `jms`, `kafka`, `rabbitmq` 
+  - `span.subtype`: depends on service/provider, see table below
   - `span.action`: `send`, `receive` or `poll`
+
+| `subtype`           | Description                       |
+| ------------------- | --------------------------------- |
+| `azurequeue`        |  Azure Queue                      |
+| `azureservicebus`   |  Azure Service Bus                |
+| `jms`               |  Java Messaging Service           |
+| `kafka`             |  Apache Kafka                     |
+| `rabbitmq`          |  RabbitMQ                         |
+| `sns`               |  AWS Simple Notification Service  |
+| `sqs`               |  AWS Simple Queue Service         |
   
 ### Naming
 
