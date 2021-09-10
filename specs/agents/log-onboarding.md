@@ -91,10 +91,10 @@ A good example is in the Java agent, where `event.dataset` is set to
 log appender.
 
 If an agent doesn't have reasonable options for this field, it should be set
-to `${service.name}.log`.
+to `${service.name}`.
 
 Some examples:
-- opbeans.log
+- opbeans
 - opbeans.checkout
 - opbeans.login
 - opbeans.audit
