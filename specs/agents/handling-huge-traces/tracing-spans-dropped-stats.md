@@ -26,7 +26,7 @@ This is an example of the statistics that are added to the `transaction` events 
       "subtype": "http",
       "destination_service_resource": "example.com:443",
       "outcome": "failure",
-      "count": 28,
+      "duration.count": 28,
       "duration.sum.us": 123456
     },
     {
@@ -34,7 +34,7 @@ This is an example of the statistics that are added to the `transaction` events 
       "subtype": "mysql",
       "destination_service_resource": "mysql",
       "outcome": "success",
-      "count": 81,
+      "duration.count": 81,
       "duration.sum.us": 9876543
     }
   ]
