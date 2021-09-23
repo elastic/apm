@@ -146,7 +146,8 @@
       "mssql": {
         "__description": "Microsoft SQL Server",
         "__used_by": [
-          "nodejs"
+          "nodejs",
+          "java"
         ]
       },
       "mysql": {
@@ -182,13 +183,13 @@
         ]
       },
       "sqlite3": {
-        "__description": "SQLite 3",
+        "__description": "Deprecated: use db/sqlite",
         "__used_by": [
           "ruby"
         ]
       },
       "sqlserver": {
-        "__description": "Microsoft SQL Server",
+        "__description": "Deprecated: use db/mssql",
         "__used_by": [
           "java"
         ]
