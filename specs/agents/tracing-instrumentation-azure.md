@@ -241,23 +241,23 @@ where `<Storage Account Name>` is the name of the storage account. New Azure ser
 
 Rules derived from the [Table service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/table-service-rest-api)
 
-| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
-| --- | --------- | ---------- | ------------------- | ------------------------ |
-| | PUT    |            |   `comp=properties`                  | SetProperties    |
-| | GET    |            |   `comp=properties`                  | GetProperties    |
-| | GET    |            |   `comp=stats`                       | Stats            |
-| ends with /Tables | GET    |            |                  | Query           |
-| ends with /Tables | POST    |            |                 | Create           |
-| ends with /Tables('`<table>`') | DELETE    |            |  | Delete           |
-| ends with /`<table>` | OPTIONS    |            |           | Preflight        |
-| | HEAD      |            | `comp=acl`          | GetAcl                   |
-| | GET      |            | `comp=acl`          | GetAcl                   |
-| | PUT      |            | `comp=acl`          | SetAcl                   |
-| ends with /`<table>`() or /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')`  | GET    |            |                  | Query            |
-| ends with /`<table>` | POST      |            |           | Insert                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | PUT      |            |           | Update                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | MERGE      |            |           | Merge                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | DELETE      |            |           | Delete                   |
+| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name | Notes |
+| --- | --------- | ---------- | ------------------- | ------------------------ | ----- |
+| | PUT    |            |   `comp=properties`                  | SetProperties    | |
+| | GET    |            |   `comp=properties`                  | GetProperties    | |
+| | GET    |            |   `comp=stats`                       | Stats            | |
+| ends with /Tables | GET    |            |                  | Query           | |
+| ends with /Tables | POST    |            |                 | Create           | `<ResourceName>` is in `request_body["TableName"]`|
+| ends with /Tables('`<table>`') | DELETE    |            |  | Delete           | |
+| ends with /`<table>` | OPTIONS    |            |           | Preflight        | |
+| | HEAD      |            | `comp=acl`          | GetAcl                   | |
+| | GET      |            | `comp=acl`          | GetAcl                   | |
+| | PUT      |            | `comp=acl`          | SetAcl                   | |
+| ends with /`<table>`() or /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')`  | GET    |            |                  | Query            | |
+| ends with /`<table>` | POST      |            |           | Insert                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | PUT      |            |           | Update                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | MERGE      |            |           | Merge                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | DELETE      |            |           | Delete                   | |
 
 ### File share storage
 
