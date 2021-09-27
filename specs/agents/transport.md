@@ -2,6 +2,19 @@
 
 Agents send data to the APM Server as JSON (application/json) or ND-JSON (application/x-ndjson) over HTTP. We describe here various details to guide transport implementation.
 
+### User-Agent
+
+In order to help debugging and gathering usage statistics, agents should use one following values for the `User-Agent` HTTP header:
+
+- Header value should start with `elasticapm-${language}/${agent.version}`.
+- If both `service.name` and `service.version` are set, append ` ${service.name}/${service.version}`
+- If only `service.name` is set, append `${service.name}`
+
+Examples:
+- `elasticapm-java/v1.25.0`
+- `elasticapm-ruby/4.4.0 myservice`
+- `elasticapm-python/6.4.0 myservice/v42.7`
+
 ### Background sending
 
 In order to avoid impacting application performance and behaviour, agents should (where possible) send data in a non-blocking manner, e.g. via a background thread/goroutine/process/what-have-you, or using asynchronous I/O.
