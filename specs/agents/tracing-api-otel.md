@@ -18,8 +18,7 @@ In order to minimize the mapping complexity in agents, most of the mapping betwe
 - APM server will handle the mapping between OTel attributes and their native transaction/spans equivalents
 - Some native span/transaction attributes will still require mapping within agents for [compatibility with existing features](#compatibility-mapping)
 
-Proposal (WIP)
-`otel.attributes` : flat key-value pair mapping added to `span` and `transaction` objects.
+OpenTelemetry attributes should be stored in `otel.attributes` as a flat key-value pair mapping added to `span` and `transaction` objects:
 ```json
 {
   // [...] other span/transaction attributes
@@ -31,6 +30,9 @@ Proposal (WIP)
   }
 }
 ```
+
+When the server does not support `otel.attributes` property, agents should use `labels` as fallback with OTel attribute
+name as key.
 
 ### Compatibility mapping
 
