@@ -13,7 +13,7 @@ Agents document their APIs in the elastic.co docs:
 - [Ruby Agent](https://www.elastic.co/guide/en/apm/agent/ruby/current/api.html)
 - [RUM JS Agent](https://www.elastic.co/guide/en/apm/agent/js-base/current/api.html)
 
-In addition, each agent may "bridge" implementations of vendor-neutral APIs:
+In addition, each agent may provide "bridge" implementations of vendor-neutral APIs:
 
 - [OpenTracing API](tracing-api-ot.md).
 - [OpenTelemetry API](tracing-api-otel.md).
