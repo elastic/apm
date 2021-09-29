@@ -302,7 +302,6 @@ Rules derived from the [File service REST API reference](https://docs.microsoft.
 | URL | HTTP verb | HTTP headers | HTTP query string  | Resulting Operation Name  |
 | --- | --------- | ---------- | -------------------- | ------------------------- |
 | | GET    | |   `comp=list`                          | List                      |
-| | GET    | |   `comp=list`                          | List                      |
 | | PUT    | |   `comp=properties`                    | SetProperties             |
 | | GET    | |   `comp=properties`                    | GetProperties             |
 | ends with /`<resource>` | OPTIONS  | |              | Preflight                 |
