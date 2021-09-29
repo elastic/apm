@@ -4,7 +4,7 @@ Agents send data to the APM Server as JSON (application/json) or ND-JSON (applic
 
 ### User-Agent
 
-In order to help debugging and gathering usage statistics, agents should use one following values for the `User-Agent` HTTP header:
+In order to help debugging and gathering usage statistics, agents should use one of the following values for the `User-Agent` HTTP header:
 
 - Header value should start with `elasticapm-${language}/${agent.version}`.
 - If both `service.name` and `service.version` are set, append ` ${service.name}/${service.version}`
