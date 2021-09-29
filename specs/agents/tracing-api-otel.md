@@ -31,8 +31,11 @@ OpenTelemetry attributes should be stored in `otel.attributes` as a flat key-val
 }
 ```
 
-When the server does not support `otel.attributes` property, agents should use `labels` as fallback with OTel attribute
+When the APM server version does not support `otel.attributes` property, agents should use `labels` as fallback with OTel attribute
 name as key.
+
+When the APM server supports `otel.attributes` property, the server-side mapping should be identical to the one
+that is applied to handle native OpenTelemetry Protocol (OTLP) intake.
 
 ### Compatibility mapping
 
