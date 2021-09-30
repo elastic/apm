@@ -47,4 +47,7 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 - zlib data format (`Content-Encoding: deflate`)
 - gzip data format (`Content-Encoding: gzip`)
 
-Agents should compress the HTTP payload by default, optimising for speed over compactness (typically known as the "best speed" level).
+Agents MUST compress the HTTP payload, optimising for speed over compactness (typically known as the "best speed" level).
+If the host part of the APM Server URL is either `localhost` or `127.0.0.1`, agents SHOULD disable compression.
+To do so, agents can either completely omit calling the compression library and remove the `Content-Encoding` header,
+or simply use the compresion level `NO_COMPRESSION`.
