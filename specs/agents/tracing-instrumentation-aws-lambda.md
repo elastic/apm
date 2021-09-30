@@ -8,7 +8,29 @@ An AWS Lambda application needs to implement a **handler method** that is called
 In our instrumentation we use these objects to derive useful meta and context information.
 
 ## Generic Lambda Instrumentation
-In general, to instrument Lambda functions, we create transactions that wrap the execution of that handler method. In cases where we cannot assume any type or information in the `event` object (e.g. if the trigger type is undefined), we ignore trigger-specific information and simply wrap the handler method with a transaction, while using the `context` object to derive some necessary fields.
+In general, to instrument Lambda functions, we create transactions that wrap the execution of that handler method. In cases where we cannot assume any type or information in the `event` object (e.g. if the trigger type is undefined), we ignore trigger-specific information and simply wrap the handler method with a transaction, while using the `context` object to derive some necessary fields:
+
+Field | Value | Description | Source
+---   | ---   | --- | ---
+`cloud.origin.provider` | `aws` | Constant value for the origin cloud provider. | 
+`transaction.type` | `request` | - | -
+`faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). 
+`faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
+`faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
+`transaction.name` | e.g. `MyFunctionName` | Use function name if trigger type is `other`. | `context.functionName` 
+`faas.trigger.request_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
+`service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific. 
+`cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific. 
+
+Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/transaction.json)!
+
+### Overwriting Metadata
+Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). 
+Where possible, metadata should be overwritten at Lambda runtime startup corresponding to the field specifications in this spec.
+
+Some metadata fields are not available at startup (e.g. `invokedFunctionArn` which is needed for `service.id` and `cloud.region`). Therefore, retrieval of metadata fields in a lambda context needs to be delayed until the first execution of the lambda function, so that information provided in the `context` object can used to set metadata fields properly.
+
+The following metadata fields are relevant for lambda functions:
 
 Field | Value | Description | Source
 ---   | ---   | --- | ---
@@ -19,22 +41,8 @@ Field | Value | Description | Source
 `service.version` | e.g. `${LATEST}` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | 
-`cloud.origin.provider` | `aws` | Constant value for the origin cloud provider. | 
 `cloud.region` | e.g. `us-east-1` | The cloud region. | `AWS_REGION`
 `cloud.service.name` | `lambda` |  Constant value for the AWS service.
-`transaction.type` | `request` | - | -
-`faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). 
-`faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
-`faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
-`transaction.name` | e.g. `MyFunctionName` | Use function name if trigger type is `other`. | `context.functionName` 
-`faas.trigger.request_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
-`service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific. 
-`cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.  
-
-### Overwriting Metadata
-Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). 
-Where possible, metadata should be overwritten at Lambda runtime startup corresponding to the field specifications in this spec.
-Some metadata fields are not available at startup (e.g. `invokedFunctionArn`). In this case corresponding fields need to be set either as metadata with the first invocation of the lambda function or set for every lambda invocation as transaction fields.
 
 ### Deriving cold starts 
 A cold start occurs if AWS needs first to initialize the Lambda runtime (including the Lambda process, such as JVM, Node.js process, etc.) in order to handle a request. This happens for the first request and after long function idle times. A Lambda function instance only executes one event at a time (there is no concurrency). Thus, detecting a cold start is as simple as detecting whether the invocation of a __handler method__ is the **first since process startup** or not. This can be achieved with a global / process-scoped flag that is flipped at the first execution of the handler method.
@@ -135,9 +143,4 @@ Field | Value | Description | Source
 ## Data Flushing
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
 
-Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends. Where possible, agents may optimize the flushing behaviour by avoiding a dedicated HTTP request for each Lambda invocation but instead flushing the buffer on the HTTP connection: 
-
-- Waits until all pending events have been processed
-- Performs a synced_flush on the gzip buffer and flushes all buffers to the network
-- Keeps the HTTP request alive
-- Returns immediately if the connection to APM Server is unhealthy (when there's a backoff)
+Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends.
