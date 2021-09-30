@@ -24,7 +24,7 @@ System metadata relates to the host/container in which the service being monitor
 
 #### Hostname
 
-The `system.hostname` field is deprecated in favour of two newer fields:
+Since APM Server 7.4, `system.hostname` field is deprecated in favour of two newer fields:
 - `system.configured_hostname` - the configured name of the host the monitored service is running on. It should only be 
 sent when configured by the user through the `ELASTIC_APM_HOSTNAME` config. 
 If provided, it is used as the event's hostname.
@@ -33,6 +33,9 @@ what the `hostname` command returns on the host machine, as it is mapped by the 
 Failing to conform to that may cause failure in correlation between APM traces and data reported by other clients 
 (e.g. Metricbeat).
 It will be used as the event's hostname if `configured_hostname` is not provided.
+
+Agents that are APM-Server-version-aware, or that are compatible only with veresios >= 7.4, should 
+use the new fields wherever possible.
 
 #### Container/Kubernetes metadata
 
