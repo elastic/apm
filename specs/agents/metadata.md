@@ -28,7 +28,7 @@ The `system.hostname` field is deprecated in favour of two newer fields:
 - `system.configured_hostname` - the configured name of the host the monitored service is running on. It should only be 
 sent when configured by the user through the `ELASTIC_APM_HOSTNAME` config. 
 If provided, it is used as the event's hostname.
-- `system.detected_hostname` - the hostname detected by the APM agent. Wherever applicable, this field should contains 
+- `system.detected_hostname` - the hostname detected by the APM agent. Wherever applicable, this field should contain 
 what the `hostname` command returns on the host machine, as it is mapped by the APM Server to the [`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname). 
 Failing to conform to that may cause failure in correlation between APM traces and data reported by other clients 
 (e.g. Metricbeat).
