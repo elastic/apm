@@ -14,8 +14,6 @@ this means that the service map, the dependencies table,
 and the backend details view can show accurate throughput statistics for backends like Redis,
 even if most of the spans are dropped.
 
-This also allows the transaction details view (aka. waterfall) to show a summary of the dropped spans.
-
 ## Data model
 
 This is an example of the statistics that are added to the `transaction` events sent via the intake v2 protocol.
