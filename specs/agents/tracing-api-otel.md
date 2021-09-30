@@ -39,7 +39,7 @@ This value should be stored into Elasticsearch documents to preserve OTel semant
 
 Possible values are `CLIENT`, `SERVER`, `PRODUCER`, `CONSUMER` and `INTERNAL`, refer to [specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#spankind) for details on semantics.
 
-When `otel.span_kind` is not provided by agent, server should infer it using the following algorithm:
+When `otel.span_kind` is not provided by the agent, APM Server should infer it using the following algorithm:
 
 ```javascript
 span_kind = null;
@@ -77,7 +77,7 @@ OpenTelemetry attributes should be stored in `otel.attributes` as a flat key-val
 {
   // [...] other span/transaction attributes
   "otel": {
-    "span_kind": "client",
+    "span_kind": "CLIENT",
     "attributes": {
       "db.system": "mysql",
       "db.statement": "SELECT * from table_1"
