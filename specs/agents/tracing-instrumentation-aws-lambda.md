@@ -43,6 +43,7 @@ Field | Value | Description | Source
 `cloud.provider` | `aws` | Constant value for the cloud provider. | 
 `cloud.region` | e.g. `us-east-1` | The cloud region. | `AWS_REGION`
 `cloud.service.name` | `lambda` |  Constant value for the AWS service.
+`cloud.account.id` | e.g. `123456789012` | The cloud account id of the lambda function. | 5th fragment in `context.invokedFunctionArn`.
 
 ### Deriving cold starts 
 A cold start occurs if AWS needs first to initialize the Lambda runtime (including the Lambda process, such as JVM, Node.js process, etc.) in order to handle a request. This happens for the first request and after long function idle times. A Lambda function instance only executes one event at a time (there is no concurrency). Thus, detecting a cold start is as simple as detecting whether the invocation of a __handler method__ is the **first since process startup** or not. This can be achieved with a global / process-scoped flag that is flipped at the first execution of the handler method.
