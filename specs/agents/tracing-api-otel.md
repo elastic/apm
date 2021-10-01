@@ -118,7 +118,11 @@ Making OTel span active means adding a reference to it in the current context, d
 before activation.
 
 As a result, a proper bridge implementation should ensure transparent interoperability between Elastic and OTel spans from their respective APIs
-- When an Elastic span is active, the OTel current context API should have the Elastic span as current
-- When an OTel context is activated, the OTel current context API should provide access to it (likely stored as a thread-local).
-- Activating an OTel span on top of an Elastic span should behave exactly as if the underlying span was created using OTel API.
-- Activating an Elastic span on top of an OTel span should behave like if the underlying span was created from Elastic API.
+- After activating an Elastic span via the agent's API, the [`Context`] returned via the [get current context API] should contain that Elastic span
+- When an OTel context is [attached] (aka activated), the [get current context API] should return the same [`Context`] instance.
+- Starting an OTel span in the scope of an active Elastic span should make the OTel span a child of the Elastic span.
+- Starting an Elastic span in the scope of an active OTel span should make the Elastic span a child of the OTel span.
+
+[`Context`]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md
+[attached]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md#attach-context
+[get current context API]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md#get-current-context
