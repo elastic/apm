@@ -34,7 +34,7 @@ Failing to conform to that may cause failure in correlation between APM traces a
 (e.g. Metricbeat).
 It will be used as the event's hostname if `configured_hostname` is not provided.
 
-Agents that are APM-Server-version-aware, or that are compatible only with veresios >= 7.4, should 
+Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
 use the new fields wherever possible.
 
 #### Container/Kubernetes metadata
