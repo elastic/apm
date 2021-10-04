@@ -4,6 +4,8 @@ To still retain some information about dropped spans (for example due to [`trans
 agents SHOULD collect statistics on the corresponding transaction about dropped spans.
 These statistics MUST only be sent for sampled transactions.
 
+Agents SHOULD only collect these statistics for exit spans that have a non-empty `destination.service.resource`.
+
 ## Use cases
 
 This allows APM Server to consider these metrics for the service destination metrics.
@@ -11,8 +13,6 @@ In practice,
 this means that the service map, the dependencies table,
 and the backend details view can show accurate throughput statistics for backends like Redis,
 even if most of the spans are dropped.
-
-This also allows the transaction details view (aka. waterfall) to show a summary of the dropped spans.
 
 ## Data model
 
@@ -22,16 +22,12 @@ This is an example of the statistics that are added to the `transaction` events 
 {
   "dropped_spans_stats": [
     {
-      "type": "external",
-      "subtype": "http",
       "destination_service_resource": "example.com:443",
       "outcome": "failure",
       "duration.count": 28,
       "duration.sum.us": 123456
     },
     {
-      "type": "db",
-      "subtype": "mysql",
       "destination_service_resource": "mysql",
       "outcome": "success",
       "duration.count": 81,
