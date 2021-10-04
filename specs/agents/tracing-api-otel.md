@@ -2,7 +2,7 @@
 
 [OpenTelemetry](https://opentelemetry.io) (OTel in short) provides a vendor-neutral API that allows to capture tracing, logs and metrics data.
 
-Agents may provide a bridge implementation of OpenTracing Tracing API following this specification.
+Agents may provide a bridge implementation of OpenTelemetry Tracing API following this specification.
 
 Bridging here means that for each OTel span created with the API, a native span/transaction will be created and sent to APM server.
 
