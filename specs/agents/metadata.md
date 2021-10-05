@@ -26,23 +26,31 @@ System metadata relates to the host/container in which the service being monitor
 
 On Linux, the container ID and some of the Kubernetes metadata can be extracted by parsing `/proc/self/cgroup`. For each line in the file, we split the line according to the format "hierarchy-ID:controller-list:cgroup-path", extracting the "cgroup-path" part. We then attempt to extract information according to the following algorithm:
 
- 1. Split the path into dirname/basename (i.e. on the final slash)
+ 1. Split the path into `dirname` and `basename`:
+    - split based on the last occurrence of the colon character, if such exists, in order to support paths of containers 
+    created by [containerd-cri](https://github.com/containerd/cri), where the path part takes the form: 
+    `<dirname>:cri-containerd:<container-ID>`
+    - if colon char is not found within the path, the split is done based on the last occurrence of the slash character
 
- 2. If the basename ends with ".scope", check for a hyphen and remove everything up to and including that. This allows us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
+ 2. If the `basename` ends with ".scope", check for a hyphen and remove everything up to and including that. This allows 
+ us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
 
- 3. Attempt to extract the Kubernetes pod UID from the dirname by matching one of the following regular expressions:
+ 3. Attempt to extract the Kubernetes pod UID from the `dirname` by matching one of the following regular expressions:
      - `(?:^/kubepods[\\S]*/pod([^/]+)$)`
-     - `(?:^/kubepods\.slice/(kubepods-[^/]+\.slice/)?kubepods[^/]*-pod([^/]+)\.slice$)`
+     - `(?:kubepods[^/]*-pod([^/]+)\.slice)`
 
-    The first capturing group in the first case and the second capturing group in the second case is the pod UID. In the latter case, we must unescape underscores (`_`) to hyphens (`-`) in the pod UID.
-    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
+    If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores 
+    (`_`) to hyphens (`-`) in the pod UID.
+    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the 
+    hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
 
- 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular expressions:
+ 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular 
+ expressions:
 
     - `^[[:xdigit:]]{64}$`
     - `^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4,}$`
 
-    If we match, then the basename is assumed to be a container ID.
+ If we match, then the basename is assumed to be a container ID.
 
 If the Kubernetes pod name is not the hostname, it can be overridden by the `KUBERNETES_POD_NAME` environment variable, using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/). In a similar manner, you can inform the agent of the node name and namespace, using the environment variables `KUBERNETES_NODE_NAME` and `KUBERNETES_NAMESPACE`.
 
@@ -213,4 +221,5 @@ for scenarios and expected outcomes.
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
 
-Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated list of `key=value` pairs.
+Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated 
+list of `key=value` pairs.
