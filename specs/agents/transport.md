@@ -49,25 +49,34 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 
 Agents should compress the HTTP payload by default, optimising for speed over compactness (typically known as the "best speed" level).
 
+### `context_propagation_only` configuration
+
+`context_propagation_only` is a boolean configuration option to have an APM
+agent perform trace-context propagation and log correlation *only*; and to
+explicitly *not* send event data to APM server. This allows an application to
+get automatic context propagation and log correlation, **without** having
+deployed an APM server for event collection.
+
+Agents that implement this configuration option:
+
+- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
+  per normal;
+- MUST continue to support [log correlation](./log-correlation.md);
+- MUST NOT attempt to communicate with APM server, including central configuration;
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- SHOULD attempt to reduce runtime overhead where possible. For example,
+  because events will be dropped there is no need to collect stack traces,
+  collect metrics, or to calculate breakdown metrics.
+
 ### `disable_send` configuration
 
-`disable_send` is a boolean configuration option to have an APM agent be
-enabled, but not communicate with an APM server. Use cases for setting this
-`true` include getting the following, **without** having deployed an APM server
-for event collection.
-
-- maintaining the ability to create traces and log trace/transaction/span IDs
-  through the log correlation feature, and
-- getting automatic context propagation via the
-  [W3C trace-context headers](https://w3c.github.io/trace-context/)
+`disable_send` is a boolean configuration option to have an APM agent be fully
+functioning, but not communicate with an APM server. Use case for this include
+testing and continuous integration (CI) systems.
 
 Agents that implement this configuration option:
 
 - MUST NOT attempt to communicate with APM server. This includes central configuration.
 - MUST NOT log warnings/errors related to failures to communicate with APM server.
-- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
-  per normal.
-- MUST continue to support [log correlation](./log-correlation.md)
-- SHOULD attempt to reduce runtime overhead where possible. For example,
-  because events will be dropped there is no need to collect stack traces,
-  collect metrics, or to calculate breakdown metrics.
+- SHOULD otherwise perform all functions.
+
