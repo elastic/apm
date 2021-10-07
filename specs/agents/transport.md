@@ -66,7 +66,8 @@ Agents that implement this configuration option:
 - MUST NOT log warnings/errors related to failures to communicate with APM server.
 - SHOULD attempt to reduce runtime overhead where possible. For example,
   because events will be dropped there is no need to collect stack traces,
-  collect metrics, or to calculate breakdown metrics.
+  collect metrics, calculate breakdown metrics, or to create spans (other than
+  the top-level transaction required for context propagation).
 
 ### `disable_send` configuration
 
