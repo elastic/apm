@@ -86,6 +86,8 @@ OpenTelemetry attributes should be stored in `otel.attributes` as a flat key-val
 }
 ```
 
+APM server supports the `otel.attributes` property starting with version 7.16.0.
+
 When the APM server version does not support `otel.attributes` property, agents should use `labels` as fallback with OTel attribute
 name as key.
 
