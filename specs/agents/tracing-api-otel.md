@@ -51,7 +51,7 @@ if (isTransaction(item)) {
     }
 } else {
     // span
-    if (item.type == "external" || item.type == "storage") {
+    if (item.type == "external" || item.type == "storage" || item.type == "db") {
         span_kind = "CLIENT";
     }
 }
