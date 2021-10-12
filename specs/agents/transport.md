@@ -67,7 +67,7 @@ Agents that implement this configuration option:
 - SHOULD attempt to reduce runtime overhead where possible. For example,
   because events will be dropped there is no need to collect stack traces,
   collect metrics, calculate breakdown metrics, or to create spans (other than
-  the top-level transaction required for context propagation).
+  the top-level transaction required for context propagation, similarly to non-sampled traces).
 
 ### `disable_send` configuration
 
