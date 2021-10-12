@@ -51,6 +51,7 @@ Agents should compress the HTTP payload by default, optimising for speed over co
 
 ### `context_propagation_only` configuration
 
+Agents MAY implement this configuration option.
 `context_propagation_only` is a boolean configuration option to have an APM
 agent perform trace-context propagation and log correlation *only*; and to
 explicitly *not* send event data to APM server. This allows an application to
@@ -71,6 +72,7 @@ Agents that implement this configuration option:
 
 ### `disable_send` configuration
 
+Agents MAY implement this configuration option.
 `disable_send` is a boolean configuration option to have an APM agent be fully
 functioning, but not communicate with an APM server. Use case for this include
 testing and continuous integration (CI) systems.
