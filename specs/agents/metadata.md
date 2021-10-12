@@ -24,18 +24,54 @@ System metadata relates to the host/container in which the service being monitor
 
 #### Hostname
 
+This hostname reported by the agent is mapped by the APM Server to the 
+[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname), which should 
+typically contain what the `hostname` command returns on the host machine. However, since we rely on this field for 
+our integration with beats data, we should attempt to follow a similar logic to the `os.Hostname()` Go API, which beats 
+relies one. While `os.Hostname()` contains some complex OS-specific logic to cover all sorts of edge cases, our 
+algorithm should be simpler. It relies on the execution of external commands with a fallback to standard environment 
+variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
+```
+if os == windows
+  ret = exec "cmd /c hostname"   
+  if ret != null && ret.length > 0
+    return ret
+  else
+    return env.get("COMPUTERNAME")
+else 
+  ret = exec "unamne -n" 
+  if ret != null && ret.length > 0
+    return ret
+  ret = exec "hostname" 
+  if ret != null && ret.length > 0
+    return ret
+  ret = env.get("HOSTNAME")
+  if ret != null && ret.length > 0
+    return ret
+  else
+    return env.get("HOST")
+```
+
+Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
+proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
+Metricbeat). For example, if the agent uses an API that produces the FQDN, this value is likely to mismatch hostname 
+reported by other clients.
+
+In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
+can be used as a manual fallback.
+
+Up to APM Server 7.4, only the `system.hostname` field was used for this purpose. Agents communicating with 
+APM Server of these versions MUST set `system.hostname` with the value of `ELASTIC_APM_HOSTNAME`, if such is manually 
+configured. Otherwise, agents MUST set it with the automatically-discovered hostname.
+
 Since APM Server 7.4, `system.hostname` field is deprecated in favour of two newer fields:
-- `system.configured_hostname` - the configured name of the host the monitored service is running on. It should only be 
-sent when configured by the user through the `ELASTIC_APM_HOSTNAME` config. 
-If provided, it is used as the event's hostname.
-- `system.detected_hostname` - the hostname detected by the APM agent. Wherever applicable, this field should contain 
-what the `hostname` command returns on the host machine, as it is mapped by the APM Server to the [`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname). 
-Failing to conform to that may cause failure in correlation between APM traces and data reported by other clients 
-(e.g. Metricbeat).
-It will be used as the event's hostname if `configured_hostname` is not provided.
+- `system.configured_hostname` - it should only be sent when configured by the user through the `ELASTIC_APM_HOSTNAME` 
+config option. If provided, it is used by the APM Server as the event's hostname.
+- `system.detected_hostname` - the hostname automatically detected by the APM agent. It will be used as the event's 
+hostname if `configured_hostname` is not provided.
 
 Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
-use the new fields wherever possible.
+use the new fields wherever applicable.
 
 #### Container/Kubernetes metadata
 
