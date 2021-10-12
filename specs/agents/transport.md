@@ -2,6 +2,21 @@
 
 Agents send data to the APM Server as JSON (application/json) or ND-JSON (application/x-ndjson) over HTTP. We describe here various details to guide transport implementation.
 
+### User-Agent
+
+In order to help debugging and gathering usage statistics, agents should use one of the following values for the `User-Agent` HTTP header:
+
+- Header value should start with agent github repository as prefix and version `apm-agent-${language}/${agent.version}`.
+- If both `service.name` and `service.version` are set, append ` (${service.name} ${service.version})`
+- If only `service.name` is set, append `(${service.name})`
+
+An executable gherkin specification is also provided in [user_agent.feature](../../tests/agents/gherkin-specs/user_agent.feature).
+
+Examples:
+- `apm-agent-java/v1.25.0`
+- `apm-agent-ruby/4.4.0 (myservice)`
+- `apm-agent-python/6.4.0 (myservice v42.7)`
+
 ### Background sending
 
 In order to avoid impacting application performance and behaviour, agents should (where possible) send data in a non-blocking manner, e.g. via a background thread/goroutine/process/what-have-you, or using asynchronous I/O.
