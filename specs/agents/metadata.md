@@ -33,16 +33,16 @@ algorithm should be simpler. It relies on the execution of external commands wit
 variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
 ```
 if os == windows
-  ret = exec "cmd /c hostname"   
+  ret = exec "cmd /c hostname"       // or any language-specific equivalent
   if ret != null && ret.length > 0
     return ret
   else
     return env.get("COMPUTERNAME")
 else 
-  ret = exec "uname -n" 
+  ret = exec "uname -n"              // or any language-specific equivalent
   if ret != null && ret.length > 0
     return ret
-  ret = exec "hostname" 
+  ret = exec "hostname"              // or any language-specific equivalent
   if ret != null && ret.length > 0
     return ret
   ret = env.get("HOSTNAME")
