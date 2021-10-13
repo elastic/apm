@@ -39,7 +39,7 @@ if os == windows
   else
     return env.get("COMPUTERNAME")
 else 
-  ret = exec "unamne -n" 
+  ret = exec "uname -n" 
   if ret != null && ret.length > 0
     return ret
   ret = exec "hostname" 
