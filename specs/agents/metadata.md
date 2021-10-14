@@ -32,25 +32,27 @@ relies one. While `os.Hostname()` contains some complex OS-specific logic to cov
 algorithm should be simpler. It relies on the execution of external commands with a fallback to standard environment 
 variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
 ```
+var hostname;
 if os == windows
-  ret = exec "cmd /c hostname"       // or any language-specific equivalent
-  if ret != null && ret.length > 0
-    return ret
-  else
-    return env.get("COMPUTERNAME")
+  hostname = exec "cmd /c hostname"                   // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("COMPUTERNAME")
 else 
-  ret = exec "uname -n"              // or any language-specific equivalent
-  if ret != null && ret.length > 0
-    return ret
-  ret = exec "hostname"              // or any language-specific equivalent
-  if ret != null && ret.length > 0
-    return ret
-  ret = env.get("HOSTNAME")
-  if ret != null && ret.length > 0
-    return ret
-  else
-    return env.get("HOST")
+  hostname = exec "uname -n"                          // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = exec "hostname"                        // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOSTNAME")
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOST")
+
+if hostname != null
+  hostname_parts[] = hostname.split(".")
+  hostname = hostname_parts[0]
 ```
+`*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
+may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
+what to use is to avoid hostname discovery that relies on DNS lookup.
 
 Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
 proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
