@@ -14,6 +14,8 @@ Field | Value | Description | Source
 ---   | ---   | --- | ---
 `name` | e.g. `MyFunctionName` | The transaction name. Use function name if trigger type is `other`. | `context.functionName`
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
+`outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
+`result` | `success` / `failure` / `HTTP Xxx` | If there was a function error, set to `HTTP 5xx` if triggered by API Gateway, otherwise `failure`. | Trigger specific.
 `faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). 
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
@@ -21,10 +23,6 @@ Field | Value | Description | Source
 `context.cloud.origin.provider` | `aws` | Constant value for the origin cloud provider. | -
 `context.cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.
 `context.service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific.
-
-If an unhandled error occurs, the `transaction.result` and
-`transaction.outcome` should both be set to `failure`, except for API
-Gateway triggers, where `5xx` status codes should be used.
 
 Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/transaction.json)!
 
@@ -75,9 +73,6 @@ There are two different API Gateway versions (V1 & V2) that differ slightly in t
 With both versions, the `event` object contains information about the http request.
 Usually API Gateway-based Lambda functions return an object that contains the HTTP response information.
 The agent should use the information in the request and response objects to fill the HTTP context (`context.request` and `context.response`) fields in the same way it is done for HTTP transactions.
-If an unhandled error occurs, the `transaction.result` and
-`transaction.outcome` should be set as though a 5xx HTTP status code were
-returned in the response.
 
 In particular, agents must use the `event.headers` to retrieve the `traceparent` and the `tracestate` and use them to start the transaction for the lambda function execution. 
 
