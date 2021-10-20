@@ -22,6 +22,10 @@ Field | Value | Description | Source
 `context.cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.
 `context.service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific.
 
+If an unhandled error occurs, the `transaction.result` and
+`transaction.outcome` should both be set to `failure`, except for API
+Gateway triggers, where `5xx` status codes should be used.
+
 Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/transaction.json)!
 
 ### Overwriting Metadata
@@ -71,6 +75,9 @@ There are two different API Gateway versions (V1 & V2) that differ slightly in t
 With both versions, the `event` object contains information about the http request.
 Usually API Gateway-based Lambda functions return an object that contains the HTTP response information.
 The agent should use the information in the request and response objects to fill the HTTP context (`context.request` and `context.response`) fields in the same way it is done for HTTP transactions.
+If an unhandled error occurs, the `transaction.result` and
+`transaction.outcome` should be set as though a 5xx HTTP status code were
+returned in the response.
 
 In particular, agents must use the `event.headers` to retrieve the `traceparent` and the `tracestate` and use them to start the transaction for the lambda function execution. 
 
