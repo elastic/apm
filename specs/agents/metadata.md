@@ -22,6 +22,59 @@ System metadata relates to the host/container in which the service being monitor
    - pod name
    - pod UID
 
+#### Hostname
+
+This hostname reported by the agent is mapped by the APM Server to the 
+[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname), which should 
+typically contain what the `hostname` command returns on the host machine. However, since we rely on this field for 
+our integration with beats data, we should attempt to follow a similar logic to the `os.Hostname()` Go API, which beats 
+relies one. While `os.Hostname()` contains some complex OS-specific logic to cover all sorts of edge cases, our 
+algorithm should be simpler. It relies on the execution of external commands with a fallback to standard environment 
+variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
+```
+var hostname;
+if os == windows
+  hostname = exec "cmd /c hostname"                   // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("COMPUTERNAME")
+else 
+  hostname = exec "uname -n"                          // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = exec "hostname"                        // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOSTNAME")
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOST")
+
+if hostname != null
+  hostname_parts[] = hostname.split(".")
+  hostname = hostname_parts[0]
+```
+`*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
+may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
+what to use is to avoid hostname discovery that relies on DNS lookup.
+
+Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
+proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
+Metricbeat). For example, if the agent uses an API that produces the FQDN, this value is likely to mismatch hostname 
+reported by other clients.
+
+In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
+can be used as a manual fallback.
+
+Up to APM Server 7.4, only the `system.hostname` field was used for this purpose. Agents communicating with 
+APM Server of these versions MUST set `system.hostname` with the value of `ELASTIC_APM_HOSTNAME`, if such is manually 
+configured. Otherwise, agents MUST set it with the automatically-discovered hostname.
+
+Since APM Server 7.4, `system.hostname` field is deprecated in favour of two newer fields:
+- `system.configured_hostname` - it should only be sent when configured by the user through the `ELASTIC_APM_HOSTNAME` 
+config option. If provided, it is used by the APM Server as the event's hostname.
+- `system.detected_hostname` - the hostname automatically detected by the APM agent. It will be used as the event's 
+hostname if `configured_hostname` is not provided.
+
+Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
+use the new fields wherever applicable.
+
 #### Container/Kubernetes metadata
 
 On Linux, the container ID and some of the Kubernetes metadata can be extracted by parsing `/proc/self/cgroup`. For each line in the file, we split the line according to the format "hierarchy-ID:controller-list:cgroup-path", extracting the "cgroup-path" part. We then attempt to extract information according to the following algorithm:
