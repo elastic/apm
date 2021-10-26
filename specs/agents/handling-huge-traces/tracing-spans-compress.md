@@ -125,6 +125,13 @@ APM Server tracks span destination metrics.
 To avoid compressed spans to skew latency metrics and cause throughput metrics to be under-counted,
 APM Server will take `composite.count` into account when tracking span destination metrics.
 
+### Effects on [span count](https://github.com/elastic/apm/blob/master/specs/agents/handling-huge-traces/tracing-spans-limit.md#span-count)
+
+When a span is compressed into a composite,
+`span_count.reported` should ONLY count the compressed composite as a single
+span.
+Spans that have been compressed into the composite should not be counted.
+
 ## Compression algorithm
 
 ### Eligibility for compression
