@@ -63,3 +63,38 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 - gzip data format (`Content-Encoding: gzip`)
 
 Agents should compress the HTTP payload by default, optimising for speed over compactness (typically known as the "best speed" level).
+
+### `context_propagation_only` configuration
+
+Agents MAY implement this configuration option.
+`context_propagation_only` is a boolean configuration option to have an APM
+agent perform trace-context propagation and log correlation *only*; and to
+explicitly *not* send event data to APM server. This allows an application to
+get automatic context propagation and log correlation, **without** having
+deployed an APM server for event collection.
+
+Agents that implement this configuration option:
+
+- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
+  per normal;
+- MUST continue to support [log correlation](./log-correlation.md);
+- MUST NOT attempt to communicate with APM server, including central configuration;
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- SHOULD attempt to reduce runtime overhead where possible. For example,
+  because events will be dropped there is no need to collect stack traces,
+  collect metrics, calculate breakdown metrics, or to create spans (other than
+  the top-level transaction required for context propagation, similarly to non-sampled traces).
+
+### `disable_send` configuration
+
+Agents MAY implement this configuration option.
+`disable_send` is a boolean configuration option to have an APM agent be fully
+functioning, but not communicate with an APM server. Use case for this include
+testing and continuous integration (CI) systems.
+
+Agents that implement this configuration option:
+
+- MUST NOT attempt to communicate with APM server. This includes central configuration.
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- SHOULD otherwise perform all functions.
+
