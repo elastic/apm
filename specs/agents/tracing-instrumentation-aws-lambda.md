@@ -14,6 +14,8 @@ Field | Value | Description | Source
 ---   | ---   | --- | ---
 `name` | e.g. `MyFunctionName` | The transaction name. Use function name if trigger type is `other`. | `context.functionName`
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
+`outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
+`result` | `success` / `failure` / `HTTP Xxx` | If there was a function error, set to `HTTP 5xx` if triggered by API Gateway, otherwise `failure`. | Trigger specific.
 `faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). 
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
