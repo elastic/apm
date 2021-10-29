@@ -7,7 +7,8 @@ If an agent implements this strategy, it MUST also implement [Collecting statist
 ## `exit_span_min_duration` configuration
 
 Sets the minimum duration of exit spans.
-Exit spans that execute faster than this threshold are attempted to be discarded.
+Exit spans with a duration lesser than this threshold are attempted to be discarded.
+If the exit span is equal or greater the threshold, it should be kept.
 
 In some cases exit spans cannot be discarded.
 For example, spans that propagate the trace context to downstream services,
