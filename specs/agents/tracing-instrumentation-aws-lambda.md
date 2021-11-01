@@ -86,7 +86,7 @@ Field | Value | Description | Source
 `faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId` 
 `context.service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}`
 `context.service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` |
-`context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
+`context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | `event.version` (or `1.0` if that field is not present)
 `context.cloud.origin.service.name` | `api gateway` | Fix value for API gateway. | -
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
