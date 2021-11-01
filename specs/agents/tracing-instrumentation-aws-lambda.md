@@ -54,8 +54,9 @@ The following agent functionalities need to be disabled when tracing AWS Lambda 
 setting `ELASTIC_APM_METRICS_INTERVAL = 0`
 - **Remote configuration:** equivalent to setting `ELASTIC_APM_CENTRAL_CONFIG = false`
 - **Cloud metadata discovery:** equivalent to setting `ELASTIC_APM_CLOUD_PROVIDER = none`
-- **Host metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent executes 
-extenal commands in order to discover the hostname, which is not required for AWS Lambda metadata.
+- **System metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent 
+executes extenal commands in order to discover the hostname, which is not required for AWS Lambda metadata. All other 
+agents read and parse files to extract container and k8s metadata, which is not required as well.
 
 There are two main approaches for agents to disable the above functionalities:
 * Agents that will be always deployed as part of an additional APM Agent Lambda layer (e.g. Java agent) may disable this 
