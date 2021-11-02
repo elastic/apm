@@ -216,14 +216,8 @@ span.destination.service.resource = resource;
 
 ### Active Spans and Context
 
-OTel has the concept of "active context", which is implemented as a key-value map and is used for local context
-propagation implicitly through thread-locals or explicitly through API.
-
-Our agents may not have a similar abstraction and only have the currently active span or transaction stored into a thread-local stack.
-Making OTel span active means adding a reference to it in the current context, deactivating is restoring the context
-before activation.
-
-As a result, a proper bridge implementation should ensure transparent interoperability between Elastic and OTel spans from their respective APIs
+When possible, bridge implementation SHOULD ensure proper interoperability between Elastic transactions/spans and OTel spans when
+used from their respective APIs:
 - After activating an Elastic span via the agent's API, the [`Context`] returned via the [get current context API] should contain that Elastic span
 - When an OTel context is [attached] (aka activated), the [get current context API] should return the same [`Context`] instance.
 - Starting an OTel span in the scope of an active Elastic span should make the OTel span a child of the Elastic span.
@@ -232,3 +226,10 @@ As a result, a proper bridge implementation should ensure transparent interopera
 [`Context`]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md
 [attached]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md#attach-context
 [get current context API]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/context/context.md#get-current-context
+
+Both OTel and our agents have their own definition of what "active context" is, for example:
+- Java Agent: Elastic active context is implemented as a thread-local stack
+- Java OTel API: active context is implemented as a key-value map propagated through thread local
+
+In order to avoid potentially complex and tedious synchronization issues between OTel and our existing agent
+implementations, the bridge implementation SHOULD provide an abstraction to have a single "active context" storage.
