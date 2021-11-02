@@ -101,14 +101,110 @@ Agents should ensure compatibility with the following features:
 - [dropped spans statistics](handling-huge-traces/tracing-spans-dropped-stats.md)
 - [compressed spans](handling-huge-traces/tracing-spans-compress.md)
 
-As a consequence, agents have to infer and provide values for the following attributes:
-- `transaction.name`
-- `transaction.type`
-- `span.name`
-- `span.type`
-- `span.subtype`
-- `span.name`
-- `span.destination.service.resource`
+As a consequence, agents must provide values for the following attributes:
+- `transaction.name` or `span.name` : value directly provided by OTel API
+- `transaction.type` : see inference algorithm below
+- `span.type` and `span.subtype` : see inference algorithm below
+- `span.destination.service.resource` : see inference algorithm below
+
+Transaction type:
+```javascript
+a = transation.otel.attributes;
+span_kind = transaction.otel_span_kind;
+isRpc = a['rpc.system'] !== undefined;
+isHttp = a['http.url'] !== undefined || a['http.scheme'] !== undefined;
+if (span_kind == 'SERVER' && (isRpc || isHttp)) {
+    type = 'request';
+} else if (span_kind == 'CONSUMER' && isMessaging) {
+    type = 'messaging';
+} else {
+    type = 'unknown';
+}
+```
+
+Span type, sub-type and destination service resource
+
+```javascript
+a = span.otel.attributes;
+type = undefined;
+subtype = undefined;
+resource = undefined;
+
+// extracts 'host:port' from URL
+parseNetName = function (url) {
+}
+
+httpPortFromScheme = function (scheme, defaultValue) {
+    if ('http' == scheme) {
+        return 80;
+    } else if ('https' == scheme) {
+        return 443;
+    }
+    return defaultValue;
+}
+
+peerPort = a['net.peer.port'];
+netName = a['net.peer.name'] || a['net.peer.ip'];
+
+if (netName && peerPort > 0) {
+    netName += ':';
+    netName += peerPort;
+}
+
+if (a['db.system']) {
+    type = 'db'
+    subtype = a['db.system'];
+    resource = netName || subtype;
+    if (a['db.name']) {
+        resource += '/'
+        resource += a['db.name'];
+    }
+
+} else if (a['messaging.system']) {
+    type = 'messaging';
+    subtype = a['messaging.system'];
+
+    if (!netName && a['messaging.url']) {
+        netName = parseNetName(a['messaging.url']);
+    }
+    resource = netName || subtype;
+    if (a['messaging.destination']) {
+        resource += '/';
+        resource += a['messaging.destination'];
+    }
+
+} else if (a['rpc.system']) {
+    type = 'external';
+    subtype = a['rpc.system'];
+    resource = netName || subtype;
+    if (a['rpc.service']) {
+        resource += '/';
+        resource += a['rpc.service'];
+    }
+
+} else if (a['http.url'] || a['http.scheme']) {
+    type = 'external';
+    subtype = 'http';
+
+    if (a['http.host'] && a['http.scheme']) {
+        resource = a['http.host'] + ':' + httpPortFromScheme(a['http.scheme']);
+    } else if (a['http.url']) {
+        resource = parseNetName(a['http.url']);
+    }
+}
+
+if (type === undefined) {
+    if (span.otel.span_kind == 'INTERNAL') {
+        type = 'app';
+        subtype = 'internal';
+    } else {
+        type = 'unknown';
+    }
+}
+span.type = type;
+span.subtype = subtype;
+span.destination.service.resource = resource;
+```
 
 ### Active Spans and Context
 
