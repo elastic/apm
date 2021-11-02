@@ -107,7 +107,8 @@ As a consequence, agents must provide values for the following attributes:
 - `span.type` and `span.subtype` : see inference algorithm below
 - `span.destination.service.resource` : see inference algorithm below
 
-Transaction type:
+#### Transaction type
+
 ```javascript
 a = transation.otel.attributes;
 span_kind = transaction.otel_span_kind;
@@ -122,7 +123,7 @@ if (span_kind == 'SERVER' && (isRpc || isHttp)) {
 }
 ```
 
-Span type, sub-type and destination service resource
+#### Span type, sub-type and destination service resource
 
 ```javascript
 a = span.otel.attributes;
@@ -130,17 +131,24 @@ type = undefined;
 subtype = undefined;
 resource = undefined;
 
-// extracts 'host:port' from URL
-parseNetName = function (url) {
-}
-
-httpPortFromScheme = function (scheme, defaultValue) {
+httpPortFromScheme = function (scheme) {
     if ('http' == scheme) {
         return 80;
     } else if ('https' == scheme) {
         return 443;
     }
-    return defaultValue;
+    return -1;
+}
+
+// extracts 'host' or 'host:port' from URL
+parseNetName = function (url) {
+    var u = new URL(url); // https://developer.mozilla.org/en-US/docs/Web/API/URL
+    if (u.port != '') {
+        return u.hostname; // host:port already in URL
+    } else {
+        var port = httpPortFromScheme(u.protocol.substring(0, u.protocol.length - 1));
+        return port > 0 ? u.host + ':'+ port : u.host;
+    }
 }
 
 peerPort = a['net.peer.port'];
