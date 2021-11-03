@@ -113,8 +113,8 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-`context.message.queue` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
-`context.message.age` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`.
+`context.message.queue.name` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
+`context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`.
 `context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.body`
 `context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.messageAttributes`
 
