@@ -16,7 +16,7 @@ Field | Value | Description | Source
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
 `outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
 `result` | `success` / `failure` / `HTTP Xxx` | If there was a function error, set to `HTTP 5xx` if triggered by API Gateway, otherwise `failure`. | Trigger specific.
-`faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). 
+`faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below).
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
 `faas.trigger.request_id` | - | Do not set this field if trigger type is `other`.  | Trigger specific.
@@ -27,7 +27,7 @@ Field | Value | Description | Source
 Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/transaction.json)! `faas` is a top-level key on the transaction.
 
 ### Overwriting Metadata
-Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). 
+Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable).
 Where possible, metadata should be overwritten at Lambda runtime startup corresponding to the field specifications in this spec.
 
 Some metadata fields are not available at startup (e.g. `invokedFunctionArn` which is needed for `service.id` and `cloud.region`). Therefore, retrieval of metadata fields in a lambda context needs to be delayed until the first execution of the lambda function, so that information provided in the `context` object can used to set metadata fields properly.
@@ -47,7 +47,7 @@ Field | Value | Description | Source
 `cloud.service.name` | `lambda` |  Constant value for the AWS service.
 `cloud.account.id` | e.g. `123456789012` | The cloud account id of the lambda function. | 5th fragment in `context.invokedFunctionArn`.
 
-### Deriving cold starts 
+### Deriving cold starts
 A cold start occurs if AWS needs first to initialize the Lambda runtime (including the Lambda process, such as JVM, Node.js process, etc.) in order to handle a request. This happens for the first request and after long function idle times. A Lambda function instance only executes one event at a time (there is no concurrency). Thus, detecting a cold start is as simple as detecting whether the invocation of a __handler method__ is the **first since process startup** or not. This can be achieved with a global / process-scoped flag that is flipped at the first execution of the handler method.
 
 ### Metrics collection
@@ -57,10 +57,10 @@ On AWS Lambda metrics collection should be *completely disabled* in the agents (
 * Agents that will be used with AWS lambda without the need for an additional Lambda layer must detect that they are running in an AWS Lambda environment (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). In that case, these agents should disable metrics collection programmatically within the agent code.
 
 ## Trigger-specific Instrumentation
-Lambda functions can be triggered in many different ways. A generic transaction for a Lambda invocation can be created independently of the actual trigger. However, depending on the trigger type, different information might be available that can be used to capture additional transaction data or that allows additional, valuable spans to be derived. The most common triggers that we want dedicated instrumentation support for are the following:  
+Lambda functions can be triggered in many different ways. A generic transaction for a Lambda invocation can be created independently of the actual trigger. However, depending on the trigger type, different information might be available that can be used to capture additional transaction data or that allows additional, valuable spans to be derived. The most common triggers that we want dedicated instrumentation support for are the following:
 
-- API Gateway V1 
-- API Gateway V2 
+- API Gateway V1
+- API Gateway V2
 - SQS
 - SNS
 - S3
@@ -68,13 +68,13 @@ Lambda functions can be triggered in many different ways. A generic transaction 
 If none of the above apply, the fallback should be a generic instrumentation (as described above) that can deal with any type of trigger (thus capturing only the minimal available information).
 
 ### API Gateway (V1 & V2)
-There are two different API Gateway versions (V1 & V2) that differ slightly in the information (`event` object) that is passed to the Lambda handler function. 
+There are two different API Gateway versions (V1 & V2) that differ slightly in the information (`event` object) that is passed to the Lambda handler function.
 
 With both versions, the `event` object contains information about the http request.
 Usually API Gateway-based Lambda functions return an object that contains the HTTP response information.
 The agent should use the information in the request and response objects to fill the HTTP context (`context.request` and `context.response`) fields in the same way it is done for HTTP transactions.
 
-In particular, agents must use the `event.headers` to retrieve the `traceparent` and the `tracestate` and use them to start the transaction for the lambda function execution. 
+In particular, agents must use the `event.headers` to retrieve the `traceparent` and the `tracestate` and use them to start the transaction for the lambda function execution.
 
 In addition the following fields should be set for API Gateway-based Lambda functions:
 
@@ -83,20 +83,20 @@ Field | Value | Description | Source
 `transaction.type` | `request`| Transaction type: constant value for API gateway. | -
 `transaction.name` | e.g. `GET MyFunction` | Transaction name: Http method followed by a whitespace and the function name. | -
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
-`faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId` 
-`context.service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}`
+`faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId`
+`context.service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` (Note that for V2, http method is `event.requestContext.http.method` and there is no direct equivalent to `resourcePath` -- use `requestContext.http.path` and split off the included `stage`.)
 `context.service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` |
-`context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | -
+`context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | `event.version` (or `1.0` if that field is not present)
 `context.cloud.origin.service.name` | `api gateway` | Fix value for API gateway. | -
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
 
 ### SQS / SNS
-Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`. 
+Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`.
 
 Thus, in case that an SQS / SNS `event` contains **exactly one** SQS / SNS message, the agents must apply the following, messaging-specific retrieval of information. Otherwise, the agents should apply the [Generic Lambda Instrumentation](generic-lambda-instrumentation) as described above.
 
-With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from `record.messageAttributes` and use it for starting the lambda transaction. 
+With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from `record.messageAttributes` and use it for starting the lambda transaction.
 
 In addition the following fields should be set for Lambda functions triggered by SQS or SNS:
 
@@ -138,7 +138,7 @@ Field | Value | Description | Source
 `context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.sns.messageAttributes`
 
 ### S3
-Lambda functions that are triggered by S3 accept an `event` input that may contain one ore more `S3 event notification records` in the `event.records` array. We cannot (automatically) wrap the processing of the individual records that are sent as a batch of S3 event notification records with a single `event`. 
+Lambda functions that are triggered by S3 accept an `event` input that may contain one ore more `S3 event notification records` in the `event.records` array. We cannot (automatically) wrap the processing of the individual records that are sent as a batch of S3 event notification records with a single `event`.
 
 Thus, in case that an S3 `event` contains **exactly one** `S3 event notification record`, the agents must apply the following, S3-specific retrieval of information. Otherwise, the agents should apply the [Generic Lambda Instrumentation](generic-lambda-instrumentation) as desribed above.
 
