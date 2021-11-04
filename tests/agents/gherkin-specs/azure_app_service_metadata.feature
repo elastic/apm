@@ -3,7 +3,7 @@ Feature: Extracting Metadata for Azure App Service
   Background:
     Given an agent configured with
       | setting        | value |
-      | cloud provider | azure |
+      | cloud_provider | azure |
 
   Scenario Outline: Azure App Service with all environment variables present in expected format
     Given the following environment variables are present
