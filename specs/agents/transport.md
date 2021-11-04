@@ -49,5 +49,6 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 
 Agents MUST compress the HTTP payload, optimising for speed over compactness (typically known as the "best speed" level).
 If the host part of the APM Server URL is either `localhost`, `127.0.0.1`, `::1`, or `0:0:0:0:0:0:0:1`, agents SHOULD disable compression.
-To do so, agents can either completely omit calling the compression library and remove the `Content-Encoding` header,
-or simply use the compresion level `NO_COMPRESSION`.
+
+Agents MUST NOT use the compression level `NO_COMPRESSION` to disable compression.
+That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/astorm/docs/apm-lambda-extension) would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
