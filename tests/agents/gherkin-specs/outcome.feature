@@ -7,48 +7,54 @@ Feature: Outcome
 
   Scenario: User set outcome on span has priority over instrumentation
     Given an active span
-    And user sets span outcome to 'failure'
-    When span terminates with outcome 'success'
-    Then span outcome is 'failure'
+    And the span outcome is 'success'
+    And a user sets the span outcome to 'failure'
+    When the span ends
+    Then the span outcome is 'failure'
 
   Scenario: User set outcome on transaction has priority over instrumentation
     Given an active transaction
-    And user sets transaction outcome to 'unknown'
-    When transaction terminates with outcome 'failure'
-    Then transaction outcome is 'unknown'
+    And the transaction outcome is 'failure'
+    And a user sets the transaction outcome to 'unknown'
+    When the transaction ends
+    Then the transaction outcome is 'unknown'
 
   # ---- span & transaction outcome from reported errors
 
   Scenario: span with error
     Given an active span
-    When span terminates with an error
-    Then span outcome is 'failure'
+    And an error is reported to the span
+    When the span ends
+    Then the span outcome is 'failure'
 
   Scenario: span without error
     Given an active span
-    When span terminates
-    Then span outcome is 'success'
+    When the span ends
+    Then the span outcome is 'success'
 
   Scenario: transaction with error
     Given an active transaction
-    When transaction terminates with an error
-    Then transaction outcome is 'failure'
+    And an error is reported to the transaction
+    When the transaction ends
+    Then the transaction outcome is 'failure'
 
   Scenario: transaction without error
     Given an active transaction
-    When transaction terminates
-    Then transaction outcome is 'success'
+    When the transaction ends
+    Then the transaction outcome is 'success'
 
   # ---- HTTP
 
   @http
   Scenario Outline: HTTP transaction and span outcome
-    Given an active HTTP transaction with <status> response code
-    When transaction terminates
-    Then transaction outcome is "<server>"
-    Given an active HTTP span with <status> response code
-    When span terminates
-    Then span outcome is "<client>"
+    Given an active transaction 
+    And a HTTP call is received that returns 'status'
+    When the transaction ends
+    Then the transaction outcome is '<server>'
+    Given an active span 
+    And a HTTP call is made that returns 'status'
+    When the span ends
+    Then the span outcome is '<client>'
     Examples:
       | status | client  | server  |
       | 100    | success | success |
@@ -67,12 +73,14 @@ Feature: Outcome
 
   @grpc
   Scenario Outline: gRPC transaction and span outcome
-    Given an active gRPC transaction with '<status>' status
-    When transaction terminates
-    Then transaction outcome is "<server>"
-    Given an active gRPC span with '<status>' status
-    When span terminates
-    Then span outcome is "<client>"
+    Given an active transaction
+    And a gRPC call is received that returns '<status>'
+    When the transaction ends
+    Then transaction outcome is '<server>'
+    Given an active span
+    And a gRPC call is made that returns '<status>'
+    When the span ends
+    Then the span outcome is '<client>'
     Examples:
       | status              | client  | server  |
       | OK                  | success | success |
