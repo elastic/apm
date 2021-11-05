@@ -113,7 +113,7 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-`context.message.queue.name` | e.g. `my-queue` | SQS queue ARN. | The 6th segment of `record.eventSourceArn`
+`context.message.queue.name` | e.g. `my-queue` | The SQS queue name. | The 6th segment of `record.eventSourceArn`
 `context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`.
 `context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.body`
 `context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.messageAttributes`
@@ -132,7 +132,7 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `record.sns.topicArn`.
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `record.sns.topicArn`.
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-`context.message.queue.name` | e.g. `my-topic` | SNS topic ARN. | The 6th segment of `record.sns.topicArn`
+`context.message.queue.name` | e.g. `my-topic` | The SNS topic name. | The 6th segment of `record.sns.topicArn`
 `context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `snsTimestamp`.  | `record.sns.timestamp`
 `context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.sns.message`
 `context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.sns.messageAttributes`
