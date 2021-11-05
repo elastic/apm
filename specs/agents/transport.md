@@ -51,4 +51,4 @@ Agents MUST compress the HTTP payload, optimising for speed over compactness (ty
 If the host part of the APM Server URL is either `localhost`, `127.0.0.1`, `::1`, or `0:0:0:0:0:0:0:1`, agents SHOULD disable compression.
 
 Agents MUST NOT use the compression level `NO_COMPRESSION` to disable compression.
-That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/astorm/docs/apm-lambda-extension) would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
+That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/main/apm-lambda-extension) would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
