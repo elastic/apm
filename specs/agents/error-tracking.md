@@ -10,7 +10,7 @@ Agents should include exception handling in the instrumentation they provide, su
 Error properties
 * `id` (which in the case of errors is 128 bits, encoded as 32 hexadecimal digits)
 
-Additinoal properties when the error happens within the context of a transaction
+Additional properties that agents SHOULD collect when the error happens within the context of a transaction
 * `trace_id`
 * `transaction_id`
 * `parent_id` (which is the `id` of the transaction or span that caused the error).
