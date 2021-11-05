@@ -2,6 +2,21 @@
 
 Agents send data to the APM Server as JSON (application/json) or ND-JSON (application/x-ndjson) over HTTP. We describe here various details to guide transport implementation.
 
+### User-Agent
+
+In order to help debugging and gathering usage statistics, agents should use one of the following values for the `User-Agent` HTTP header:
+
+- Header value should start with agent github repository as prefix and version `apm-agent-${language}/${agent.version}`.
+- If both `service.name` and `service.version` are set, append ` (${service.name} ${service.version})`
+- If only `service.name` is set, append `(${service.name})`
+
+An executable gherkin specification is also provided in [user_agent.feature](../../tests/agents/gherkin-specs/user_agent.feature).
+
+Examples:
+- `apm-agent-java/v1.25.0`
+- `apm-agent-ruby/4.4.0 (myservice)`
+- `apm-agent-python/6.4.0 (myservice v42.7)`
+
 ### Background sending
 
 In order to avoid impacting application performance and behaviour, agents should (where possible) send data in a non-blocking manner, e.g. via a background thread/goroutine/process/what-have-you, or using asynchronous I/O.
@@ -48,7 +63,42 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 - gzip data format (`Content-Encoding: gzip`)
 
 Agents MUST compress the HTTP payload, optimising for speed over compactness (typically known as the "best speed" level).
-If the host part of the APM Server URL is either `localhost`, `127.0.0.1`, `::1`, or `0:0:0:0:0:0:0:1`, agents SHOULD disable compression.
 
+If the host part of the APM Server URL is either `localhost`, `127.0.0.1`, `::1`, or `0:0:0:0:0:0:0:1`, agents SHOULD disable compression.
 Agents MUST NOT use the compression level `NO_COMPRESSION` to disable compression.
-That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/main/apm-lambda-extension) would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
+That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/main/apm-lambda-extension)
+would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
+
+### `context_propagation_only` configuration
+
+Agents MAY implement this configuration option.
+`context_propagation_only` is a boolean configuration option to have an APM
+agent perform trace-context propagation and log correlation *only*; and to
+explicitly *not* send event data to APM server. This allows an application to
+get automatic context propagation and log correlation, **without** having
+deployed an APM server for event collection.
+
+Agents that implement this configuration option:
+
+- MUST continue to propagate trace headers (`traceparent`, `tracestate`, etc.)
+  per normal;
+- MUST continue to support [log correlation](./log-correlation.md);
+- MUST NOT attempt to communicate with APM server, including central configuration;
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- SHOULD attempt to reduce runtime overhead where possible. For example,
+  because events will be dropped there is no need to collect stack traces,
+  collect metrics, calculate breakdown metrics, or to create spans (other than
+  the top-level transaction required for context propagation, similarly to non-sampled traces).
+
+### `disable_send` configuration
+
+Agents MAY implement this configuration option.
+`disable_send` is a boolean configuration option to have an APM agent be fully
+functioning, but not communicate with an APM server. Use case for this include
+testing and continuous integration (CI) systems.
+
+Agents that implement this configuration option:
+
+- MUST NOT attempt to communicate with APM server. This includes central configuration.
+- MUST NOT log warnings/errors related to failures to communicate with APM server.
+- SHOULD otherwise perform all functions.
