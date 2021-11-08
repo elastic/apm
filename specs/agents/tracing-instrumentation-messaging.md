@@ -35,8 +35,6 @@ Passive reception SHOULD be captured as a `messaging` transaction that starts wh
 a message or batch of messages is received for processing, and ends when the
 processing of the message or batch of messages finishes.
 
-TODO: insert Azure Service Bus example
-
 ### Active message reception
 
 Active message reception typically involves initiating the reception of a
@@ -121,11 +119,13 @@ On the other end, agents may choose to append a cardinality-increasing factor to
 #### \** RabbitMQ naming specifics 
 
 In RabbitMQ, queues are only relevant in the receiver side, so the exchange name is used instead for sender spans.
-When the default exchange is used (denoted with an empty string), it should be replaced with `<default>`. 
+When the default exchange is used (denoted with an empty string), it should be replaced with `<default>`.
 
 Agents may add an opt-in config to append the routing key to the name as well, for example: `RabbitMQ RECEIVE from MyExchange/58D7EA987`.
 
-For RabbitMQ transaction and polling spans, the queue name is used instead, whenever available (i.e. when the polling yields a message).
+For RabbitMQ transaction and polling spans, the queue name is used, whenever available (i.e. when the polling yields a message).
+RabbitMQ broker can generate a unique queue name on behalf of an application, which conforms to a naming convention starting with 
+`amq.gen-`. A generated queue name MUST be replaced with `amq.gen-*` when used in a span name, to reduce cardinality.
 
 ### Context fields
 
