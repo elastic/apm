@@ -15,7 +15,7 @@ Field | Value | Description | Source
 `name` | e.g. `MyFunctionName` | The transaction name. Use function name if trigger type is `other`. | `context.functionName`
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
 `outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
-`result` | `success` / `failure` / `HTTP Xxx` | If there was a function error, set to `HTTP 5xx` if triggered by API Gateway, otherwise `failure`. | Trigger specific.
+`result` | `success` / `failure` / `HTTP Xxx` | See API Gateway below. For other triggers, set to `failure` if there was a function error, otherwise `success`. | Trigger specific.
 `faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below).
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
@@ -40,7 +40,7 @@ Field | Value | Description | Source
 `service.framework.name` | `AWS Lambda` | Constant value for the framework name. | -
 `service.runtime.name`| e.g. `AWS_Lambda_java8` | The lambda runtime. | `AWS_EXECUTION_ENV`
 `service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | The ARN of the function **without alias suffix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
-`service.version` | e.g. `${LATEST}` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
+`service.version` | e.g. `$LATEST` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.configured_name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | -
 `cloud.region` | e.g. `us-east-1` | The cloud region. | `AWS_REGION`
@@ -82,6 +82,7 @@ Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `transaction.type` | `request`| Transaction type: constant value for API gateway. | -
 `transaction.name` | e.g. `GET MyFunction` | Transaction name: Http method followed by a whitespace and the function name. | -
+`transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error (see [Lambda error handling doc](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#services-apigateway-errors). If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.response), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
 `faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId`
 `context.service.origin.name` | e.g. `POST /{proxy+}/Prod` | Readable API gateway endpoint. |Format: `${event.requestContext.httpMethod} ${event.requestContext.resourcePath}/${event.requestContext.stage}` (Note that for V2, http method is `event.requestContext.http.method` and there is no direct equivalent to `resourcePath` -- use `requestContext.http.path` and split off the included `stage`.)
@@ -106,7 +107,7 @@ Field | Value | Description | Source
 `type` | `messaging`| Transaction type: constant value for SQS. | -
 `name` | e.g. `RECEIVE SomeQueue` | Transaction name: Follow the [messaging spec](./tracing-instrumentation-messaging.md) for transaction naming. | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
 `faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
-`faas.trigger.reuqest_id` | e.g. `someMessageId` | SQS message ID. | `record.messageId`
+`faas.trigger.request_id` | e.g. `someMessageId` | SQS message ID. | `record.messageId`
 `context.service.origin.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
 `context.service.origin.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
 `context.cloud.origin.service.name` | `sqs` | Fix value for SQS. | -
