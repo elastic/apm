@@ -25,9 +25,8 @@ Additionally, spans that lead to an error can't be discarded.
 | Default        | `1ms`      |
 | Central config | `true`     |
 
-TODO: should we introduce µs granularity for this config option?
-Adding `us` to all `duration`-typed options would create compatibility issues.
-So we probably want to support `us` for this option only.
+The minimum allowed duration for this setting is `1us` (microsecond). Agents may need to
+add support the `us` unit.
 
 ## Interplay with span compression
 
