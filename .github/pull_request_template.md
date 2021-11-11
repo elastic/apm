@@ -1,12 +1,12 @@
-# Agent spec PR checklist
-
 <!--
+Agent spec PR checklist
+
 Delete all of this if the PR is not changing the agent spec.
 Delete sections that don't apply to this PR.
 If a specific checkbox doesn't apply, ~strike through~ and check it instead of deleting it.
 -->
 
-## For small enhancements of existing specs
+## This is a small enhancement
 
 - [ ] Create PR as draft
 - [ ] Approval by at least one other agent
@@ -15,12 +15,14 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
   - Remove agents from reviewers if the change is not relevant for them
 - [ ] Merge after 2 days passed without objections
 
-## For new specs and bigger enhancements
+## This is a new spec or a bigger enhancement
 
 - May the instrumentation collect sensitive information, such as secrets or PII (ex. in headers)?
   - [ ] Yes
     - [ ] Add a section to the spec how agents should apply sanitization (such as `sanitize_field_names`)
   - [ ] No
+    - [ ] Why?
+  - [ ] n/a
 - [ ] Link to meta issue: #
 - [ ] Create PR as draft
 - [ ] Approval by at least one other agent
