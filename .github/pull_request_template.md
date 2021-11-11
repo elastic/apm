@@ -14,6 +14,7 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
 - [ ] Merge after 2 days passed without objections
 
 ## For new specs and bigger enhancements
+
 - May the instrumentation collect sensitive information, such as secrets or PII (ex. in headers)?
   - [ ] Yes
     - [ ] Add a section to the spec how agents should apply sanitization (such as `sanitize_field_names`)
@@ -28,5 +29,3 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
 - [ ] Merge after 7 days passed without objections
 - [ ] [https://gprom.app.elstc.co/issue-creator](Create implementation issues)
 - [ ] [Create a status table](https://gprom.app.elstc.co/status/7.16) and add it to the meta issue
-
-
