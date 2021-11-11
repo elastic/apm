@@ -23,7 +23,7 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
   - [ ] No
     - [ ] Why?
   - [ ] n/a
-- [ ] Link to meta issue: #
+- [ ] Link to meta issue: # <!-- create a meta issue if it does not exist yet -->
 - [ ] Create PR as draft
 - [ ] Approval by at least one other agent
 - [ ] Mark as Ready for Review (automatically requests reviews from all agents and PM via [`CODEOWNERS`](https://github.com/elastic/apm/tree/master/.github/CODEOWNERS))
@@ -31,5 +31,5 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
   - Remove agents from reviewers if the change is not relevant for them
 - [ ] Approved by at least 2 agents + PM (if relevant)
 - [ ] Merge after 7 days passed without objections
-- [ ] [https://gprom.app.elstc.co/issue-creator](Create implementation issues) (ideally add a milestone)
+- [ ] [Create implementation issues](https://gprom.app.elstc.co/issue-creator) (ideally add a milestone)
 - [ ] [Create a status table](https://gprom.app.elstc.co/status/7.16) and add it to the meta issue
