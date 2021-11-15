@@ -13,7 +13,7 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
 - [ ] Mark as Ready for Review (automatically requests reviews from all agents and PM via [`CODEOWNERS`](https://github.com/elastic/apm/tree/master/.github/CODEOWNERS))
   - Remove PM from reviewers if impact on product is negligible
   - Remove agents from reviewers if the change is not relevant for them
-- [ ] Merge after 2 days passed without objections
+- [ ] Merge after 2 business days passed without objections
 
 ## This is a new spec or a bigger enhancement
 
