@@ -50,11 +50,24 @@ Field | Value | Description | Source
 ### Deriving cold starts
 A cold start occurs if AWS needs first to initialize the Lambda runtime (including the Lambda process, such as JVM, Node.js process, etc.) in order to handle a request. This happens for the first request and after long function idle times. A Lambda function instance only executes one event at a time (there is no concurrency). Thus, detecting a cold start is as simple as detecting whether the invocation of a __handler method__ is the **first since process startup** or not. This can be achieved with a global / process-scoped flag that is flipped at the first execution of the handler method.
 
-### Metrics collection
-On AWS Lambda metrics collection should be *completely disabled* in the agents (for now). This includes all kind of metrics: system, process and breakdown metrics.
+### Disabled functionalities
+The following agent functionalities need to be disabled when tracing AWS Lambda functions until decided otherwise:
+- **Metrics collection:** this includes all kind of metrics: system, process and breakdown metrics and is equivalent to 
+setting `ELASTIC_APM_METRICS_INTERVAL = 0`
+- **Remote configuration:** equivalent to setting `ELASTIC_APM_CENTRAL_CONFIG = false`
+- **Cloud metadata discovery:** equivalent to setting `ELASTIC_APM_CLOUD_PROVIDER = none`
+- **System metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent 
+executes extenal commands in order to discover the hostname, which is not required for AWS Lambda metadata. All other 
+agents read and parse files to extract container and k8s metadata, which is not required as well.
 
-* Agents that will be always deployed as part of an additional APM Agent Lambda layer (e.g. Java agent) may disable this through configuration options (e.g. environment variables) built in the lambda wrapper script (`AWS_LAMBDA_EXEC_WRAPPER`) that is provided with the APM Agent Lambda layer.
-* Agents that will be used with AWS lambda without the need for an additional Lambda layer must detect that they are running in an AWS Lambda environment (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable). In that case, these agents should disable metrics collection programmatically within the agent code.
+There are two main approaches for agents to disable the above functionalities:
+* Agents that will be always deployed as part of an additional APM Agent Lambda layer (e.g. Java agent) may disable this 
+through configuration options (e.g. environment variables) built in the lambda wrapper script(`AWS_LAMBDA_EXEC_WRAPPER`) 
+that is provided with the APM Agent Lambda layer.
+* Agents that will be used with AWS lambda without the need for an additional Lambda layer must detect that they are 
+running in an AWS Lambda environment (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` 
+environment variable). Such agents should disable the aforementioned functionalities programmatically to achieve the 
+same behaviour that would be achieved through the corresponding configuration options.
 
 ## Trigger-specific Instrumentation
 Lambda functions can be triggered in many different ways. A generic transaction for a Lambda invocation can be created independently of the actual trigger. However, depending on the trigger type, different information might be available that can be used to capture additional transaction data or that allows additional, valuable spans to be derived. The most common triggers that we want dedicated instrumentation support for are the following:
