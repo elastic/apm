@@ -216,7 +216,7 @@ span.destination.service.resource = resource;
 
 ### Active Spans and Context
 
-When possible, bridge implementation SHOULD ensure proper interoperability between Elastic transactions/spans and OTel spans when
+When possible, bridge implementation MUST ensure proper interoperability between Elastic transactions/spans and OTel spans when
 used from their respective APIs:
 - After activating an Elastic span via the agent's API, the [`Context`] returned via the [get current context API] should contain that Elastic span
 - When an OTel context is [attached] (aka activated), the [get current context API] should return the same [`Context`] instance.
