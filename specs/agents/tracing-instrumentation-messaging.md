@@ -54,6 +54,20 @@ if the polling operation returned a message or batch of messages. Capturing
 the message processing flow in a transaction in this manner may be unfeasible if
 the processing flow is not implemented within a well defined API.
 
+### Batch message processing
+
+When active or passive message reception results in receiving a batch of messages,
+a `messaging` transaction SHOULD be started and ended for the processing
+of each message in the batch, if possible. For example, the Java agent
+instruments the Kafka consumer batch iterator so that a transaction is started whenever 
+a message is retrieved from the batch, and ended either when the next message 
+is retrieved, or when the iterator is depleted i.e. `iterator.hasNext()` returns 
+`false`.
+
+If creating a transaction for the processing of each message in a batch is not possible, 
+the agent SHOULD create a single `messaging` transaction for the processing of the batch
+of messages.
+
 ### Trace Context
 
 When message reception is captured as a `messaging` transaction, if the messaging
@@ -62,12 +76,11 @@ SHOULD be checked for the presence of [Trace Context](https://www.w3.org/TR/trac
 If Trace Context is present, it SHOULD be propagated to the `messaging` transaction
 to continue the [distributed trace](tracing-distributed-tracing.md).
 
-If message reception results in a batch of messages that are processed in a
-message processing flow and hence captured in a `messaging` transaction, it may be
+If a batch of messages is processed in a in a single `messaging` transaction, it may be
 possible that each message in the batch has its own Trace Context. In this
 scenario, it is not currently possible to propagate a Trace Context to the `messaging`
 transaction, since there a multiple contexts present. It may be possible to capture
-these in future [(issue: #122)](https://github.com/elastic/apm/issues/122).
+these in future through [span links](https://github.com/elastic/apm/issues/122).
 
 ### Examples
 

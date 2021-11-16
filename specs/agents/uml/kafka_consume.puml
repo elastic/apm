@@ -8,9 +8,9 @@ activate app
 loop while true
     activate apm #00BFB3 
     apm -> apm: transaction.End()  
-    
-    app -> queue: **consumer.Consume()**
-    deactivate apm
+	deactivate apm
+	    
+	app -> queue: **consumer.Consume()**
     deactivate app
     activate queue
 
@@ -20,8 +20,9 @@ loop while true
         
         deactivate queue
         activate app
-        activate apm #00BFB3
+        
         apm -> apm: transaction.Start()
+        activate apm #00BFB3
     end
 
     deactivate app
