@@ -1,26 +1,100 @@
-## Messaging Systems
+# Messaging Systems
 
 The instrumentation of messaging systems includes:
-- Transaction creation on message reception, either as a child of the message-sending span, if the sending action is traced (meaning 
+
+- Transaction creation for received message processing, either as a child 
+of the message sending span if the sending operation is traced (meaning 
 distributed tracing support), or as root
-- Span creation for message sending action
-- Span creation on message *polling that occurs within a traced transaction*
+- Span creation for message sending operation
+- Span creation for message *receiving operation that occurs within a traced transaction*
 
-### Passive vs. active message reception
+## Message sending/publishing
 
-Message send/publish events can only be captured as spans if occurring within a traced transaction.
-Message consumption can be divided into two types: passive, where you would implement a listener that is called once a message is available, 
-and active, where the queue/topic is being polled (blocking or non-blocking). 
+A Message send/publish SHOULD be captured as a `messaging` span only if 
+occurring within a traced transaction.
 
-Passive consumption typically results in a `messaging` transaction and is pretty straightforward to trace - start at entry and end at exit. 
+![publish](uml/publish.svg)
 
-Message polling can be done within a traced transaction, in which case it should result in a messaging span, or it can be the initiating 
-event for a message handling flow. Capturing polling spans is also mostly straightforward. 
-For polling-based transactions, our goal is to capture the message handling flow, which typically *starts after the polling action exits*, 
-returning a message. This may be tricky if the handling flow is not implemented within a well defined API. Use other agent implementation
-as reference.
-The agent should not create a transaction based on polling APIs if the polling action did not result with a message (as opposed to 
-polling spans, where we want to capture such as well).
+### Trace Context
+
+if the messaging system exposes an API for sending additional message properties/metadata, it
+SHOULD be used to propagate the [Trace Context](https://www.w3.org/TR/trace-context/) of the
+`messaging` span, to continue the [distributed trace](tracing-distributed-tracing.md).
+
+## Message reception/consumption
+
+Message reception can be divided into two types, **passive** and **active**. 
+
+### Passive message reception
+
+Passive message reception typically involves a listener or callback subscribed
+to a queue/topic/subscription that is called once a message or batch of messages
+is available, and passed the message or batch of messages for processing.
+
+Passive reception SHOULD be captured as a `messaging` transaction that starts when
+a message or batch of messages is received for processing, and ends when the
+processing of the message or batch of messages finishes.
+
+### Active message reception
+
+Active message reception typically involves initiating the reception of a
+message or batch of messages from a queue/topic, on demand. This might be a
+blocking or non-blocking operation, and for the purposes of this spec, is
+collectively referred to as polling.
+
+When message polling is performed within a traced transaction, it SHOULD be
+captured in a `messaging` span with a name indicating a poll action. A
+span SHOULD be created irrespective of whether the operation returns any messages.
+
+If message polling is performed when there is no active transaction, it
+can be the initiating event for a message processing flow. Our goal in this
+scenario is to capture the message processing flow as a `messaging` transaction
+that SHOULD start after the polling operation exits **and** MUST only be started
+if the polling operation returned a message or batch of messages. Capturing
+the message processing flow in a transaction in this manner may be unfeasible if
+the processing flow is not implemented within a well defined API.
+
+### Batch message processing
+
+When active or passive message reception results in receiving a batch of messages,
+a `messaging` transaction SHOULD be started and ended for the processing
+of each message in the batch, if possible. For example, the Java agent
+instruments the Kafka consumer batch iterator so that a transaction is started whenever 
+a message is retrieved from the batch, and ended either when the next message 
+is retrieved, or when the iterator is depleted i.e. `iterator.hasNext()` returns 
+`false`.
+
+If creating a transaction for the processing of each message in a batch is not possible, 
+the agent SHOULD create a single `messaging` transaction for the processing of the batch
+of messages.
+
+### Trace Context
+
+When message reception is captured as a `messaging` transaction, if the messaging
+system exposes an API for sending additional message properties/metadata, it
+SHOULD be checked for the presence of [Trace Context](https://www.w3.org/TR/trace-context/).
+If Trace Context is present, it SHOULD be propagated to the `messaging` transaction
+to continue the [distributed trace](tracing-distributed-tracing.md).
+
+If a batch of messages is processed in a in a single `messaging` transaction, it may be
+possible that each message in the batch has its own Trace Context. In this
+scenario, it is not currently possible to propagate a Trace Context to the `messaging`
+transaction, since there a multiple contexts present. It may be possible to capture
+these in future through [span links](https://github.com/elastic/apm/issues/122).
+
+### Examples
+
+#### Kafka consumer
+
+A Kafka consumer consumes data in a loop from one or more topics, as part of a
+consumer group. A `Consume()` method retrieves records one-by-one for processing.
+Upon entering a consume loop, an APM agent SHOULD check if there is an active
+`messaging` transaction for consumption, and end it. Following a `Consume()`
+method returning a message, an APM agent SHOULD start a `messaging` transaction
+to capture the message handling flow. Upon exiting a consume loop, an APM agent SHOULD check if there is an active `messaging` transaction for consumption, and end it.
+
+![Kafka consume](uml/kafka_consume.svg)
+
 
 ### Typing
 
@@ -58,11 +132,13 @@ On the other end, agents may choose to append a cardinality-increasing factor to
 #### \** RabbitMQ naming specifics 
 
 In RabbitMQ, queues are only relevant in the receiver side, so the exchange name is used instead for sender spans.
-When the default exchange is used (denoted with an empty string), it should be replaced with `<default>`. 
+When the default exchange is used (denoted with an empty string), it should be replaced with `<default>`.
 
 Agents may add an opt-in config to append the routing key to the name as well, for example: `RabbitMQ RECEIVE from MyExchange/58D7EA987`.
 
-For RabbitMQ transaction and polling spans, the queue name is used instead, whenever available (i.e. when the polling yields a message).
+For RabbitMQ transaction and polling spans, the queue name is used, whenever available (i.e. when the polling yields a message).
+RabbitMQ broker can generate a unique queue name on behalf of an application, which conforms to a naming convention starting with 
+`amq.gen-`. A generated queue name MUST be replaced with `amq.gen-*` when used in a span name, to reduce cardinality.
 
 ### Context fields
 

@@ -1,0 +1,31 @@
+@startuml kafka_consume
+hide footbox
+participant "Application (Consumer)" as app
+participant "APM agent" as apm
+queue       Kafka as queue
+
+activate app
+loop while true
+    activate apm #00BFB3 
+    apm -> apm: transaction.End()  
+	deactivate apm
+	    
+	app -> queue: **consumer.Consume()**
+    deactivate app
+    activate queue
+
+    group Message processing flow
+        ... ~~blocking operation~~ ...
+        queue --> app: message
+        
+        deactivate queue
+        activate app
+        
+        apm -> apm: transaction.Start()
+        activate apm #00BFB3
+    end
+
+    deactivate app
+    deactivate apm
+end
+@enduml
