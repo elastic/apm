@@ -25,5 +25,5 @@ Feature: Agent Transport User agent Header
     Then the User-Agent header matches regex '^apm-agent-[a-z]+/[^ ]* \(<ESCAPED_SERVICE_NAME> <ESCAPED_SERVICE_VERSION>\)'
   Examples:
     | SERVICE_NAME               | ESCAPED_SERVICE_NAME  | SERVICE_VERSION            | ESCAPED_SERVICE_VERSION |
-    | myService                  | myService             | v42                        |                         |
+    | myService                  | myService             | v42                        | v42                     |
     | /()<>@, :;={}?\\[\\]\"\\\\ | _____________________ | /()<>@, :;={}?\\[\\]\"\\\\ | _____________________   |
