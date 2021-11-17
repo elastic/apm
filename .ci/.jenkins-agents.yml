@@ -6,7 +6,7 @@ agents:
     FEATURES_PATH: "features"
     JSON_SPECS_PATH: "internal/testdata/json-specs"
   - REPO: "apm-agent-java"
-    FEATURES_PATH: "apm-agent-core/src/test/resources/specs"
+    FEATURES_PATH: "apm-agent-core/src/test/resources/specs/cucumber"
     JSON_SPECS_PATH: "apm-agent-core/src/test/resources/json-specs"
   - REPO: "apm-agent-php"
     FEATURES_PATH: "tests/APM_Agents_shared/gherkin-specs"
