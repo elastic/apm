@@ -3,7 +3,7 @@ Feature: Agent Transport User agent Header
   Scenario: Default user-agent
     Given an agent
     When the agent sends a request to APM server
-    Then the User-Agent header of the request matches regex '^apm-agent-[a-z]+/[^ ]*'
+    Then the User-Agent header of the request matches regex '^apm-agent-[a-z]+/[^ ]* \(.*\)'
 
   Scenario Outline: User-agent with service name only
     Given an agent configured with
