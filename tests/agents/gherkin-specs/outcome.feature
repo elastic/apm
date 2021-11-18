@@ -76,7 +76,7 @@ Feature: Outcome
     Given an active transaction
     And a gRPC call is received that returns '<status>'
     When the transaction ends
-    Then transaction outcome is '<server>'
+    Then the transaction outcome is '<server>'
     Given an active span
     And a gRPC call is made that returns '<status>'
     When the span ends
