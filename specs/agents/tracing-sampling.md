@@ -95,8 +95,8 @@ For non-sampled transactions set the transaction attributes `sampled: false` and
 No spans should be captured.
 
 #### Post 8.0
-When connected to an APM Server 8.0+, agents SHOULD NOT send non-sampled transactions, only transactions that are sampled.
-No spans should be captured for non-sampled transactions.
+When connected to an APM Server 8.0+, agents SHOULD NOT send non-sampled transactions, or capture spans for these transactions.
+Sampled transactions MUST be captured by Elastic APM agents.
 
 ### Propagation
 
