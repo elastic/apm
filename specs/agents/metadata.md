@@ -45,10 +45,6 @@ else
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOST")
-
-if hostname != null
-  hostname_parts[] = hostname.split(".")
-  hostname = hostname_parts[0]
 ```
 `*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
 may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
