@@ -122,6 +122,5 @@ After onboarding, users can customize settings for which the defaults aren't app
 
 By default, agents MUST send data to the APM Server at `http://localhost:8200/`.
 If possible, agents SHOULD detect sensible defaults for `service.name` and `service.version`.
-Even if detecting these values is not possible, a default value for `service.name` MUST be provided for frictionless onboarding.
-The default name MUST be `unknown-${service.agent.name}-service`.
+In any case agents MUST include `service.name` - if discovering it is not possible then the default value: `unknown-${service.agent.name}-service` MUST be used.
 This naming pattern allows the UI to display inline help on how to manually configure the name.
