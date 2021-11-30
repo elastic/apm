@@ -45,7 +45,7 @@ else
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOST")
-    
+
 if hostname != null
   hostname = hostname.trim()                          // see details below **
 ```
