@@ -62,7 +62,12 @@ The APM Server accepts both uncompressed and compressed HTTP requests. The follo
 - zlib data format (`Content-Encoding: deflate`)
 - gzip data format (`Content-Encoding: gzip`)
 
-Agents should compress the HTTP payload by default, optimising for speed over compactness (typically known as the "best speed" level).
+Agents MUST compress the HTTP payload and SHOULD optimize for speed over compactness (typically known as the "best speed" level).
+
+If the host part of the APM Server URL is either `localhost`, `127.0.0.1`, `::1`, or `0:0:0:0:0:0:0:1`, agents SHOULD disable compression.
+Agents MUST NOT use the compression level `NO_COMPRESSION` to disable compression.
+That's because the [Lambda extension](https://github.com/elastic/apm-aws-lambda/tree/main/apm-lambda-extension)
+would otherwise consider the data as being compressed (due to the `Content-Encoding` header) and send data to APM Server that's actually uncompressed.
 
 ### `context_propagation_only` configuration
 
@@ -97,4 +102,3 @@ Agents that implement this configuration option:
 - MUST NOT attempt to communicate with APM server. This includes central configuration.
 - MUST NOT log warnings/errors related to failures to communicate with APM server.
 - SHOULD otherwise perform all functions.
-
