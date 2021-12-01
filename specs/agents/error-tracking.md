@@ -7,11 +7,20 @@ The agent support reporting exceptions/errors. Errors may come in one of two for
 
 Agents should include exception handling in the instrumentation they provide, such that exceptions are reported to the APM Server automatically, without intervention. In addition, hooks into logging libraries may be provided such that logged errors are also sent to the APM Server.
 
-Error objects will also include the `trace_id` (optional), an `id` (which in
-the case of errors is 128 bits, encoded as 32 hexadecimal digits), a
-`transaction_id`, and a `parent_id` (which is the `id` of the transaction or
-span that caused the error). If an error occurs outside of the context of a
-transaction or span, these fields may be missing.
+Error properties
+* `id` (which in the case of errors is 128 bits, encoded as 32 hexadecimal digits)
+
+Additional properties that agents SHOULD collect when the error happens within the context of a transaction
+* `trace_id`
+* `transaction_id`
+* `parent_id` (which is the `id` of the transaction or span that caused the error).
+* `transaction.sampled`
+* `transaction.name`†
+* `transaction.type`†
+
+† These properties may change during the lifetime of a transaction, for example if a user explicitly sets the transaction name after an error has been captured.
+It is a known and accepted limitation that these properties are not always consistent with the transaction.
+Agents MUST NOT buffer errors to ensure consistency as this comes at the expense of increased memory overhead.
 
 ### Impact on the `outcome`
 
