@@ -45,6 +45,23 @@ The following list enumerates the available configuration types across the agent
 - `GranularDuration`: Case-sensitive string with duration encoded using unit suffixes which supports down to a microsecond duration (`us`). Validating regex: `^(-)?(\d+)(us|ms|s|m)$`.
 - `Size`: Case-insensitive string with a positive size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes, with a 1024 multiplier between each unit). Validating regex: `^(\d+)(b|kb|mb|gb)$`.
 
+
+### Configuration snapshotting
+
+To ensure consistent behavior within one transaction,
+certain settings SHOULD be read at the beginning of the transaction.
+The snapshot of these configuration values applies for the lifetime of the
+transaction.
+
+Snapshotted configuration options:
+
+ * `transaction_max_spans`
+ * `span_compression_enabled`
+ * `span_compression_exact_match_max_duration`
+ * `span_compression_same_kind_max_duration`
+ * `exit_span_min_duration`
+ 
+
 #### Duration/Size Config Legacy Considerations
 
 For duration/size-formatted config options, some agents allow users to omit the unit
