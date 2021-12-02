@@ -16,7 +16,7 @@ how an agent will sanitize data.
 |                |   |
 |----------------|---|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `password, passwd, pwd, secret, *key, *token*, *session*, *credit*, *card*, authorization, set-cookie` |
+| Default        | `password, passwd, pwd, secret, *key, *token*, *session*, *credit*, *card*, *auth*, set-cookie` |
 | Dynamic        | `true` |
 | Central config | `true` |
 
