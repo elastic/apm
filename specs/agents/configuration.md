@@ -134,9 +134,10 @@ Agents should implement a [configuration option](https://docs.google.com/spreads
 ### Zero-configuration support
 
 To decrease onboarding friction,
-APM agents should not require any configuration to send data to a local APM Server.
+APM agents MUST not require any configuration to send data to a local APM Server.
 After onboarding, users can customize settings for which the defaults aren't appropriate.
 
-By default, agents should send data to the APM Server at `http://localhost:8200/`.
-If possible, agents should detect sensible defaults for `service.name` and `service.version`.
-Even if detecting these values is not possible, a default value for `service.name` should be provided for frictionless onboarding.
+By default, agents MUST send data to the APM Server at `http://localhost:8200/`.
+If possible, agents SHOULD detect sensible defaults for `service.name` and `service.version`.
+In any case agents MUST include `service.name` - if discovering it is not possible then the default value: `unknown-${service.agent.name}-service` MUST be used.
+This naming pattern allows the UI to display inline help on how to manually configure the name.
