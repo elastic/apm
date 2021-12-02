@@ -26,31 +26,31 @@
         ]
       },
       "controller": {
-        "__description": "Deprecated: use app/internal instead",
+        "__description": "Deprecated: use app.internal instead",
         "__used_by": [
           "ruby"
         ]
       },
       "graphql": {
-        "__description": "Deprecated: use app/internal instead",
+        "__description": "Deprecated: use app.internal instead",
         "__used_by": [
           "ruby"
         ]
       },
       "mailer": {
-        "__description": "Deprecated: use app/internal instead",
+        "__description": "Deprecated: use app.internal instead",
         "__used_by": [
           "ruby"
         ]
       },
       "resource": {
-        "__description": "Deprecated: use app/internal instead",
+        "__description": "Deprecated: use app.internal instead",
         "__used_by": [
           "ruby"
         ]
       },
       "handler": {
-        "__description": "Deprecated: use app/internal instead",
+        "__description": "Deprecated: use app.internal instead",
         "__used_by": [
           "java"
         ]
@@ -229,7 +229,7 @@
     }
   },
   "json": {
-    "__description": "Deprecated: use app/internal instead",
+    "__description": "Deprecated: use app.internal instead",
     "subtypes": {
       "parse": {
         "__description": "JSON parsing"
