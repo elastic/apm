@@ -21,7 +21,7 @@ for each protocol.
 For spans, the type/subtype must fit the [span type specification in JSON format](../../tests/agents/json-specs/span_types.json).
 In order to help align all agents on this specification, changing `type` and `subtype` field values is not considered
 to be a _breaking change_, but rather a _potentially breaking change_ if for example existing users rely on values to 
-build visualizations.
+build visualizations. As a consequence, modification of those values is not limited to major versions.
 
 ### Span outcome
 
