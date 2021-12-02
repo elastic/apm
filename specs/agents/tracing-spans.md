@@ -12,6 +12,17 @@ Spans will also have a `transaction_id`, which is the `id` of the current
 transaction. While not necessary for distributed tracing, this inclusion allows
 for simpler and more performant UI queries.
 
+### Transaction and Span type and subtype fields
+
+Each transaction has a `type` field, each span has both `type` and `subtype` fields.
+The values for each of those fields is protocol-specific and defined in the respective instrumentation specification
+for each protocol.
+
+For spans, the type/subtype must fit the [span type specification in JSON format](../../tests/agents/json-specs/span_types.json).
+In order to help align all agents on this specification, changing `type` and `subtype` field values is not considered
+to be a _breaking change_, but rather a _potentially breaking change_ if for example existing users rely on values to 
+build visualizations. As a consequence, modification of those values is not limited to major versions.
+
 ### Span outcome
 
 The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates
