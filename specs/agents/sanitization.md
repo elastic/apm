@@ -40,9 +40,9 @@ MUST still be reported in the agent payload. Agents MAY choose the string
 they use to replace the value so long as it's consistent and does not reveal
 the value it has replaced. The replacement string SHOULD be `[REDACTED]`.
 
-Fields that MUST be sanitized are the HTTP Request headers, HTTP Response
-headers, and form fields in an `application/x-www-form-urlencoded` request
-body.  No fields (including `set-cookie` headers) are exempt from this.
+Fields that MUST be sanitized are:
+- HTTP Request and Response headers (except [HTTP/2 pseudo-headers](https://datatracker.ietf.org/doc/html/rfc7540#section-8.1.2.3) which SHOULD NOT be redacted), and
+- form fields in an `application/x-www-form-urlencoded` request body.
 
 The query string and other captured request bodies (such as `application/json`)
 SHOULD NOT be sanitized.
