@@ -2,7 +2,8 @@
 
 [OpenTelemetry](https://opentelemetry.io) (OTel in short) provides a vendor-neutral API that allows to capture tracing, logs and metrics data.
 
-Agents may provide a bridge implementation of OpenTelemetry Tracing API following this specification.
+Agents MAY provide a bridge implementation of OpenTelemetry Tracing API following this specification.
+When available, implementation MUST be configurable and should be disabled by default when marked as `experimental`.
 
 Bridging here means that for each OTel span created with the API, a native span/transaction will be created and sent to APM server.
 
@@ -61,6 +62,21 @@ if (span_kind == null) {
 }
 
 ```
+
+### Span status
+
+OTel spans have a [Status](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#set-status)
+field to indicate the status of the underlying task they represent.
+
+When the [Set Status](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#set-status) on OTel API is used, we can map it directly to `span.outcome`:
+- OK => Success
+- Error => Failure
+- Unset (default) => Unknown
+
+However, when not provided explicitly agents can infer the outcome from the presence of a reported error.
+This behavior is not expected with OTel API with status, thus bridged spans/transactions should NOT have their outcome
+altered by reporting (or lack of reporting) of an error. Here the behavior should be identical to when the end-user provides
+the outcome explicitly and thus have higher priority over the inferred value.
 
 ### Attributes mapping
 
