@@ -12,17 +12,20 @@ Feature: OpenTelemetry bridge
   Scenario: Create root transaction from OTel span without parent
     Given an agent
     And OTel span is created without parent
+    And OTel span ends
     Then Elastic bridged object is a transaction
     Then Elastic bridged transaction is a root transaction
+    # outcome should not be inferred from the lack/presence of errors
+    Then Elastic bridged transaction outcome is "unknown"
 
   Scenario: Create span from OTel span
     Given an agent
     And OTel span is created with local context as parent
+    And OTel span ends
     Then Elastic bridged object is a span
     Then Elastic bridged span has local context as parent
-
-    # --- TODO : compatibility mapping for server < 7.16
-  # --> extra complexity here as it's part of the
+    # outcome should not be inferred from the lack/presence of errors
+    Then Elastic bridged span outcome is "unknown"
 
   # --- OTel span kind mapping for spans & transactions
 
@@ -30,6 +33,7 @@ Feature: OpenTelemetry bridge
     Given an agent
     And an active transaction
     And OTel span is created with kind "<kind>"
+    And OTel span ends
     Then Elastic bridged object is a span
     Then Elastic bridged span OTel kind is "<kind>"
     Then Elastic bridged span type is "<default_type>"
@@ -45,6 +49,7 @@ Feature: OpenTelemetry bridge
   Scenario Outline: OTel span kind <kind> for transactions & default transaction type
     Given an agent
     And OTel span is created with kind "<kind>"
+    And OTel span ends
     Then Elastic bridged object is a transaction
     Then Elastic bridged transaction OTel kind is "<kind>"
     Then Elastic bridged transaction type is 'unknown'
@@ -56,6 +61,35 @@ Feature: OpenTelemetry bridge
       | PRODUCER |
       | CONSUMER |
 
+  # OTel span status mapping for spans & transactions
+
+  Scenario Outline:  OTel span mapping with status <status> for transactions
+    Given an agent
+    And OTel span is created with kind 'SERVER'
+    And OTel span status set to "<status>"
+    And OTel span ends
+    Then Elastic bridged object is a transaction
+    Then Elastic bridged transaction outcome is "<outcome>"
+    Examples:
+      | status | outcome |
+      | unset  | unknown |
+      | ok     | success |
+      | error  | failure |
+
+  Scenario Outline:  OTel span mapping with status <status> for spans
+    Given an agent
+    Given an active transaction
+    And OTel span is created with kind 'INTERNAL'
+    And OTel span status set to "<status>"
+    And OTel span ends
+    Then Elastic bridged object is a span
+    Then Elastic bridged span outcome is "<outcome>"
+    Examples:
+      | status | outcome |
+      | unset  | unknown |
+      | ok     | success |
+      | error  | failure |
+
   # --- span type, subtype and action inference from OTel attributes
 
   # --- HTTP server
@@ -66,6 +100,7 @@ Feature: OpenTelemetry bridge
     And OTel span has following attributes
       | http.url          | <http.url>      |
       | http.scheme       | <http.scheme>   |
+    And OTel span ends
     Then Elastic bridged object is a transaction
     Then Elastic bridged transaction type is "request"
     Examples:
@@ -86,6 +121,7 @@ Feature: OpenTelemetry bridge
       | net.peer.ip       | <net.peer.ip>   |
       | net.peer.name     | <net.peer.name> |
       | net.peer.port     | <net.peer.port> |
+    And OTel span ends
     Then Elastic bridged span type is 'external'
     Then Elastic bridged span subtype is 'http'
     Then Elastic bridged span OTel attributes are copied as-is
@@ -114,6 +150,7 @@ Feature: OpenTelemetry bridge
       | net.peer.ip       | <net.peer.ip>   |
       | net.peer.name     | <net.peer.name> |
       | net.peer.port     | <net.peer.port> |
+    And OTel span ends
     Then Elastic bridged span type is 'db'
     Then Elastic bridged span subtype is "<db.system>"
     Then Elastic bridged span OTel attributes are copied as-is
@@ -131,12 +168,13 @@ Feature: OpenTelemetry bridge
 
   # --- Messaging consumer (transaction consuming/receiving a message)
   # https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md
-  Scenario:
+  Scenario: Messaging consumer
     Given an agent
     And an active transaction
     And OTel span is created with kind 'CONSUMER'
     And OTel span has following attributes
       | messaging.system  | anything |
+    And OTel span ends
     Then Elastic bridged transaction type is 'messaging'
 
   # --- Messaging producer (client span emitting a message)
@@ -152,6 +190,7 @@ Feature: OpenTelemetry bridge
       | net.peer.ip            | <net.peer.ip>           |
       | net.peer.name          | <net.peer.name>         |
       | net.peer.port          | <net.peer.port>         |
+    And OTel span ends
     Then Elastic bridged span type is 'messaging'
     Then Elastic bridged span subtype is "<messaging.system>"
     Then Elastic bridged span OTel attributes are copied as-is
@@ -179,6 +218,7 @@ Feature: OpenTelemetry bridge
       | net.peer.ip   | <net.peer.ip>   |
       | net.peer.name | <net.peer.name> |
       | net.peer.port | <net.peer.port> |
+    And OTel span ends
     Then Elastic bridged span type is 'external'
     Then Elastic bridged span subtype is "<rpc.system>"
     Then Elastic bridged span OTel attributes are copied as-is
@@ -200,6 +240,7 @@ Feature: OpenTelemetry bridge
     And OTel span is created with kind 'SERVER'
     And OTel span has following attributes
       | rpc.system | grpc |
+    And OTel span ends
     Then Elastic bridged transaction type is 'request'
 
 
