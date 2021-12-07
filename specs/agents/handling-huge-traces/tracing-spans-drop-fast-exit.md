@@ -7,7 +7,8 @@ If an agent implements this strategy, it MUST also implement [Collecting statist
 ## `exit_span_min_duration` configuration
 
 Sets the minimum duration of exit spans.
-Exit spans that execute faster than this threshold are attempted to be discarded.
+Exit spans with a duration lesser than this threshold are attempted to be discarded.
+If the exit span is equal or greater the threshold, it should be kept.
 
 In some cases exit spans cannot be discarded.
 For example, spans that propagate the trace context to downstream services,
@@ -24,9 +25,8 @@ Additionally, spans that lead to an error can't be discarded.
 | Default        | `1ms`      |
 | Central config | `true`     |
 
-TODO: should we introduce µs granularity for this config option?
-Adding `us` to all `duration`-typed options would create compatibility issues.
-So we probably want to support `us` for this option only.
+The minimum allowed duration for this setting is `1us` (microsecond). Agents may need to
+add support the `us` unit.
 
 ## Interplay with span compression
 

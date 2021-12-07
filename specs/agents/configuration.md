@@ -42,7 +42,25 @@ The following list enumerates the available configuration types across the agent
 - `List`: Encoded as a comma-separated string (whitespace surrounding items should be stripped): `"foo,bar,baz"`.
 - `Mapping`: Encoded as a string, with `"key=value"` pairs separated by commas (whitespace surrounding items should be stripped): `"foo=bar,baz=foo"`.
 - `Duration`: Case-sensitive string with duration encoded using unit suffixes (`ms` for millisecond, `s` for second, `m` for minute). Validating regex: `^(-)?(\d+)(ms|s|m)$`.
+- `GranularDuration`: Case-sensitive string with duration encoded using unit suffixes which supports down to a microsecond duration (`us`). Validating regex: `^(-)?(\d+)(us|ms|s|m)$`.
 - `Size`: Case-insensitive string with a positive size encoded using unit suffixes (`b` for bytes, `kb` for kilobytes, `mb` for megabytes, `gb` for gigabytes, with a 1024 multiplier between each unit). Validating regex: `^(\d+)(b|kb|mb|gb)$`.
+
+
+### Configuration snapshotting
+
+To ensure consistent behavior within one transaction,
+certain settings SHOULD be read at the beginning of the transaction.
+The snapshot of these configuration values applies for the lifetime of the
+transaction.
+
+Snapshotted configuration options:
+
+ * `transaction_max_spans`
+ * `span_compression_enabled`
+ * `span_compression_exact_match_max_duration`
+ * `span_compression_same_kind_max_duration`
+ * `exit_span_min_duration`
+ 
 
 #### Duration/Size Config Legacy Considerations
 
@@ -116,9 +134,10 @@ Agents should implement a [configuration option](https://docs.google.com/spreads
 ### Zero-configuration support
 
 To decrease onboarding friction,
-APM agents should not require any configuration to send data to a local APM Server.
+APM agents MUST not require any configuration to send data to a local APM Server.
 After onboarding, users can customize settings for which the defaults aren't appropriate.
 
-By default, agents should send data to the APM Server at `http://localhost:8200/`.
-If possible, agents should detect sensible defaults for `service.name` and `service.version`.
-Even if detecting these values is not possible, a default value for `service.name` should be provided for frictionless onboarding.
+By default, agents MUST send data to the APM Server at `http://localhost:8200/`.
+If possible, agents SHOULD detect sensible defaults for `service.name` and `service.version`.
+In any case agents MUST include `service.name` - if discovering it is not possible then the default value: `unknown-${service.agent.name}-service` MUST be used.
+This naming pattern allows the UI to display inline help on how to manually configure the name.

@@ -1,0 +1,25 @@
+@startuml publish
+hide footbox
+participant "Application (Publisher)" as app
+participant "APM agent" as apm
+queue       "Messaging system" as queue
+
+    activate app
+    activate apm #00BFB3
+    app -> queue: **publish message**
+    deactivate app  
+    activate queue
+    activate apm #1BA9F5
+    apm -> apm: span.Start()
+    note left of apm
+        **Capture new span**
+
+        There is an active transaction
+    end note   
+    apm -> apm: span.End()
+    queue --> app
+    deactivate queue
+    activate app
+    deactivate apm
+
+@enduml

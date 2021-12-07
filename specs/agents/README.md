@@ -66,5 +66,5 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 
 # Processes
 
-- [Proposing changes to the specification](process-spec.md)
+- [Proposing changes to the specification](../../.github/pull_request_template.md)
 - [Proposing new fields to the intake API](process-new-fields.md)

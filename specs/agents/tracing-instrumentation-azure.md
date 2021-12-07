@@ -6,7 +6,7 @@ Some of the services can use existing specs. When there are differences or addit
 
 ----
 
-**NOTE**: 
+**NOTE**:
 Azure Storage can be run as part of [Azure Stack](https://azure.microsoft.com/en-au/overview/azure-stack/). Azure services cannot be inferred from Azure Stack HTTP service endpoints.
 
 ----
@@ -82,7 +82,7 @@ on the presence of data in the HTTP request
 | GET       | | `comp=list`                             | ListContainers  |
 | GET       | | `comp=tags`                             | GetTags         |
 | GET       | | `comp=tags` and `where=<expression>`    | FindTags        |
-| GET       | | `comp=blocklist`                        | Download        |
+| GET       | | `comp=blocklist`                        | GetBlockList    |
 | GET       |                                         | | Download        |
 | GET       | | `comp=pagelist`                         | GetPageRanges   |
 | GET       | | `comp=stats`                            | Stats           |
@@ -120,10 +120,10 @@ on the presence of data in the HTTP request
 
 ### Queue storage
 
-Queue storage allows sending and receiving messages that may be read by any 
+Queue storage allows sending and receiving messages that may be read by any
 client who has access to the storage account. Messages are sent to and received from queues.
 
-The [messaging spec](tracing-instrumentation-messaging.md) can 
+The [messaging spec](tracing-instrumentation-messaging.md) can
 be used for instrumenting Queue storage, with the following additions superseding the messaging spec.
 
 A new span is created when there is a current transaction, and when a message is sent to a queue
@@ -176,7 +176,7 @@ Rules derived from the [Queue service REST API reference](https://docs.microsoft
 | URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
 | --- | --------- | ---------- | ------------------- | ------------------------ |
 | | DELETE    |            |                         | DELETE                   |
-| ends with /messages | DELETE | |                   | CLEAR                    |
+| ends with /messages | DELETE | | no `popreceipt`   | CLEAR                    |
 | | DELETE    |            | `popreceipt=<value>`    | DELETE                   |
 | | GET       |            | `comp=list`             | LISTQUEUES               |
 | | GET       |            | `comp=properties`       | GETPROPERTIES            |
@@ -197,7 +197,7 @@ Rules derived from the [Queue service REST API reference](https://docs.microsoft
 
 ### Table storage
 
-The Table service offers non-relational schema-less structured storage in the 
+The Table service offers non-relational schema-less structured storage in the
 form of tables. It is a popular service due to its cost-to-capability, though
 messaging in recent years from Microsoft has deprecated Table storage and encouraged
 the use of CosmosDB and its Table storage compatible API.
@@ -241,23 +241,23 @@ where `<Storage Account Name>` is the name of the storage account. New Azure ser
 
 Rules derived from the [Table service REST API reference](https://docs.microsoft.com/en-us/rest/api/storageservices/table-service-rest-api)
 
-| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name |
-| --- | --------- | ---------- | ------------------- | ------------------------ |
-| | PUT    |            |   `comp=properties`                  | SetProperties    |
-| | GET    |            |   `comp=properties`                  | GetProperties    |
-| | GET    |            |   `comp=stats`                       | Stats            |
-| ends with /Tables | GET    |            |                  | Query           |
-| ends with /Tables | POST    |            |                 | Create           |
-| ends with /Tables('`<table>`') | DELETE    |            |  | Delete           |
-| ends with /`<table>` | OPTIONS    |            |           | Preflight        |
-| | HEAD      |            | `comp=acl`          | GetAcl                   |
-| | GET      |            | `comp=acl`          | GetAcl                   |
-| | PUT      |            | `comp=acl`          | SetAcl                   |
-| ends with /`<table>`() or /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')`  | GET    |            |                  | Query            |
-| ends with /`<table>` | POST      |            |           | Insert                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | PUT      |            |           | Update                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | MERGE      |            |           | Merge                   |
-| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | DELETE      |            |           | Delete                   |
+| URL | HTTP verb | HTTP headers | HTTP query string | Resulting Operation Name | Notes |
+| --- | --------- | ---------- | ------------------- | ------------------------ | ----- |
+| | PUT    |            |   `comp=properties`                  | SetProperties    | |
+| | GET    |            |   `comp=properties`                  | GetProperties    | |
+| | GET    |            |   `comp=stats`                       | Stats            | |
+| ends with /Tables | GET    |            |                  | Query           | |
+| ends with /Tables | POST    |            |                 | Create           | `<ResourceName>` is in `request_body["TableName"]`|
+| ends with /Tables('`<table>`') | DELETE    |            |  | Delete           | |
+| ends with /`<table>` | OPTIONS    |            |           | Preflight        | |
+| | HEAD      |            | `comp=acl`          | GetAcl                   | |
+| | GET      |            | `comp=acl`          | GetAcl                   | |
+| | PUT      |            | `comp=acl`          | SetAcl                   | |
+| ends with /`<table>`() or /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')`  | GET    |            |                  | Query            | |
+| ends with /`<table>` | POST      |            |           | Insert                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | PUT      |            |           | Update                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | MERGE      |            |           | Merge                   | |
+| ends with /`<table>`(PartitionKey='`<partition-key>`',RowKey='`<row-key>`')` | DELETE      |            |           | Delete                   | |
 
 ### File share storage
 
@@ -302,7 +302,6 @@ Rules derived from the [File service REST API reference](https://docs.microsoft.
 | URL | HTTP verb | HTTP headers | HTTP query string  | Resulting Operation Name  |
 | --- | --------- | ---------- | -------------------- | ------------------------- |
 | | GET    | |   `comp=list`                          | List                      |
-| | GET    | |   `comp=list`                          | List                      |
 | | PUT    | |   `comp=properties`                    | SetProperties             |
 | | GET    | |   `comp=properties`                    | GetProperties             |
 | ends with /`<resource>` | OPTIONS  | |              | Preflight                 |
@@ -336,10 +335,10 @@ Rules derived from the [File service REST API reference](https://docs.microsoft.
 
 ## Azure Service Bus
 
-Azure Service Bus is a message broker service. The [messaging spec](tracing-instrumentation-messaging.md) can 
+Azure Service Bus is a message broker service. The [messaging spec](tracing-instrumentation-messaging.md) can
 be used for instrumenting Azure Service Bus, but the follow specifications supersede those of the messaging spec.
 
-Azure Service Bus can use the following protocols 
+Azure Service Bus can use the following protocols
 
 - Advanced Message Queuing Protocol 1.0 (AMQP)
 - Hypertext Transfer Protocol 1.1 with TLS (HTTPS)

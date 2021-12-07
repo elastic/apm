@@ -22,27 +22,88 @@ System metadata relates to the host/container in which the service being monitor
    - pod name
    - pod UID
 
+#### Hostname
+
+This hostname reported by the agent is mapped by the APM Server to the 
+[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname), which should 
+typically contain what the `hostname` command returns on the host machine. However, since we rely on this field for 
+our integration with beats data, we should attempt to follow a similar logic to the `os.Hostname()` Go API, which beats 
+relies one. While `os.Hostname()` contains some complex OS-specific logic to cover all sorts of edge cases, our 
+algorithm should be simpler. It relies on the execution of external commands with a fallback to standard environment 
+variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
+```
+var hostname;
+if os == windows
+  hostname = exec "cmd /c hostname"                   // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("COMPUTERNAME")
+else 
+  hostname = exec "uname -n"                          // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = exec "hostname"                        // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOSTNAME")
+  if (hostname == null || hostname.length == 0)
+    hostname = env.get("HOST")
+
+if hostname != null
+  hostname_parts[] = hostname.split(".")
+  hostname = hostname_parts[0]
+```
+`*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
+may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
+what to use is to avoid hostname discovery that relies on DNS lookup.
+
+Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
+proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
+Metricbeat). For example, if the agent uses an API that produces the FQDN, this value is likely to mismatch hostname 
+reported by other clients.
+
+In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
+can be used as a manual fallback.
+
+Up to APM Server 7.4, only the `system.hostname` field was used for this purpose. Agents communicating with 
+APM Server of these versions MUST set `system.hostname` with the value of `ELASTIC_APM_HOSTNAME`, if such is manually 
+configured. Otherwise, agents MUST set it with the automatically-discovered hostname.
+
+Since APM Server 7.4, `system.hostname` field is deprecated in favour of two newer fields:
+- `system.configured_hostname` - it should only be sent when configured by the user through the `ELASTIC_APM_HOSTNAME` 
+config option. If provided, it is used by the APM Server as the event's hostname.
+- `system.detected_hostname` - the hostname automatically detected by the APM agent. It will be used as the event's 
+hostname if `configured_hostname` is not provided.
+
+Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
+use the new fields wherever applicable.
+
 #### Container/Kubernetes metadata
 
 On Linux, the container ID and some of the Kubernetes metadata can be extracted by parsing `/proc/self/cgroup`. For each line in the file, we split the line according to the format "hierarchy-ID:controller-list:cgroup-path", extracting the "cgroup-path" part. We then attempt to extract information according to the following algorithm:
 
- 1. Split the path into dirname/basename (i.e. on the final slash)
+ 1. Split the path into `dirname` and `basename`:
+    - split based on the last occurrence of the colon character, if such exists, in order to support paths of containers 
+    created by [containerd-cri](https://github.com/containerd/cri), where the path part takes the form: 
+    `<dirname>:cri-containerd:<container-ID>`
+    - if colon char is not found within the path, the split is done based on the last occurrence of the slash character
 
- 2. If the basename ends with ".scope", check for a hyphen and remove everything up to and including that. This allows us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
+ 2. If the `basename` ends with ".scope", check for a hyphen and remove everything up to and including that. This allows 
+ us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
 
- 3. Attempt to extract the Kubernetes pod UID from the dirname by matching one of the following regular expressions:
+ 3. Attempt to extract the Kubernetes pod UID from the `dirname` by matching one of the following regular expressions:
      - `(?:^/kubepods[\\S]*/pod([^/]+)$)`
-     - `(?:^/kubepods\.slice/(kubepods-[^/]+\.slice/)?kubepods[^/]*-pod([^/]+)\.slice$)`
+     - `(?:kubepods[^/]*-pod([^/]+)\.slice)`
 
-    The first capturing group in the first case and the second capturing group in the second case is the pod UID. In the latter case, we must unescape underscores (`_`) to hyphens (`-`) in the pod UID.
-    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
+    If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores 
+    (`_`) to hyphens (`-`) in the pod UID.
+    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the 
+    hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
 
- 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular expressions:
+ 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular 
+ expressions:
 
     - `^[[:xdigit:]]{64}$`
     - `^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4,}$`
 
-    If we match, then the basename is assumed to be a container ID.
+ If we match, then the basename is assumed to be a container ID.
 
 If the Kubernetes pod name is not the hostname, it can be overridden by the `KUBERNETES_POD_NAME` environment variable, using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/). In a similar manner, you can inform the agent of the node name and namespace, using the environment variables `KUBERNETES_NODE_NAME` and `KUBERNETES_NAMESPACE`.
 
@@ -67,6 +128,8 @@ Service metadata relates to the service/application being monitored:
  - framework name (e.g. "flask") and version (e.g. "1.0.2")
 
 For official Elastic agents, the agent name should just be the name of the language for which the agent is written, in lower case.
+
+Services running on AWS Lambda [require specific values](tracing-instrumentation-aws-lambda.md) for some of the above mentioned fields.
 
 ### Cloud Provider Metadata
 
@@ -98,6 +161,8 @@ metadata is available.
 
 A sample implementation of this metadata collection is available in
 [the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
+
+Fetching of cloud metadata for services running as AWS Lambda functions follow a [different approach defined in the tracing-instrumentation-aws-lambda spec](tracing-instrumentation-aws-lambda.md).
 
 #### AWS metadata
 
@@ -209,4 +274,5 @@ for scenarios and expected outcomes.
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
 
-Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated list of `key=value` pairs.
+Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated 
+list of `key=value` pairs.
