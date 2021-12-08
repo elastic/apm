@@ -85,7 +85,8 @@ as otherwise the representative counts will be incorrect for sampling rates less
 
 ### Non-sampled transactions
 
-Currently _all_ transactions are captured by Elastic APM agents.
+#### Pre 8.0
+When connected to an APM Server < 8.0, both sampled and non-sampled transactions MUST be captured by Elastic APM agents.
 Sampling controls how much data is captured for transactions:
 sampled transactions have complete context recorded and include spans;
 non-sampled transactions have limited context and no spans.
@@ -93,7 +94,9 @@ non-sampled transactions have limited context and no spans.
 For non-sampled transactions set the transaction attributes `sampled: false` and `sample_rate: 0`, and omit `context`.
 No spans should be captured.
 
-In the future we may introduce options to agents to stop sending non-sampled transactions altogether.
+#### Post 8.0
+When connected to an APM Server 8.0+, agents SHOULD NOT send non-sampled transactions, or capture spans for these transactions.
+Sampled transactions MUST be captured by Elastic APM agents.
 
 ### Propagation
 
