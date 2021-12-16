@@ -49,7 +49,7 @@ pipeline {
     stage('Checkout'){
       steps {
         deleteDir()
-        gitCheckout(basedir: "${BASE_DIR}", branch: 'master',
+        gitCheckout(basedir: "${BASE_DIR}", branch: 'main',
           repo: "git@github.com:elastic/${REPO}.git",
           credentialsId: "${JOB_GIT_CREDENTIALS}"
         )
@@ -61,7 +61,7 @@ pipeline {
     // 1. we run the pipeline NOT in DRY_RUN_MODE, because we want to send real PRs
     // 2. we run the pipeline forcing sending real PRs, because we want so
     // Because the rest of the following stages will need these variables to check for changes,
-    // skipping this stage would not take effect in them, as they are covered by the 
+    // skipping this stage would not take effect in them, as they are covered by the
     // FORCE_SEND_PR check.
     stage('Check for spec changes'){
       when {

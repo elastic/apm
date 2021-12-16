@@ -5,7 +5,7 @@ labels: agents, poll
 ---
 
 <!--
-Documentation for proposing new fields is provided here: https://github.com/elastic/apm/blob/master/docs/agents/new-fields.md
+Documentation for proposing new fields is provided here: https://github.com/elastic/apm/blob/main/docs/agents/new-fields.md
 -->
 
 ## Proposed fields
