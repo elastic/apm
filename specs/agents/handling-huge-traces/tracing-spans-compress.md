@@ -89,7 +89,7 @@ The rest of the context, such as the `db.statement` will be determined by the fi
 Consecutive spans to the same destination that are under this threshold will be compressed into a single composite span.
 This option does not apply to [composite spans](#composite-span).
 This reduces the collection, processing, and storage overhead, and removes clutter from the UI.
-The tradeoff is that the DB statements of all the compressed spans will not be collected. 
+The tradeoff is that the DB statements of all the compressed spans will not be collected.
 
 |                |          |
 |----------------|----------|
@@ -125,7 +125,7 @@ APM Server tracks span destination metrics.
 To avoid compressed spans to skew latency metrics and cause throughput metrics to be under-counted,
 APM Server will take `composite.count` into account when tracking span destination metrics.
 
-### Effects on [span count](https://github.com/elastic/apm/blob/master/specs/agents/handling-huge-traces/tracing-spans-limit.md#span-count)
+### Effects on [span count](https://github.com/elastic/apm/blob/main/specs/agents/handling-huge-traces/tracing-spans-limit.md#span-count)
 
 When a span is compressed into a composite,
 `span_count.reported` should ONLY count the compressed composite as a single
@@ -140,14 +140,14 @@ A span is eligible for compression if all the following conditions are met
 1. It's an [exit span](../tracing-spans.md#exit-spans)
 2. The trace context of this span has not been propagated to a downstream service
 3. If the span has `outcome` (i.e., `outcome` is present and it's not `null`) then it should be `success`.
-  It means spans with outcome indicating an issue of potential interest should not be compressed.    
+  It means spans with outcome indicating an issue of potential interest should not be compressed.
 
 The second condition is important so that we don't remove (compress) a span that may be the parent of a downstream service.
 This would orphan the sub-graph started by the downstream service and cause it to not appear in the waterfall view.
 
 ```java
 boolean isCompressionEligible() {
-    return exit && !context.hasPropagated && (outcome == null || outcome == "success") 
+    return exit && !context.hasPropagated && (outcome == null || outcome == "success")
 }
 ```
 
@@ -185,7 +185,7 @@ void onChildEnd(Span child) {
         buffered = child
         return
     }
-    
+
     if (!buffered.tryToCompress(child)) {
         report(buffered)
         buffered = child
@@ -200,7 +200,7 @@ On the first call the span checks if it can be compressed with the given sibling
 Note that the compression strategy selected only once based on the first two spans of the sequence.
 The compression strategy cannot be changed by the rest the spans in the sequence.
 So when the current sibling span cannot be added to the ongoing sequence under the selected compression strategy
-then the ongoing is terminated, it is sent out as a composite span and the current sibling span is buffered. 
+then the ongoing is terminated, it is sent out as a composite span and the current sibling span is buffered.
 
 If the spans are of the same kind, and have the same name and both spans `duration` <= `span_compression_exact_match_max_duration`,
 we apply the [Consecutive-Exact-Match compression strategy](tracing-spans-compress.md#consecutive-exact-match-compression-strategy).
@@ -208,7 +208,7 @@ Note that if the spans are _exact match_
 but duration threshold requirement is not satisfied we just stop compression sequence.
 In particular it means that the implementation should not proceed to try _same kind_ strategy.
 Otherwise user would have to lower both `span_compression_exact_match_max_duration` and `span_compression_same_kind_max_duration`
-to prevent longer _exact match_ spans from being compressed. 
+to prevent longer _exact match_ spans from being compressed.
 
 If the spans are of the same kind but have different span names and both spans `duration` <= `span_compression_same_kind_max_duration`,
 we compress them using the [Consecutive-Same-Kind compression strategy](tracing-spans-compress.md#consecutive-same-kind-compression-strategy).
@@ -216,19 +216,19 @@ we compress them using the [Consecutive-Same-Kind compression strategy](tracing-
 ```java
 bool tryToCompress(Span sibling) {
     isAlreadyComposite = composite != null
-    canBeCompressed = isAlreadyComposite ? tryToCompressComposite(sibling) : tryToCompressRegular(sibling)  
+    canBeCompressed = isAlreadyComposite ? tryToCompressComposite(sibling) : tryToCompressRegular(sibling)
     if (!canBeCompressed) {
         return false
     }
-    
+
     if (!isAlreadyComposite) {
         composite.count = 1
         composite.sum = duration
     }
-    
+
     ++composite.count
     composite.sum += other.duration
-    return true 
+    return true
 }
 
 bool tryToCompressRegular(Span sibling) {
@@ -249,7 +249,7 @@ bool tryToCompressRegular(Span sibling) {
         name = "Calls to " + destination.service.resource
         return true
     }
-    
+
     return false
 }
 
@@ -257,7 +257,7 @@ bool tryToCompressComposite(Span sibling) {
     switch (composite.compressionStrategy) {
         case "exact_match":
             return isSameKind(sibling) && name == sibling.name && sibling.duration <= span_compression_exact_match_max_duration
-                     
+
         case "same_kind":
             return isSameKind(sibling) && sibling.duration <= span_compression_same_kind_max_duration
     }

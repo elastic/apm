@@ -4,8 +4,8 @@ The Agents will be a critical part of log collection onboarding for their
 application logs. This is primarily accomplished via the `log_ecs_reformatting`
 configuration option, described below.
 
-In future iterations, the shipping of ECS logs will become more automated by auto-parsing ECS-JSON logs in Filebeat 
-and [automatically shipping log files](https://github.com/elastic/apm/issues/374) that got reformatted via 
+In future iterations, the shipping of ECS logs will become more automated by auto-parsing ECS-JSON logs in Filebeat
+and [automatically shipping log files](https://github.com/elastic/apm/issues/374) that got reformatted via
 `log_ecs_reformatting`.
 
 ## `log_ecs_reformatting` configuration
@@ -31,20 +31,20 @@ Not all agents will be able to automatically format logs in this way. Those
 agents should not implement this configuration option.
 
 For some agents, additional options makes sense. For example, the Java agent
-also accepts the values `shade` and `replace`, where ECS-reformatted logs are written to a dedicated `.ecs.json` 
+also accepts the values `shade` and `replace`, where ECS-reformatted logs are written to a dedicated `.ecs.json`
 file in addition to (`shade`) or instead of (`replace`) the original log stream.
 
 When this option is set to `override`, the agent should format all logs from the
 app as ECS-compatible json, as shown in the
-[spec](https://github.com/elastic/ecs-logging/blob/master/spec/spec.json).
+[spec](https://github.com/elastic/ecs-logging/blob/main/spec/spec.json).
 
 For all options other than `off`, the [log correlation](log-correlation.md) should be implicitly enabled.
 
 ## `log_ecs_formatter_allow_list` configuration
 
-Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_reformatting` is 
-set to any option other than `off`. A "formatter" is a generic name used to describe the logging-framework-specific entity 
-that is responsible for the formatting of log events. Currently this option is only implemented in the Java agent, where 
+Only formatters that match an item on this list will be automatically reformatted to ECS when `log_ecs_reformatting` is
+set to any option other than `off`. A "formatter" is a generic name used to describe the logging-framework-specific entity
+that is responsible for the formatting of log events. Currently this option is only implemented in the Java agent, where
 formatters are subtypes of `Layout` or `Encoder`, depending on the logging framework.
 
 |                |   |

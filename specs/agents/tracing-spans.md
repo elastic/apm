@@ -20,7 +20,7 @@ for each protocol.
 
 For spans, the type/subtype must fit the [span type specification in JSON format](../../tests/agents/json-specs/span_types.json).
 In order to help align all agents on this specification, changing `type` and `subtype` field values is not considered
-to be a _breaking change_, but rather a _potentially breaking change_ if for example existing users rely on values to 
+to be a _breaking change_, but rather a _potentially breaking change_ if for example existing users rely on values to
 build visualizations. As a consequence, modification of those values is not limited to major versions.
 
 ### Span outcome
@@ -51,7 +51,7 @@ For other protocols, we can default to the following behavior:
 - `failure` when an error is reported
 - `success` otherwise
 
-Also, while we encourage most instrumentations to create spans that have a deterministic outcomes, there are a few 
+Also, while we encourage most instrumentations to create spans that have a deterministic outcomes, there are a few
 examples for which we might still have to report `unknown` outcomes to prevent reporting any misleading information:
 - Inferred spans created through a sampling profiler: those are not exit spans, we can't know if those could be reported
 as either `failure` or `outcome` due to inability to capture any errors.
@@ -109,7 +109,7 @@ span's status should not be inferred.
 Exit spans MUST not have child spans that have a different `type` or `subtype`.
 For example, when capturing a span representing a query to Elasticsearch,
 there should not be an HTTP span for the same operation.
-Doing that would make [breakdown metrics](https://github.com/elastic/apm/blob/master/specs/agents/metrics.md#transaction-and-span-breakdown)
+Doing that would make [breakdown metrics](https://github.com/elastic/apm/blob/main/specs/agents/metrics.md#transaction-and-span-breakdown)
 less meaningful,
 as most of the time would be attributed to `http` instead of `elasticsearch`.
 
@@ -135,10 +135,10 @@ When tracing an exit span, agents SHOULD propagate the trace context via the und
 
 Example: for Elasticsearch requests, which use HTTP as the transport, agents SHOULD add `traceparent` headers to the outgoing HTTP request.
 
-This means that such spans cannot be [compressed](handling-huge-traces/tracing-spans-compress.md) if the context has 
+This means that such spans cannot be [compressed](handling-huge-traces/tracing-spans-compress.md) if the context has
 been propagated, because the `parent.id` of the downstream transaction may refer to a span that's not available.
-For now, the implication would be the inability to compress HTTP spans. Should we decide to enable that in the future, 
+For now, the implication would be the inability to compress HTTP spans. Should we decide to enable that in the future,
 following are two options how to do that:
-- Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default. 
+- Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default.
 For example, such list could contain `type == storage, subtype == s3`, preventing context propagation at S3 queries, even though those rely on HTTP/S.
 - Add a list of child IDs to compressed exit spans that can be used when looking up `parent.id` of downstream transactions.
