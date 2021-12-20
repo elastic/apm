@@ -36,10 +36,10 @@ The following metadata fields are relevant for lambda functions:
 
 Field | Value | Description | Source
 ---   | ---   | --- | ---
-`service.name` | e.g. `MyFunctionName` | The name of the Lambda function. | `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
+`service.name`| e.g. `MyFunctionName` | If the service name is *explicitly* specified through the `service.name` agent config option, use the configured name. Otherwise, use the name of the Lambda function. | If the service name is not explicitly configured, use the Lambda function name: `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
 `service.framework.name` | `AWS Lambda` | Constant value for the framework name. | -
 `service.runtime.name`| e.g. `AWS_Lambda_java8` | The lambda runtime. | `AWS_EXECUTION_ENV`
-`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | The ARN of the function **without alias suffix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
+`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | If the *service name is explicitly* specified through the `service.name` agent config option, **leave the `service.id` field empty**. Otherwise, use the ARN of the function **without alias suffix** for the `service.id`. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
 `service.version` | e.g. `$LATEST` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.configured_name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | -
@@ -93,17 +93,42 @@ In addition the following fields should be set for API Gateway-based Lambda func
 
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
-`transaction.type` | `request`| Transaction type: constant value for API gateway. | -
-`transaction.name` | e.g. `GET MyFunction` | Transaction name: Http method followed by a whitespace and the function name. | -
+`type` | `request`| Transaction type: constant value for API gateway. | -
+`name` | e.g. `GET MyFunction` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
 `transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error (see [Lambda error handling doc](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#services-apigateway-errors). If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.response), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
 `faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId`
-`context.service.origin.name` | e.g. `POST /Prod/{proxy+}` | Readable API gateway endpoint. | The pattern is `$method $path`. For [payload format version](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) 2.0 (which can be identified as having `${event.requestContext.http}`), use `${event.requestContext.http.method} ${event.requestContext.http.path}`. For payload format version 1.0, use `${event.requestContext.httpMethod} ${event.requestContext.path}`. ["HTTP" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) can be configured to use payload format 1.0 or 2.0. The older ["REST" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format) use payload format version 1.0.
+`context.service.origin.name` | e.g. `gdnrpwmtsb...amazonaws.com` | The full domain name of the API Gateway. | `event.requestContext.domainName`
 `context.service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` |
 `context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | `event.version` (or `1.0` if that field is not present)
 `context.cloud.origin.service.name` | `api gateway` | Fix value for API gateway. | -
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
+
+**Set `transaction.name` for the API Gateway trigger**
+
+There are different ways to setup an API Gateway in AWS resulting in different payload format verions:
+* ["HTTP" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) can be configured to use payload format 1.0 or 2.0.
+* The older ["REST" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format) use payload format version 1.0.
+
+For both payload format verions (1.0 and 2.0), the general pattern is `$method $resourcePath` (unless the `use_path_as_transaction_name` agent config option is used). Some examples are:
+* `GET /prod/some/resource/path` (specific resource path)
+* `GET /prod/proxy/{proxy+}` (proxy in v1.0 with dynamic path)
+* `POST /prod/$default` (proxy in v2.0 with dynamic path)
+
+*Payload format version 1.0:*
+
+For payload format version 1.0, use `${event.resourceContext.httpMethod}  /${event.requestContext.stage}${event.requestContext.resourcePath}`.
+
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.resourceContext.httpMethod}  /${event.requestContext.path}` as the transaction name.
+
+*Payload format version 2.0:*
+
+For [payload format version](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) 2.0 (which can be identified as having `${event.requestContext.http}`), use `${event.requestContext.http.method} /${event.requestContext.stage}${_routeKey_}`.
+
+In version 2.0, the `${event.requestContext.routeKey}` can have the format `GET /some/path`, `ANY /some/path` or `$default`. For the `_routeKey_` part,  extract the path (after the space) in the `${event.requestContext.routeKey}` or use `/$default`, in case of `$default` value in `${event.requestContext.routeKey}`.
+
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.resourceContext.http.method}  /${event.requestContext.http.path}` as the transaction name.
 
 ### SQS / SNS
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`.
