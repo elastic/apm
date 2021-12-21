@@ -94,7 +94,7 @@ In addition the following fields should be set for API Gateway-based Lambda func
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `type` | `request`| Transaction type: constant value for API gateway. | -
-`name` | e.g. `GET MyFunction` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
+`name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
 `transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error (see [Lambda error handling doc](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#services-apigateway-errors). If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.response), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
 `faas.trigger.type` | `http` | Constant value for API gateway. | -
 `faas.trigger.request_id` | e.g. `afa4-a6...` | ID of the API gateway request. | `event.requestContext.requestId`
