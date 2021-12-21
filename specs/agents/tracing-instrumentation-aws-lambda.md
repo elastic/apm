@@ -36,10 +36,10 @@ The following metadata fields are relevant for lambda functions:
 
 Field | Value | Description | Source
 ---   | ---   | --- | ---
-`service.name`| e.g. `MyFunctionName` | If the service name is *explicitly* specified through the `service.name` agent config option, use the configured name. Otherwise, use the name of the Lambda function. | If the service name is not explicitly configured, use the Lambda function name: `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
+`service.name`| e.g. `MyFunctionName` | If the service name is *explicitly* specified through the `service_name` agent config option, use the configured name. Otherwise, use the name of the Lambda function. | If the service name is not explicitly configured, use the Lambda function name: `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
 `service.framework.name` | `AWS Lambda` | Constant value for the framework name. | -
 `service.runtime.name`| e.g. `AWS_Lambda_java8` | The lambda runtime. | `AWS_EXECUTION_ENV`
-`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | If the *service name is explicitly* specified through the `service.name` agent config option, **leave the `service.id` field empty**. Otherwise, use the ARN of the function **without alias suffix** for the `service.id`. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
+`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | If the *service name is explicitly* specified through the `service_name` agent config option, **leave the `service.id` field empty**. Otherwise, use the ARN of the function **without alias suffix** for the `service.id`. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
 `service.version` | e.g. `$LATEST` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.configured_name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | -
@@ -118,7 +118,7 @@ For both payload format verions (1.0 and 2.0), the general pattern is `$method $
 
 *Payload format version 1.0:*
 
-For payload format version 1.0, use `${event.resourceContext.httpMethod}  /${event.requestContext.stage}${event.requestContext.resourcePath}`.
+For payload format version 1.0, use `${event.resourceContext.httpMethod} /${event.requestContext.stage}${event.requestContext.resourcePath}`.
 
 If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.resourceContext.httpMethod}  /${event.requestContext.path}` as the transaction name.
 
