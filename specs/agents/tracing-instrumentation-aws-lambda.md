@@ -16,6 +16,7 @@ Field | Value | Description | Source
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
 `outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
 `result` | `success` / `failure` / `HTTP Xxx` | See API Gateway below. For other triggers, set to `failure` if there was a function error, otherwise `success`. | Trigger specific.
+`faas.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | Use the ARN of the function **without the alias suffix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
 `faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below).
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
 `faas.coldstart` | `true` / `false` | Boolean value indicating whether a Lambda function invocation was a cold start or not. | [see section below](deriving-cold-starts)
@@ -37,10 +38,9 @@ The following metadata fields are relevant for lambda functions:
 Field | Value | Description | Source
 ---   | ---   | --- | ---
 `service.name`| e.g. `MyFunctionName` | If the service name is *explicitly* specified through the `service_name` agent config option, use the configured name. Otherwise, use the name of the Lambda function. | If the service name is not explicitly configured, use the Lambda function name: `AWS_LAMBDA_FUNCTION_NAME` or `context.functionName`
+`service.version` | e.g. `$LATEST` |  If the service version is *explicitly* specified through the `service_version` agent config option, use the configured version. Otherwise, use the lambda function version. | If the service version is not explicitly configured, use the Lambda function version: `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.framework.name` | `AWS Lambda` | Constant value for the framework name. | -
 `service.runtime.name`| e.g. `AWS_Lambda_java8` | The lambda runtime. | `AWS_EXECUTION_ENV`
-`service.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | If the *service name is explicitly* specified through the `service_name` agent config option, **leave the `service.id` field empty**. Otherwise, use the ARN of the function **without alias suffix** for the `service.id`. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
-`service.version` | e.g. `$LATEST` | The lambda function version | `AWS_LAMBDA_FUNCTION_VERSION` or `context.functionVersion`
 `service.node.configured_name` | e.g. `2019/06/07/[$LATEST]e6f...` | The log stream name uniquely identifying a function instance. | `AWS_LAMBDA_LOG_STREAM_NAME` or `context.logStreamName`
 `cloud.provider` | `aws` | Constant value for the cloud provider. | -
 `cloud.region` | e.g. `us-east-1` | The cloud region. | `AWS_REGION`
