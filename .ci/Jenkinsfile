@@ -224,9 +224,9 @@ def createPRDescription() {
 }
 
 def getCommitFrom() {
-  echo "CHANGE_TARGET = ${CHANGE_TARGET}"
-  echo "GIT_PREVIOUS_SUCCESSFUL_COMMIT = ${GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
-  echo "GIT_PREVIOUS_COMMIT = ${GIT_PREVIOUS_COMMIT}"
+  echo "CHANGE_TARGET = ${env.CHANGE_TARGET}"
+  echo "GIT_PREVIOUS_SUCCESSFUL_COMMIT = ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
+  echo "GIT_PREVIOUS_COMMIT = ${env.GIT_PREVIOUS_COMMIT}"
   // GIT_PREVIOUS_SUCCESSFUL_COMMIT might point to a local merge commit instead a commit in the
   // origin, then let's use the target branch for PRs and the GIT_PREVIOUS_SUCCESSFUL_COMMIT for
   // branches, if possible, otherwise GIT_PREVIOUS_COMMIT.
