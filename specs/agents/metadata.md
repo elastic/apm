@@ -47,12 +47,14 @@ else
     hostname = env.get("HOST")
 
 if hostname != null
-  hostname_parts[] = hostname.split(".")
-  hostname = hostname_parts[0]
+  hostname = hostname.trim()                          // see details below **
 ```
 `*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
 may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
 what to use is to avoid hostname discovery that relies on DNS lookup.
+
+`**` in this case, `trim()` refers to the removal of all leading and trailing characters of which codepoint is less-than
+or equal to `U+0020` (space).
 
 Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
 proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
