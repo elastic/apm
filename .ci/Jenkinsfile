@@ -71,17 +71,12 @@ pipeline {
           expression { return params.FORCE_SEND_PR }
         }
       }
-      environment {
-        // GIT_PREVIOUS_SUCCESSFUL_COMMIT might point to a local merge commit instead a commit in the
-        // origin, then let's use the target branch for PRs and the GIT_PREVIOUS_SUCCESSFUL_COMMIT for
-        // branches.
-        COMMIT_FROM = """${isPR() ? "origin/${env.CHANGE_TARGET}" : "${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"}"""
-      }
       steps {
         deleteDir()
         unstash 'source'
         script {
           dir("${BASE_DIR}"){
+            env.COMMIT_FROM = getCommitFrom()
             def regexps =[
               "^tests/agents/gherkin-specs/.*"
             ]
@@ -226,4 +221,22 @@ def createPRDescription() {
     message += "*Changeset*\n${gitLog}"
   }
   return message
+}
+
+def getCommitFrom() {
+  echo "CHANGE_TARGET = ${env.CHANGE_TARGET}"
+  echo "GIT_PREVIOUS_SUCCESSFUL_COMMIT = ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
+  echo "GIT_PREVIOUS_COMMIT = ${env.GIT_PREVIOUS_COMMIT}"
+  // GIT_PREVIOUS_SUCCESSFUL_COMMIT might point to a local merge commit instead a commit in the
+  // origin, then let's use the target branch for PRs and the GIT_PREVIOUS_SUCCESSFUL_COMMIT for
+  // branches, if possible, otherwise GIT_PREVIOUS_COMMIT.
+  if (isPR()) {
+    return "origin/${env.CHANGE_TARGET}"
+  } else if (env.GIT_PREVIOUS_SUCCESSFUL_COMMIT?.trim()) {
+    return env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+  } else if (env.GIT_PREVIOUS_COMMIT?.trim()) {
+    return env.GIT_PREVIOUS_COMMIT
+  } else {
+    return "origin/${env.CHANGE_TARGET}"
+  }
 }
