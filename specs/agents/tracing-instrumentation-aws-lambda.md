@@ -200,3 +200,6 @@ Field | Value | Description | Source
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
 
 Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends.
+
+Some Lambda functions will use the custom-built Lambda extension that allows the agent to send its data locally. The extension asynchronously forwards the data it receives from the agent to the APM server so the Lambda function can return its result with minimal delay. In order for the extension to know when it can flush its data, it must receive a signal indicating that the lambda function has completed. There are two possible signals: one is via a subscription to the AWS Lambda Logs API and the other is an agent intake request with the query param `flushed=true`. A signal from the agent is preferrable because there is an inherent delay with the sending of the Logs API signal.
+Therefore, the agent must send its final intake request at the end of the function invocation with the query param `flushed=true`. In case there is no more data to send at the end of the function invocation, the agent must send an empty intake request with this query param.
