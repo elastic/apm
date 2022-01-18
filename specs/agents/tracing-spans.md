@@ -81,12 +81,12 @@ captured.
 
 This values for this option are case-sensitive.
 
-|                |   |
-|----------------|---|
+|                |                                                        |
+|----------------|--------------------------------------------------------|
 | Valid options  | [duration](configuration.md#configuration-value-types) |
-| Default        | `5ms` (soft default, agents may modify as needed) |
-| Dynamic        | `true` |
-| Central config | `true` |
+| Default        | `500ms`                                                |
+| Dynamic        | `true`                                                 |
+| Central config | `true`                                                 |
 
 A negative value will result in never capturing the stack traces.
 
