@@ -118,9 +118,9 @@ For both payload format verions (1.0 and 2.0), the general pattern is `$method $
 
 *Payload format version 1.0:*
 
-For payload format version 1.0, use `${event.resourceContext.httpMethod} /${event.requestContext.stage}${event.requestContext.resourcePath}`.
+For payload format version 1.0, use `${event.requestContext.httpMethod} /${event.requestContext.stage}${event.requestContext.resourcePath}`.
 
-If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.resourceContext.httpMethod}  /${event.requestContext.path}` as the transaction name.
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.httpMethod}  /${event.requestContext.path}` as the transaction name.
 
 *Payload format version 2.0:*
 
@@ -128,7 +128,7 @@ For [payload format version](https://docs.aws.amazon.com/apigateway/latest/devel
 
 In version 2.0, the `${event.requestContext.routeKey}` can have the format `GET /some/path`, `ANY /some/path` or `$default`. For the `_routeKey_` part,  extract the path (after the space) in the `${event.requestContext.routeKey}` or use `/$default`, in case of `$default` value in `${event.requestContext.routeKey}`.
 
-If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.resourceContext.http.method}  /${event.requestContext.http.path}` as the transaction name.
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.http.method} ${event.requestContext.http.path}` as the transaction name.
 
 ### SQS / SNS
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`.
