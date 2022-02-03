@@ -25,7 +25,7 @@ Field | Value | Description | Source
 `context.cloud.origin.*` | - | Do not set these fields if trigger type is `other`.  | Trigger specific.
 `context.service.origin.*` | - | Do not set these fields if trigger type is `other`. | Trigger specific.
 
-Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/transaction.json)! `faas` is a top-level key on the transaction.
+Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/transaction.json)! `faas` is a top-level key on the transaction.
 
 ### Overwriting Metadata
 Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable).
