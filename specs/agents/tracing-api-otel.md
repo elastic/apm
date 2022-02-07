@@ -10,7 +10,7 @@ Bridging here means that for each OTel span created with the API, a native span/
 ### User experience
 
 On a high-level, from the perspective of the application code, using the OTel bridge should not differ from using the
-OTel API.
+OTel API for tracing. See [limitations](#limitations) below for details on the currently unsupported OTel features.
 
 The aim of the bridge is to allow any application/library that is instrumented with OTel API to capture OTel spans to
 seamlessly delegate to Elastic APM span/transactions. Also, it provides a vendor-neutral alternative to any existing
@@ -19,6 +19,14 @@ manual agent API with similar features.
 One major difference though is that since the implementation of OTel API will be delegated to Elastic APM agent, the
 whole OTel configuration that might be present in the application code (OTel processor pipeline) or deployment
 (env. variables) will be ignored.
+
+### Limitations
+
+The OTel API/specification goes beyond tracing, as a result, the following OTel features are not supported:
+- metrics
+- logs
+- span events
+- span links
 
 ### Spans and Transactions
 
