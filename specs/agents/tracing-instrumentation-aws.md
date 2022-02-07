@@ -20,6 +20,14 @@ DynamoDB-specific specifications that supercede generic db field semantics are d
 AWS Simple Queue Service is a message queuing service. The [messaging spec](tracing-instrumentation-messaging.md) can
 be used for instrumenting SQS, but the follow specifications supersede those of the messaging spec.
 
+For a batch send message operation, the span name is `SQS SEND_BATCH to MyQueue`. The `span.action` is `send_batch`.
+
+The SQS API also includes delete message and batch delete message operations. These should be instrumented in addition
+to the operations described in the messaging spec. For a delete message operation, the span name is
+`SQS DELETE from MyQueue`.
+For a batch delete message operation, the span name is `SQS DELETE_BATCH from MyQueue`.
+The `span.action` is `delete_batch`.
+
 - **`context.destination.cloud.region`**: mandatory. The AWS region where the queue is.
 
 #### Distributed Tracing

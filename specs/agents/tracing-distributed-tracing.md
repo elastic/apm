@@ -8,7 +8,7 @@ We implement the [W3C standards](https://www.w3.org/TR/trace-context-1/) for
 
 Our `trace_id`, `parent_id`, and the combined `traceparent` HTTP header follow
 the standard established by the
-[W3C Trace-Context Spec](https://github.com/w3c/trace-context/blob/master/spec/20-http_request_header_format.md#traceparent-header).
+[W3C Trace-Context Spec](https://github.com/w3c/trace-context/blob/main/spec/20-http_request_header_format.md#traceparent-header).
 
 The `traceparent` header is composed of four parts:
 

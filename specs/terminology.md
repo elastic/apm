@@ -62,7 +62,10 @@ A trace is a grouping of spans and transactions that all share the same `trace.i
 
 ## Sampling
 
-To reduce processing and storage overhead, transactions may be "sampled". Sampling limits the amount of data that is captured for transactions: non-sampled transactions will not record context, and related spans will not be captured.
+To reduce processing and storage overhead, transactions may be "sampled".
+Non-sampled transactions and spans will not be stored in Elasticsearch.
+
+In versions prior to 8.0, non-sampled transactions were stored, but no context was recorded and no related spans were captured.
 
 #### Adaptive sampling
 TODO

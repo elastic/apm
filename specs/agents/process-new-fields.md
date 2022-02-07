@@ -11,7 +11,7 @@ it would create new fields in the index and then stop using it when we standardi
 For example `context.elasticsearch.url` in the intake API becomes `elasticsearch.url` in Elasticsearch, `context.elasticsearch.error_reason` becomes `elasticsearch.error_reason` etc.
 * The proposal needs to specify which fields should be indexed.
 An APM Server person might need to assist here to determine the right data type for the indexed fields.
-* The proposal should include the suggested [JSON Schema](https://github.com/elastic/apm-server/tree/master/docs/spec/v2) changes for all new fields.
+* The proposal should include the suggested [JSON Schema](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) changes for all new fields.
 This forces alignment on the exact field names, JSON data type, length restrictions etc.
 * Make sure to check if [ECS](https://github.com/elastic/ecs) has defined appropriate fields for what you're proposing.
 * Agents should agree to the changes in a voting format (checkboxes),
@@ -85,7 +85,7 @@ Agents OK with this change:
 - [ ] ...
 
 1. When agent devs and APM Server agree, APM Server implements the changes necessary
-1. When merged into `master`, agent devs can implement the fields immediately.
-The agent tests against APM Server `master` now tests the integration with the new fields in the JSON Schema.
+1. When merged into `main`, agent devs can implement the fields immediately.
+The agent tests against APM Server `main` now tests the integration with the new fields in the JSON Schema.
 1. Agents can release when their test are green. Next APM Server release will include the changes,
 which might include indexing some new fields.

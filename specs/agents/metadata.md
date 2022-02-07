@@ -47,12 +47,14 @@ else
     hostname = env.get("HOST")
 
 if hostname != null
-  hostname_parts[] = hostname.split(".")
-  hostname = hostname_parts[0]
+  hostname = hostname.trim()                          // see details below **
 ```
 `*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
 may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
 what to use is to avoid hostname discovery that relies on DNS lookup.
+
+`**` in this case, `trim()` refers to the removal of all leading and trailing characters of which codepoint is less-than
+or equal to `U+0020` (space).
 
 Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
 proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
@@ -133,7 +135,7 @@ Services running on AWS Lambda [require specific values](tracing-instrumentation
 
 ### Cloud Provider Metadata
 
-[Cloud provider metadata](https://github.com/elastic/apm-server/blob/master/docs/spec/v2/metadata.json)
+[Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
 is collected from local cloud provider metadata services:
 
 - availability_zone
@@ -160,7 +162,7 @@ Any intake API requests to the APM server should be delayed until this
 metadata is available.
 
 A sample implementation of this metadata collection is available in
-[the Python agent](https://github.com/elastic/apm-agent-python/blob/master/elasticapm/utils/cloud.py).
+[the Python agent](https://github.com/elastic/apm-agent-python/blob/main/elasticapm/utils/cloud.py).
 
 Fetching of cloud metadata for services running as AWS Lambda functions follow a [different approach defined in the tracing-instrumentation-aws-lambda spec](tracing-instrumentation-aws-lambda.md).
 
