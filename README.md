@@ -22,7 +22,7 @@
 
 
 [apm-server-contrib]: https://github.com/elastic/apm-contrib/tree/main/apm-server
-[apm-server-docs]: https://www.elastic.co/guide/en/apm/server/current/index.html
+[apm-server-docs]: https://www.elastic.co/guide/en/apm/guide/current/index.html
 [apm-server]: https://github.com/elastic/apm-server
 
 [apm-ui-contrib]: https://github.com/elastic/apm-contrib/tree/main/apm-ui
