@@ -7,8 +7,18 @@ When available, implementation MUST be configurable and should be disabled by de
 
 Bridging here means that for each OTel span created with the API, a native span/transaction will be created and sent to APM server.
 
-From the perspective of the application code calling the OTel API, the delegation to a native span/transaction is transparent.
-Also, this means that any OTel processors will be bypassed and ignored by the bridge.
+### User experience
+
+On a high-level, from the perspective of the application code, using the OTel bridge should not differ from using the
+OTel API.
+
+The aim of the bridge is to allow any application/library that is instrumented with OTel API to capture OTel spans to
+seamlessly delegate to Elastic APM span/transactions. Also, it provides a vendor-neutral alternative to any existing
+manual agent API with similar features.
+
+One major difference though is that since the implementation of OTel API will be delegated to Elastic APM agent, the
+whole OTel configuration that might be present in the application code (OTel processor pipeline) or deployment
+(env. variables) will be ignored.
 
 ### Spans and Transactions
 
