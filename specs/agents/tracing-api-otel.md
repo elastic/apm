@@ -40,7 +40,9 @@ This value should be stored into Elasticsearch documents to preserve OTel semant
 
 Possible values are `CLIENT`, `SERVER`, `PRODUCER`, `CONSUMER` and `INTERNAL`, refer to [specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#spankind) for details on semantics.
 
-When `otel.span_kind` is not provided by the agent, APM Server should infer it using the following algorithm:
+By default, OTel spans have their `SpanKind` set to `INTERNAL` by OTel API implementation, so it is assumed to always be provided when using the bridge.
+
+For existing agents without OTel bridge or for data captured without the bridge, the APM server has to infer the value of `otel.span_kind` with the  following algorithm:
 
 ```javascript
 span_kind = null;
@@ -62,6 +64,8 @@ if (span_kind == null) {
 }
 
 ```
+
+While being optional, inferring the value of `otel.span_kind` helps to keep the data model closer to the OTel specification, even if the original data was sent using the native agent protocol.
 
 ### Span status
 
@@ -130,6 +134,7 @@ a = transation.otel.attributes;
 span_kind = transaction.otel_span_kind;
 isRpc = a['rpc.system'] !== undefined;
 isHttp = a['http.url'] !== undefined || a['http.scheme'] !== undefined;
+isMessaging = a['messaging.system'] !== undefined;
 if (span_kind == 'SERVER' && (isRpc || isHttp)) {
     type = 'request';
 } else if (span_kind == 'CONSUMER' && isMessaging) {
