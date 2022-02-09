@@ -5,6 +5,8 @@
 Agents MAY provide a bridge implementation of OpenTelemetry Tracing API following this specification.
 When available, implementation MUST be configurable and should be disabled by default when marked as `experimental`.
 
+The bridge implementation relies on APM Server version 7.16 or later, as a result when sending data to a server < 7.16 is recommended.
+
 Bridging here means that for each OTel span created with the API, a native span/transaction will be created and sent to APM server.
 
 ### User experience
@@ -124,13 +126,10 @@ OpenTelemetry attributes should be stored in `otel.attributes` as a flat key-val
 }
 ```
 
-APM server supports the `otel.attributes` property starting with version 7.16.0.
+Starting from version 7.16 onwards, APM server must provide a mapping that is equivalent to the native OpenTelemetry Protocol (OTLP) intake for the
+fields provided in `otel.attributes`.
 
-When the APM server version does not support `otel.attributes` property, agents should use `labels` as fallback with OTel attribute
-name as key.
-
-When the APM server supports `otel.attributes` property, the server-side mapping should be identical to the one
-that is applied to handle native OpenTelemetry Protocol (OTLP) intake.
+When sending data to APM server version before 7.16, agents MAY use span and transaction labels as fallback to store OTel attributes to avoid dropping information.
 
 ### Compatibility mapping
 
