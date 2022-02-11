@@ -28,7 +28,7 @@ Field | Value | Description | Source
 Note that `faas.*` fields *are not* nested under the context property [in the intake api](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/transaction.json)! `faas` is a top-level key on the transaction.
 
 ### Overwriting Metadata
-Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` environment variable).
+Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existence of the `AWS_LAMBDA_FUNCTION_NAME` environment variable).
 Where possible, metadata should be overwritten at Lambda runtime startup corresponding to the field specifications in this spec.
 
 Some metadata fields are not available at startup (e.g. `invokedFunctionArn` which is needed for `service.id` and `cloud.region`). Therefore, retrieval of metadata fields in a lambda context needs to be delayed until the first execution of the lambda function, so that information provided in the `context` object can used to set metadata fields properly.
@@ -52,21 +52,21 @@ A cold start occurs if AWS needs first to initialize the Lambda runtime (includi
 
 ### Disabled functionalities
 The following agent functionalities need to be disabled when tracing AWS Lambda functions until decided otherwise:
-- **Metrics collection:** this includes all kind of metrics: system, process and breakdown metrics and is equivalent to 
+- **Metrics collection:** this includes all kind of metrics: system, process and breakdown metrics and is equivalent to
 setting `ELASTIC_APM_METRICS_INTERVAL = 0`
 - **Remote configuration:** equivalent to setting `ELASTIC_APM_CENTRAL_CONFIG = false`
 - **Cloud metadata discovery:** equivalent to setting `ELASTIC_APM_CLOUD_PROVIDER = none`
-- **System metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent 
-executes extenal commands in order to discover the hostname, which is not required for AWS Lambda metadata. All other 
+- **System metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent
+executes extenal commands in order to discover the hostname, which is not required for AWS Lambda metadata. All other
 agents read and parse files to extract container and k8s metadata, which is not required as well.
 
 There are two main approaches for agents to disable the above functionalities:
-* Agents that will be always deployed as part of an additional APM Agent Lambda layer (e.g. Java agent) may disable this 
-through configuration options (e.g. environment variables) built in the lambda wrapper script(`AWS_LAMBDA_EXEC_WRAPPER`) 
+* Agents that will be always deployed as part of an additional APM Agent Lambda layer (e.g. Java agent) may disable this
+through configuration options (e.g. environment variables) built in the lambda wrapper script(`AWS_LAMBDA_EXEC_WRAPPER`)
 that is provided with the APM Agent Lambda layer.
-* Agents that will be used with AWS lambda without the need for an additional Lambda layer must detect that they are 
-running in an AWS Lambda environment (for instance through checking for the existance of the `AWS_LAMBDA_FUNCTION_NAME` 
-environment variable). Such agents should disable the aforementioned functionalities programmatically to achieve the 
+* Agents that will be used with AWS lambda without the need for an additional Lambda layer must detect that they are
+running in an AWS Lambda environment (for instance through checking for the existence of the `AWS_LAMBDA_FUNCTION_NAME`
+environment variable). Such agents should disable the aforementioned functionalities programmatically to achieve the
 same behaviour that would be achieved through the corresponding configuration options.
 
 ## Trigger-specific Instrumentation
@@ -107,11 +107,11 @@ Field | Value | Description | Source
 
 **Set `transaction.name` for the API Gateway trigger**
 
-There are different ways to setup an API Gateway in AWS resulting in different payload format verions:
+There are different ways to setup an API Gateway in AWS resulting in different payload format versions:
 * ["HTTP" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) can be configured to use payload format 1.0 or 2.0.
 * The older ["REST" proxy integrations](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format) use payload format version 1.0.
 
-For both payload format verions (1.0 and 2.0), the general pattern is `$method $resourcePath` (unless the `use_path_as_transaction_name` agent config option is used). Some examples are:
+For both payload format versions (1.0 and 2.0), the general pattern is `$method $resourcePath` (unless the `use_path_as_transaction_name` agent config option is used). Some examples are:
 * `GET /prod/some/resource/path` (specific resource path)
 * `GET /prod/proxy/{proxy+}` (proxy in v1.0 with dynamic path)
 * `POST /prod/$default` (proxy in v2.0 with dynamic path)
@@ -120,15 +120,15 @@ For both payload format verions (1.0 and 2.0), the general pattern is `$method $
 
 For payload format version 1.0, use `${event.requestContext.httpMethod} /${event.requestContext.stage}${event.requestContext.resourcePath}`.
 
-If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.httpMethod}  ${event.requestContext.path}` as the transaction name.
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.httpMethod} ${event.requestContext.path}` as the transaction name.
 
 *Payload format version 2.0:*
 
 For [payload format version](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html) 2.0 (which can be identified as having `${event.requestContext.http}`), use `${event.requestContext.http.method} /${event.requestContext.stage}${_routeKey_}`.
 
-In version 2.0, the `${event.requestContext.routeKey}` can have the format `GET /some/path`, `ANY /some/path` or `$default`. For the `_routeKey_` part,  extract the path (after the space) in the `${event.requestContext.routeKey}` or use `/$default`, in case of `$default` value in `${event.requestContext.routeKey}`.
+In version 2.0, the `${event.requestContext.routeKey}` can have the format `GET /some/path`, `ANY /some/path` or `$default`. For the `_routeKey_` part, extract the path (after the space) in the `${event.requestContext.routeKey}` or use `/$default`, in case of `$default` value in `${event.requestContext.routeKey}`.
 
-If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.http.method}  ${event.requestContext.http.path}` as the transaction name.
+If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.http.method} ${event.requestContext.http.path}` as the transaction name.
 
 ### SQS / SNS
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all). We cannot (automatically) wrap the processing of the individual messages that are sent as a batch of messages with a single `event`.
