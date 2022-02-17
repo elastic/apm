@@ -31,7 +31,7 @@ Note that `faas.*` fields *are not* nested under the context property [in the in
 Automatically capturing cloud metadata doesn't work reliably from a Lambda environment. Moreover, retrieving cloud metadata through an additional HTTP request may slowdown the lambda function / increase cold start behaviour. Therefore, the generic cloud metadata fetching should be disabled when the agent is running in a lambda context (for instance through checking for the existence of the `AWS_LAMBDA_FUNCTION_NAME` environment variable).
 Where possible, metadata should be overwritten at Lambda runtime startup corresponding to the field specifications in this spec.
 
-Some metadata fields are not available at startup (e.g. `invokedFunctionArn` which is needed for `cloud.account.id`). Therefore, retrieval of metadata fields in a lambda context needs to be delayed until the first execution of the lambda function, so that information provided in the `context` object can used to set metadata fields properly.
+Some metadata fields are not available at startup (e.g. `invokedFunctionArn` which is needed for `cloud.account.id` and `faas.id`). Therefore, retrieval of metadata fields in a lambda context needs to be delayed until the first execution of the lambda function, so that information provided in the `context` object can used to set metadata fields properly.
 
 The following metadata fields are relevant for lambda functions:
 
