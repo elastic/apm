@@ -17,8 +17,7 @@ for simpler and more performant UI queries.
 Each transaction has a `type` field, each span has both `type` and `subtype` fields.
 The values for each of those fields is protocol-specific and defined in the respective instrumentation specification
 for each protocol.
-If no `span.type` is provided or the value is an empty string, the agent needs to set a default value.
-APM agents can either derive a default value based on the span context, or fall back to the generic default value `custom`.
+If no `transaction.type` or `span.type` is provided or the value is an empty string, the agent needs to set a default value `unknown`.
 
 For spans, the type/subtype must fit the [span type specification in JSON format](../../tests/agents/json-specs/span_types.json).
 In order to help align all agents on this specification, changing `type` and `subtype` field values is not considered

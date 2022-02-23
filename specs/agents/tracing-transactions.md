@@ -6,12 +6,6 @@ They are sometimes also referred to as local roots or entry spans.
 
 Transactions are created either by the built-in auto-instrumentation or an agent or the [tracer API](tracing-api.md).
 
-### Transaction type
-
-Each transaction has a `type` field. The field is not required by all agents, but is mandatory on the APM UI.
-If no `transaction.type` is provided or the value is an empty string, the agent needs to set a default value.
-APM agents can either derive a default value based on the transaction context, or fall back to the generic default value `custom`.
-
 ### Transaction outcome
 
 The `outcome` property denotes whether the transaction represents a success or a failure from the perspective of the entity that produced the event.
