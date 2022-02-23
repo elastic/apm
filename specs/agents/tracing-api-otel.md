@@ -13,6 +13,10 @@ Bridging here means that for each OTel span created with the API, a native span/
 
 On a high-level, from the perspective of the application code, using the OTel bridge should not differ from using the
 OTel API for tracing. See [limitations](#limitations) below for details on the currently unsupported OTel features.
+For tracing the support should include:
+- creating spans with attributes
+- context propagation
+- capturing errors
 
 The aim of the bridge is to allow any application/library that is instrumented with OTel API to capture OTel spans to
 seamlessly delegate to Elastic APM span/transactions. Also, it provides a vendor-neutral alternative to any existing
