@@ -16,6 +16,7 @@ Field | Value | Description | Source
 `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined.
 `outcome` | `success` / `failure` | Set to `failure` if there was a [function error](https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html). | -
 `result` | `success` / `failure` / `HTTP Xxx` | See API Gateway below. For other triggers, set to `failure` if there was a function error, otherwise `success`. | Trigger specific.
+`faas.name` | e.g. `my-function` | The lambda function name. | Use the value of `context.functionName` or the `AWS_LAMBDA_FUNCTION_NAME` environment variable.
 `faas.id` | e.g. `arn:aws:lambda:us-west-2:123456789012:function:my-function` | Use the ARN of the function **without the alias suffix**. | `context.invokedFunctionArn`, remove the 8th ARN segment if the ARN contains an alias suffix. `arn:aws:lambda:us-west-2:123456789012:function:my-function:someAlias` will become `arn:aws:lambda:us-west-2:123456789012:function:my-function`.
 `faas.trigger.type` | `other` | The trigger type. Use `other` if trigger type is unknown / cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below).
 `faas.execution` | `af9aa4-a6...` | The AWS request ID of the function invocation | `context.awsRequestId`
