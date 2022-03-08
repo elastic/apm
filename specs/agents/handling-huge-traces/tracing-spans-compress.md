@@ -20,7 +20,7 @@ The tradeoff is that some information such as DB statements of all the compresse
 |                |          |
 |----------------|----------|
 | Type           | `boolean`|
-| Default        | `false`  |
+| Default        | `true`  |
 | Dynamic        | `true`   |
 
 
@@ -94,7 +94,7 @@ The tradeoff is that the DB statements of all the compressed spans will not be c
 |                |          |
 |----------------|----------|
 | Type           | `duration`|
-| Default        | `5ms`    |
+| Default        | `0ms`    |
 | Dynamic        | `true`   |
 
 ## Composite span
