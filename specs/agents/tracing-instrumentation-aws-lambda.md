@@ -198,10 +198,28 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
 
-## Data Flushing
-Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
+## Transport
 
-Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends.
+Typically, Lambda functions using an APM agent will include the [APM Lambda
+Extension](https://github.com/elastic/apm-aws-lambda/tree/main/apm-lambda-extension)
+to which the APM agent sends data locally. There are some changes to the APM
+agents' [transport behavior](./transport.md) to APM Server in this environment.
 
-Some Lambda functions will use the custom-built Lambda extension that allows the agent to send its data locally. The extension asynchronously forwards the data it receives from the agent to the APM server so the Lambda function can return its result with minimal delay. In order for the extension to know when it can flush its data, it must receive a signal indicating that the lambda function has completed. There are two possible signals: one is via a subscription to the AWS Lambda Logs API and the other is an agent intake request with the query param `flushed=true`. A signal from the agent is preferrable because there is an inherent delay with the sending of the Logs API signal.
+
+### Data Flushing
+
+Lambda function VMs are frozen as soon as the handler method ends and any extensions signal completion. In case APM data is sent in an asynchronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends. Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends.
+
+The extension asynchronously forwards the data it receives from the agent to the APM server so the Lambda function can return its result with minimal delay. In order for the extension to know when it can flush its data, it must receive a signal indicating that the lambda function has completed. There are two possible signals: one is via a subscription to the AWS Lambda Logs API and the other is an agent intake request with the query param `flushed=true`. A signal from the agent is preferrable because there is an inherent delay with the sending of the Logs API signal.
 Therefore, the agent must send its final intake request at the end of the function invocation with the query param `flushed=true`. In case there is no more data to send at the end of the function invocation, the agent must send an empty intake request with this query param.
+
+### Transport errors
+
+APM agents in a Lambda VM, sending to the local extension SHOULD NOT implement
+the back-off / grace period after failed intake requests that is described in
+[the transport spec](./transport.md#transport-errors). It is the responsibility
+of the extension to handle back-off and buffering, if at all. Because the
+extension *asynchronously* passes APM data on to APM server, it does not return
+APM server responses to the agent; therefore the agent cannot meaningfully
+handle backpressure.
+
