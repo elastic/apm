@@ -22,7 +22,7 @@ Additionally, spans that lead to an error can't be discarded.
 |                |            |
 |----------------|------------|
 | Type           | [`GranularDuration`](../configuration.md#configuration-value-types) |
-| Default        | `1ms`      |
+| Default        | `0ms`      |
 | Central config | `true`     |
 
 ## Interplay with span compression
