@@ -21,12 +21,9 @@ Additionally, spans that lead to an error can't be discarded.
 
 |                |            |
 |----------------|------------|
-| Type           | `duration` |
+| Type           | [`GranularDuration`](../configuration.md#configuration-value-types) |
 | Default        | `0ms`      |
 | Central config | `true`     |
-
-The minimum allowed duration for this setting is `1us` (microsecond). Agents may need to
-add support the `us` unit.
 
 ## Interplay with span compression
 
