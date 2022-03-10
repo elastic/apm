@@ -137,7 +137,7 @@ Lambda functions that are triggered by SQS (or SNS) accept an `event` input that
 
 Thus, in case that an SQS / SNS `event` contains **exactly one** SQS / SNS message, the agents must apply the following, messaging-specific retrieval of information. Otherwise, the agents should apply the [Generic Lambda Instrumentation](generic-lambda-instrumentation) as described above.
 
-With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from `record.messageAttributes` and use it for starting the lambda transaction.
+With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from message attributes and use it for starting the lambda transaction.
 
 In addition the following fields should be set for Lambda functions triggered by SQS or SNS:
 
@@ -157,9 +157,55 @@ Field | Value | Description | Source
 `context.message.queue.name` | e.g. `my-queue` | The SQS queue name. | The 6th segment of `record.eventSourceArn`
 `context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`.
 `context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.body`
-`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.messageAttributes`
+`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | Use the `stringValue` of entries in `record.messageAttributes` with `dataType == "String" || dataType == "Number"`. [Other attribute types](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#message-attribute-data-types) are ignored.
+
+An example SQS event:
+
+```
+{
+  "Records": [
+    {
+      "messageId": "94f54f6b-0b5d-4071-b752-103f481796d9",
+      "receiptHandle": "A...w==",
+      "body": "this is my body",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1646785527296",
+        "SenderId": "A...W",
+        "ApproximateFirstReceiveTimestamp": "1646785527302"
+      },
+      "messageAttributes": {
+        "Greeting": {
+          "binaryValue": "SGVsbG8sIFdvcmxkIQ==",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "Binary"
+        },
+        "Population": {
+          "stringValue": "1250800",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "Number"
+        },
+        "City": {
+          "stringValue": "Any City",
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfBody": "567762fc32b60cd7fc4abbe9cf1fcfbe",
+      "md5OfMessageAttributes": "28eb0e573cf8e8a77e349a2f968eac4a",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-west-2:627286350134:my-queue",
+      "awsRegion": "us-west-2"
+    }
+  ]
+}
+```
 
 #### SNS
+
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `type` | `messaging`| Transaction type: constant value for SNS. | -
@@ -176,7 +222,47 @@ Field | Value | Description | Source
 `context.message.queue.name` | e.g. `my-topic` | The SNS topic name. | The 6th segment of `record.sns.topicArn`
 `context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `snsTimestamp`.  | `record.sns.timestamp`
 `context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.sns.message`
-`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | `record.sns.messageAttributes`
+`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | Use the `Value` of entries in `record.Sns.MessageAttributes` with `Type == "String"`. [Other attribute types](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html#SNSMessageAttributes.DataTypes) are ignored. |
+
+An example SNS event:
+
+```
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-west-2:123456789012:my-topic1:761195b9-8bb2-4dc7-bab2-8fb74214bb8b",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "d68d14fb-1178-51b7-99ae-4e5ae7c39b7f",
+        "TopicArn": "arn:aws:sns:us-west-2:123456789012:my-topic",
+        "Subject": "this is my subject",
+        "Message": "this is my message",
+        "Timestamp": "2022-03-09T00:27:39.304Z",
+        "SignatureVersion": "1",
+        "Signature": "W...Q==",
+        "SigningCertUrl": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-7ff5318490ec183fbaddaa2a969abfda.pem",
+        "UnsubscribeUrl": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&...",
+        "MessageAttributes": {
+          "Greeting": {
+            "Type": "Binary",
+            "Value": "SGVsbG8sIFdvcmxkIQ=="
+          },
+          "Population": {
+            "Type": "String",
+            "Value": "1250800"
+          },
+          "City": {
+            "Type": "String",
+            "Value": "Any City"
+          }
+        }
+      }
+    }
+  ]
+}
+```
 
 ### S3
 Lambda functions that are triggered by S3 accept an `event` input that may contain one ore more `S3 event notification records` in the `event.records` array. We cannot (automatically) wrap the processing of the individual records that are sent as a batch of S3 event notification records with a single `event`.
