@@ -55,6 +55,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
       - [Messaging systems](tracing-instrumentation-messaging.md)
       - [gRPC](tracing-instrumentation-grpc.md)
       - [GraphQL](tracing-instrumentation-graphql.md)
+      - [OpenTelemetry API Bridge](tracing-api-otel.md)
 - [Error/exception tracking](error-tracking.md)
 - [Metrics](metrics.md)
 - [Logging Correlation](log-correlation.md)
