@@ -17,7 +17,7 @@ occurring within a traced transaction.
 
 ### Trace Context
 
-if the messaging system exposes an API for sending additional message properties/metadata, it
+If the messaging system exposes a mechanism for sending additional [message metadata](#message-metadata), it
 SHOULD be used to propagate the [Trace Context](https://www.w3.org/TR/trace-context/) of the
 `messaging` span, to continue the [distributed trace](tracing-distributed-tracing.md).
 
@@ -70,17 +70,19 @@ of messages.
 
 ### Trace Context
 
-When message reception is captured as a `messaging` transaction, if the messaging
-system exposes an API for sending additional message properties/metadata, it
-SHOULD be checked for the presence of [Trace Context](https://www.w3.org/TR/trace-context/).
-If Trace Context is present, it SHOULD be propagated to the `messaging` transaction
+This section applies to messaging systems that support [message metadata](#message-metadata).
+The instrumentation of message reception SHOULD check message metadata for the
+presence of [Trace Context](https://www.w3.org/TR/trace-context/).
+
+When single message reception is captured as a `messaging` transaction,
+if Trace Context is present, it SHOULD be propagated to the `messaging` transaction
 to continue the [distributed trace](tracing-distributed-tracing.md).
 
-If a batch of messages is processed in a single `messaging` transaction, it may be
-possible that each message in the batch has its own Trace Context. In this
-scenario, it is not currently possible to propagate a Trace Context to the `messaging`
-transaction, since there a multiple contexts present. It may be possible to capture
-these in future through [span links](https://github.com/elastic/apm/issues/122).
+Otherwise (a single message being captured as a `messaging` span, or a batch
+of messages is processed in a single `messaging` transaction or span), a
+[span link](span-links.md) SHOULD be added for each message with Trace Context.
+
+TODO: should we have a maximum number of links? [SQS](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html) allows a batch size of up to 10000 messages. I suspect that won't be useful for users and will be a significant perf hit, if even possible to injest a transaction/span that large.
 
 ### Examples
 
@@ -186,6 +188,30 @@ queues/topics/exchanges will be ignored.
 | Default        | empty |
 | Dynamic        | `true` |
 | Central config | `true` |
+
+
+### Message metadata
+
+To support distributed tracing with automatic instrumentation, the messaging
+system must provide a mechanism to add metadata/properties/attributes to
+individual messages, akin to HTTP headers. If an APM agent supports
+trace-context for a given messaging system, it MUST use the following mechanisms
+so that cross-language tracing works:
+
+| Messaging system       | Mechanism |
+| ---------------------- | --------- |
+| Azure Queue            | ??? |
+| Azure Service Bus      | ??? |
+| Java Messaging Service | ??? |
+| Apache Kafka           | TODO: is the Java APM agent using [Kafka Record headers](https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders)? |
+| RabbitMQ               | TODO: are [Message Attributes](https://www.rabbitmq.com/tutorials/amqp-concepts.html#messages) feasible? |
+| AWS SNS                | [SNS message attributes](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
+| AWS SQS                | [SQS message attributes](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
+- AWS SNS: https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html ditto. Does SNS have 10 attribute max as well?
+- Kafka: What is the Java agent using? Record headers per https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders?
+
+Trace context MUST use metadata named `traceparent` and `tracestate` and encoded as strings as described at [Distributed Tracing](distributed-tracing.md).
+TODO: I'm disallowing `elastic-apm-traceparent` here. Is there a backwards compat concern with that *for messaging system instrumentation* in our agents? I.e. do we have still-supported APM agent releases that propagate trace-context with a messaging system, but only with the `elastic-apm-traceparent` header?
 
 
 ### AWS messaging systems
