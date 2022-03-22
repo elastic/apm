@@ -81,6 +81,7 @@ to continue the [distributed trace](tracing-distributed-tracing.md).
 Otherwise (a single message being captured as a `messaging` span, or a batch
 of messages is processed in a single `messaging` transaction or span), a
 [span link](span-links.md) SHOULD be added for each message with Trace Context.
+This includes the case where the size of the batch of received messages is one.
 
 TODO: should we have a maximum number of links? [SQS](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html) allows a batch size of up to 10000 messages. I suspect that won't be useful for users and will be a significant perf hit, if even possible to injest a transaction/span that large.
 
