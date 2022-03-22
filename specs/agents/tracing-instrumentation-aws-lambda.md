@@ -136,11 +136,7 @@ If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.
 
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all).
 
-<<<<<<< HEAD
 SQS or SNS events that include **exactly one** message are treated as special case: more context is reported, and trace-context (if present) is handled differently.
-=======
-With only one message in `event.records`, the agents can use the single SQS / SNS `record` to retrieve the `traceparent` and `tracestate` from message attributes and use it for starting the lambda transaction.
->>>>>>> main
 
 #### SQS event with multiple messages
 
@@ -236,7 +232,6 @@ An example SQS event:
 }
 ```
 
-<<<<<<< HEAD
 #### SNS event with multiple messages
 
 TODO: My naive understanding from https://stackoverflow.com/a/33692863/14444044 and https://aws.amazon.com/sns/faqs/ is that a Lambda SNS trigger will only ever have a single record. However, I don't see a solid guarantee of that in AWS docs.
@@ -269,9 +264,6 @@ to continue a distributed trace.
 
 In addition to [the generic Lambda transaction fields](#generic-lambda-instrumentation)
 the following fields should be set:
-=======
-#### SNS
->>>>>>> main
 
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
