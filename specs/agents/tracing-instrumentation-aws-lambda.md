@@ -136,18 +136,16 @@ If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.
 
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all).
 
-SQS or SNS events that include **exactly one** message are treated as special case: more context is reported, and trace-context (if present) is handled differently.
+#### SQS
 
-#### SQS event with multiple messages
-
-TODO: My read of https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html is that a given trigger invocation can only include messages from one queue. Therefore we can use the eventSourceArn from the *first* record for the transaction name.  Also, inferring from https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/messaging.md#batch-receiving OTel implies that a transaction name including the queue name would be nice.
-
-Agents SHOULD check each record for a `traceparent` message attribute, and
-create a [span link](span-links.md) on the transaction for each message with
-trace-context.
+Agents SHOULD check each record, [up to a maximum of 1000](tracing-instrumentation-messaging.md#receiving-trace-context),
+for a `traceparent` message attribute, and create a [span link](span-links.md)
+on the transaction for each message with trace-context.
 
 In addition to [the generic Lambda transaction fields](#generic-lambda-instrumentation)
-the following fields should be set:
+the following fields SHOULD be set. The use of `records[0]` below depends on the
+understanding from [AWS Lambda SQS docs](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html)
+that a trigger invocation can only include messages from *one* queue.
 
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
@@ -160,32 +158,6 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `records[0].awsRegion`
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `records[0].eventSourceArn`.
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-
-### SQS event with a single message
-
-Agents SHOULD check the single message's message attributes for `traceparent`
-and `tracestate`. If present, these should be propagated on the transaction
-to continue a distributed trace.
-
-In addition to [the generic Lambda transaction fields](#generic-lambda-instrumentation)
-the following fields should be set:
-
-Field | Value | Description | Source
----   | ---   | ---         | ---
-`type` | `messaging`| Transaction type: constant value for SQS. | -
-`name` | e.g. `RECEIVE SomeQueue` | Transaction name: Follow the [messaging spec](./tracing-instrumentation-messaging.md) for transaction naming. | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
-`faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
-`faas.trigger.request_id` | e.g. `someMessageId` | SQS message ID. | `record.messageId`
-`context.service.origin.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `record.eventSourceArn`.
-`context.service.origin.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `record.eventSourceArn`
-`context.cloud.origin.service.name` | `sqs` | Fix value for SQS. | -
-`context.cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `record.awsRegion`
-`context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `record.eventSourceArn`.
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-`context.message.queue.name` | e.g. `my-queue` | The SQS queue name. | The 6th segment of `record.eventSourceArn`
-`context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `SentTimestamp`, if SentTimestamp is available.  | Message attribute with key `SentTimestamp`.
-`context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.body`
-`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | Use the `stringValue` of entries in `record.messageAttributes` with `dataType == "String" || dataType == "Number"`. [Other attribute types](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#message-attribute-data-types) are ignored.
 
 An example SQS event:
 
@@ -234,14 +206,16 @@ An example SQS event:
 
 #### SNS event with multiple messages
 
-TODO: My naive understanding from https://stackoverflow.com/a/33692863/14444044 and https://aws.amazon.com/sns/faqs/ is that a Lambda SNS trigger will only ever have a single record. However, I don't see a solid guarantee of that in AWS docs.
-
-Agents SHOULD check each record for a `traceparent` message attribute
-(`Records.*.Sns.MessageAttributes`), and create a [span link](span-links.md) on
-the transaction for each message with trace-context.
+Agents SHOULD check each record, [up to a maximum of 1000](tracing-instrumentation-messaging.md#receiving-trace-context),
+for a `traceparent` message attribute (`Records.*.Sns.MessageAttributes`), and
+create a [span link](span-links.md) on the transaction for each message with
+trace-context.
 
 In addition to [the generic Lambda transaction fields](#generic-lambda-instrumentation)
-the following fields should be set:
+the following fields should be set. The use of `records[0]` is based on the
+understanding, from ["all notification messages will contain a single published
+message"](https://aws.amazon.com/sns/faqs/#Reliability), that an SNS trigger
+will only ever have a single record.
 
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
@@ -254,34 +228,6 @@ Field | Value | Description | Source
 `context.cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `records[0].sns.topicArn`.
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `records[0].sns.topicArn`.
 `context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-
-
-### SNS event with a single message
-
-Agents SHOULD check the single message's message attributes for `traceparent`
-and `tracestate`. If present, these should be propagated on the transaction
-to continue a distributed trace.
-
-In addition to [the generic Lambda transaction fields](#generic-lambda-instrumentation)
-the following fields should be set:
-
-Field | Value | Description | Source
----   | ---   | ---         | ---
-`type` | `messaging`| Transaction type: constant value for SNS. | -
-`name` | e.g. `RECEIVE SomeTopic` | Transaction name: Follow the [messaging spec](./tracing-instrumentation-messaging.md) for transaction naming. | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
-`faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
-`faas.trigger.reuqest_id` | e.g. `someMessageId` | SNS message ID. | `record.sns.messageId`
-`context.service.origin.name` | e.g. `my-topic` | SNS topic name | Simple topic name can be derived from the 6th segment of `record.sns.topicArn`.
-`context.service.origin.id` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `record.sns.topicArn`
-`context.service.origin.version` | e.g. `2.1` | SNS event version | `record.eventVersion`
-`context.cloud.origin.service.name` | `sns` | Fix value for SNS. | -
-`context.cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `record.sns.topicArn`.
-`context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `record.sns.topicArn`.
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
-`context.message.queue.name` | e.g. `my-topic` | The SNS topic name. | The 6th segment of `record.sns.topicArn`
-`context.message.age.ms` | e.g. `3298` | Age of the message in milliseconds. `current_time` - `snsTimestamp`.  | `record.sns.timestamp`
-`context.message.body` | - | The message body. Should only be captured if body capturing is enabled in the configuration. | `record.sns.message`
-`context.message.headers` | - | The message attributes. Should only be captured, if capturing headers is enabled in the configuration. | Use the `Value` of entries in `record.Sns.MessageAttributes` with `Type == "String"`. [Other attribute types](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html#SNSMessageAttributes.DataTypes) are ignored. |
 
 An example SNS event:
 

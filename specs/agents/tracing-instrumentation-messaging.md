@@ -15,7 +15,7 @@ occurring within a traced transaction.
 
 ![publish](uml/publish.svg)
 
-### Trace Context
+### Sending Trace Context
 
 If the messaging system exposes a mechanism for sending additional [message metadata](#message-metadata), it
 SHOULD be used to propagate the [Trace Context](https://www.w3.org/TR/trace-context/) of the
@@ -68,7 +68,7 @@ If creating a transaction for the processing of each message in a batch is not p
 the agent SHOULD create a single `messaging` transaction for the processing of the batch
 of messages.
 
-### Trace Context
+### Receiving Trace Context
 
 This section applies to messaging systems that support [message metadata](#message-metadata).
 The instrumentation of message reception SHOULD check message metadata for the
@@ -83,7 +83,12 @@ of messages is processed in a single `messaging` transaction or span), a
 [span link](span-links.md) SHOULD be added for each message with Trace Context.
 This includes the case where the size of the batch of received messages is one.
 
-TODO: should we have a maximum number of links? [SQS](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html) allows a batch size of up to 10000 messages. I suspect that won't be useful for users and will be a significant perf hit, if even possible to injest a transaction/span that large.
+The number of events processed for trace context SHOULD be limited to a maximum
+of 1000, as a guard on agent overhead for extremely large batches of events.
+(For example, SQS's maximum batch size is 10000 messages. The maximum number of
+span links that could be sent to APM server with the default configuration for a
+single transaction/span is ~4000: 307200 bytes [APM server `max_event_size` default](https://www.elastic.co/guide/en/apm/server/current/configuration-process.html#max_event_size)
+/ 77 bytes per serialized span link.)
 
 ### Examples
 
