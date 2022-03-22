@@ -86,8 +86,9 @@ This includes the case where the size of the batch of received messages is one.
 The number of events processed for trace context SHOULD be limited to a maximum
 of 1000, as a guard on agent overhead for extremely large batches of events.
 (For example, SQS's maximum batch size is 10000 messages. The maximum number of
-span links that could be sent to APM server with the default configuration for a
-single transaction/span is ~4000: 307200 bytes [APM server `max_event_size` default](https://www.elastic.co/guide/en/apm/server/current/configuration-process.html#max_event_size)
+span links that could be sent for a single transaction/span to APM server with
+the default configuration is approximately 4000: 307200 bytes
+[APM server `max_event_size` default](https://www.elastic.co/guide/en/apm/server/current/configuration-process.html#max_event_size)
 / 77 bytes per serialized span link.)
 
 ### Examples
