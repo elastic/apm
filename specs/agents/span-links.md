@@ -16,7 +16,7 @@ Example:
 
 ```
 "links": [
-  {"trace_id": "traceId1", "span_id": "spanId1"}},
-  {"trace_id": "traceId2"}, "span_id": "spanId2"}},
+  {"trace_id": "traceId1", "span_id": "spanId1"},
+  {"trace_id": "traceId2", "span_id": "spanId2"},
 ]
 ```
