@@ -204,7 +204,7 @@ An example SQS event:
 }
 ```
 
-#### SNS event with multiple messages
+#### SNS
 
 Agents SHOULD check each record, [up to a maximum of 1000](tracing-instrumentation-messaging.md#receiving-trace-context),
 for a `traceparent` message attribute (`Records.*.Sns.MessageAttributes`), and
