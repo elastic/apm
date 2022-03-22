@@ -75,7 +75,7 @@ The instrumentation of message reception SHOULD check message metadata for the
 presence of [Trace Context](https://www.w3.org/TR/trace-context/).
 
 When single message reception is captured as a `messaging` transaction,
-if Trace Context is present, it SHOULD be propagated to the `messaging` transaction
+and a Trace Context is present, it SHOULD be used as the parent of the `messaging` transaction
 to continue the [distributed trace](tracing-distributed-tracing.md).
 
 Otherwise (a single message being captured as a `messaging` span, or a batch
