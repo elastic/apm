@@ -200,18 +200,13 @@ so that cross-language tracing works:
 
 | Messaging system       | Mechanism |
 | ---------------------- | --------- |
-| Azure Queue            | ??? |
-| Azure Service Bus      | ??? |
-| Java Messaging Service | ??? |
-| Apache Kafka           | TODO: is the Java APM agent using [Kafka Record headers](https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders)? |
-| RabbitMQ               | TODO: are [Message Attributes](https://www.rabbitmq.com/tutorials/amqp-concepts.html#messages) feasible? |
-| AWS SNS                | [SNS message attributes](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
+| Azure Queue            | Unknown |
+| Azure Service Bus      | Unknown |
+| Java Messaging Service | [Message Properties](https://docs.oracle.com/javaee/7/api/javax/jms/Message.html) |
+| Apache Kafka           | [Kafka Record headers](https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders) using [binary trace context fields](tracing-distributed-tracing.md#binary-fields) |
+| RabbitMQ               | [Message Attributes](https://www.rabbitmq.com/tutorials/amqp-concepts.html#messages) (a.k.a. `AMQP.BasicProperties` in [Java API](https://www.rabbitmq.com/api-guide.html)) |
 | AWS SQS                | [SQS message attributes](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
-- AWS SNS: https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html ditto. Does SNS have 10 attribute max as well?
-- Kafka: What is the Java agent using? Record headers per https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders?
-
-Trace context MUST use metadata named `traceparent` and `tracestate` and encoded as strings as described at [Distributed Tracing](distributed-tracing.md).
-TODO: I'm disallowing `elastic-apm-traceparent` here. Is there a backwards compat concern with that *for messaging system instrumentation* in our agents? I.e. do we have still-supported APM agent releases that propagate trace-context with a messaging system, but only with the `elastic-apm-traceparent` header?
+| AWS SNS                | [SNS message attributes](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
 
 
 ### AWS messaging systems
