@@ -303,5 +303,5 @@ The default timeout is 1s.
 ### Flushing during a grace period
 
 When the agent calls `flush` during a [grace period](transport.md#transport-errors),
-or when entering a grace period while the agent waits for the flush to succeed,
+or when it enters a grace period while flushing,
 the agent MUST immediately return from the flush method.
