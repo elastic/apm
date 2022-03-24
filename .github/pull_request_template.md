@@ -6,7 +6,14 @@ Delete sections that don't apply to this PR.
 If a specific checkbox doesn't apply, ~strike through~ and check it instead of deleting it.
 -->
 
-## This is a small enhancement
+<!--
+Use this section if the spec requires changes in at most two agents.
+
+Examples:
+- Typos or clarifications without semantic changes
+- Changes in a spec before it has been implemented
+- Features that are only implemented in two agents
+-->
 
 - [ ] Create PR as draft
 - [ ] Approval by at least one other agent
@@ -16,7 +23,11 @@ If a specific checkbox doesn't apply, ~strike through~ and check it instead of d
 - [ ] Merge after 2 business days passed without objections \
       To auto-merge the PR, add <code>/</code>`schedule YYYY-MM-DD` to the PR description.
 
-## This is a new spec or a bigger enhancement
+<!--
+Use this section if the spec requires changes in more than two agents.
+
+This extended template ensures that we have a meta issue and tracking issues so that we don't forget about implementing the changes in all affected agents.
+-->
 
 - May the instrumentation collect sensitive information, such as secrets or PII (ex. in headers)?
   - [ ] Yes
