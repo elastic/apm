@@ -295,7 +295,7 @@ Therefore, the agent must send its final intake request at the end of the functi
 ### Flush timeout
 
 Agents SHOULD NOT wait for a successful flush indefinitely.
-In the edge case where the extension takes too much time to respond (e.g. if there's a lenghy GC pause),
+In the edge case where the extension takes too much time to respond (e.g. if there's a lengthy GC pause),
 the `flush` method should return after a timeout.
 
 The default timeout is 1s.
