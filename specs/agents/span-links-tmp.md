@@ -7,8 +7,6 @@ A use-case for user's manually adding span links is for [batch message processin
 that the APM agent does not or cannot instrument. (For some agents it would be
 a burden to internally support span links and *not* expose the API publicly.)
 
-TODO: Would it be a pain to have to expose this publicly for the Java agent? Would it mean adding additional overloaded `startSpan` and `startExitSpan` methods? If so, and given an ultimate goal of preferring the OTel API, then there isn't a strong reason to *require* a public API for adding span links.
-
 TODO: For the .NET APM agent is there much value in providing a public API to add span links? Perhaps usage of the Activity API and the OTel Bridge dominates?
 
 If provided, the API SHOULD be written such that user code is not broken if/when
