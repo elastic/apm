@@ -9,7 +9,7 @@ In order to handle this properly, the agent SHOULD offer several trace continuat
 The agent SHOULD offer a configuration called `trace_continuation_strategy` with the following values and behavior:
 
 - `continue_always`: The agent takes the `traceparent` header as it is and applies it to the new transaction.
-- `restart_always`: The agent always creates a new trace with a new trace id. In this case the agent MUST create a link in the new transaction pointing to the original trace.
+- `restart_always`: The agent always creates a new trace with a new trace id. In this case the agent MUST create a [span link](span-links.md) in the new transaction pointing to the original traceparent.
 - `restart_external`: The agent first checks the `tracestate` header. If the header contains the `es` vendor flag, it's treated as internal, otherwise (including the case when the `tracestate` header is not present) it's treated as external. In case of external calls the agent MUST create a new trace with a new trace id and MUST create a link in the new transaction pointing to the original trace.
 
 The default is `continue_always`. 
