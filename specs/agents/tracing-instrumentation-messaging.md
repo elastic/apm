@@ -158,7 +158,7 @@ agent should report 0 for this field.
 
 - **`context.message.body`**: similar to HTTP requests' `context.request.body`- only fill in messaging-related **transactions** (ie
 incoming messages creating a transaction) and not for outgoing messaging spans.
-   - Capture only when `ELASTIC_APM_CAPTURE_BODY` config is set to `true`.
+   - Capture only when `ELASTIC_APM_CAPTURE_BODY` config is set to `'all'` or `'transactions'`.
    - Only capture UTF-8 encoded message bodies.
    - Limit size to 10000 characters. If longer than this size, trim to 9999 and append with ellipsis
 - **`context.message.headers`**: similar to HTTP requests' `context.request.headers`- only fill in messaging-related **transactions**.
