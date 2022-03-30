@@ -158,7 +158,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`type`|`db`|
 |`action`|`query`|
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| e.g. `instance-name`| Use instance concept for [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005) and [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15). For Oracle the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`.
+|`_.instance`| e.g. `instance-name`| [see below](#database-instance) |
 |`_.statement`| e.g. `SELECT * FROM products WHERE ...`| The full SQL statement. We store up to 10000 Unicode characters per database statement.  |
 |`_.type`|`sql`|
 |`_.user`| e.g. `readonly_user`|
@@ -174,3 +174,22 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|<hr/>|<hr/> |<hr/>|<hr/>|
 |`_.service.name`| `mysql` | `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |
 |`_.service.resource` | `mysql` | `postgresql` | `sqlserver` | `oracle` |`mariadb` | `db2` |
+
+#### Database instance
+
+For most relational databases, the value of `db.instance` should map to the concept of "current database".
+When no database selected, for example when creating a database, this field should be omitted.
+
+While the semantics may vary across vendors, the goal here is to have a single string that can be used for correlation,
+it is thus important to be able to get the same value across all agents.
+
+There are multiple ways to capture it, agents SHOULD attempt to capture it with the following priorities:
+1. Parsing the database connection string: parsing can be complex, no runtime impact,
+2. Querying connection metadata at runtime: acceptable as fallback, might trigger extra SQL queries, require caching to minimize overhead
+3. Executing a SQL query at runtime: last resort only, require caching to minimize overhead
+
+For most databases, the `database` parameter of the connection string should be available. For those that implement the [`INFORMATION_SCHEMA`](https://en.wikipedia.org/wiki/Information_schema) standard, it should be included in the values returned by `SELECT schema_name FROM information_schema.schemata`;
+
+Oracle : Use instance as defined in [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005), the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`.
+
+MS SQL : Use instance as defined in [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15)
