@@ -207,8 +207,8 @@ so that cross-language tracing works:
 
 | Messaging system       | Mechanism |
 | ---------------------- | --------- |
-| Azure Queue            | Unknown |
-| Azure Service Bus      | Unknown |
+| Azure Queue            | No mechanism |
+| Azure Service Bus      | Possibly `Diagnostic-Id` [application property](https://docs.microsoft.com/en-us/dotnet/api/azure.messaging.servicebus.servicebusmessage.applicationproperties). See [this doc](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-end-to-end-tracing). |
 | Java Messaging Service | [Message Properties](https://docs.oracle.com/javaee/7/api/javax/jms/Message.html) |
 | Apache Kafka           | [Kafka Record headers](https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders) using [binary trace context fields](tracing-distributed-tracing.md#binary-fields) |
 | RabbitMQ               | [Message Attributes](https://www.rabbitmq.com/tutorials/amqp-concepts.html#messages) (a.k.a. `AMQP.BasicProperties` in [Java API](https://www.rabbitmq.com/api-guide.html)) |
