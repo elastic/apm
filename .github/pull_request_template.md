@@ -43,5 +43,4 @@ This extended template ensures that we have a meta issue and tracking issues so 
   - Remove agents from reviewers if the change is not relevant for them
 - [ ] Approved by at least 2 agents + PM (if relevant)
 - [ ] Merge after 7 days passed without objections
-- [ ] [Create implementation issues](https://gprom.app.elstc.co/issue-creator) (ideally add a milestone)
-- [ ] [Create a status table](https://gprom.app.elstc.co/status/7.16) and add it to the meta issue
+- [ ] [Create implementation issues through the meta issue template](https://github.com/elastic/apm/issues/new?assignees=&labels=meta%2C+apm-agents&template=apm-agents-meta.md) (this will automate issue creation for individual agents)
