@@ -1,0 +1,28 @@
+name: "APM Agents meta issue handler"
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  meta-issue-handler:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check team membership for user
+      uses: elastic/get-user-teams-membership@v1.0.4
+      id: checkUserMember
+      with:
+        username: ${{ github.actor }}
+        team: 'apm'
+        usernamesToExclude: |
+          apmmachine
+        GITHUB_TOKEN: ${{ secrets.APM_TECH_USER_TOKEN }}
+    - name: Create sub issues
+      if: steps.checkUserMember.outputs.isTeamMember == 'true' && contains(github.event.issue.labels.*.name, 'meta') && contains(github.event.issue.labels.*.name, 'apm-agents')
+      uses: elastic/gh-action-meta-subissues-creator@1.0.0
+      id: create_sub_issues
+      with:
+        token: "${{ secrets.APM_TECH_USER_TOKEN }}"
+        metaIssue: "${{ toJSON(github.event.issue) }}"
+        bodyRegex: "(.*)(<!---repos-start--->.*<!---repos-end--->)(.*)"
+        labelsToExclude: "meta,apm-agents"
+        specLabel: "spec-poc"
