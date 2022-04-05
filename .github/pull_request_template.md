@@ -35,7 +35,6 @@ This extended template ensures that we have a meta issue and tracking issues so 
   - [ ] No
     - [ ] Why?
   - [ ] n/a
-- [ ] Link to meta issue: # <!-- create a meta issue if it does not exist yet -->
 - [ ] Create PR as draft
 - [ ] Approval by at least one other agent
 - [ ] Mark as Ready for Review (automatically requests reviews from all agents and PM via [`CODEOWNERS`](https://github.com/elastic/apm/tree/main/.github/CODEOWNERS))
