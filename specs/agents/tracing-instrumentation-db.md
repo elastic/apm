@@ -186,10 +186,9 @@ it is thus important to be able to get the same value across all agents.
 There are multiple ways to capture it, agents SHOULD attempt to capture it with the following priorities:
 1. Parsing the database connection string: parsing can be complex, no runtime impact,
 2. Querying connection metadata at runtime: acceptable as fallback, might trigger extra SQL queries, require caching to minimize overhead
-3. Executing a SQL query at runtime: last resort only, require caching to minimize overhead
 
 For most databases, the `database` parameter of the connection string should be available. For those that implement the [`INFORMATION_SCHEMA`](https://en.wikipedia.org/wiki/Information_schema) standard, it should be included in the values returned by `SELECT schema_name FROM information_schema.schemata`;
 
-Oracle : Use instance as defined in [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005), the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`.
+**Oracle** : Use instance as defined in [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005), the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`. When multiple identifiers are available, the following priotity should be applied (first available wins): `INSTANCE_NAME`, `SERVICE_NAME`, `SID`.
 
-MS SQL : Use instance as defined in [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15)
+**MS SQL** : Use instance as defined in [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15)
