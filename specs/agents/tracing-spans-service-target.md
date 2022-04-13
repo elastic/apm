@@ -217,10 +217,20 @@ if (destination_resource) {
 }
 ```
 
-#### OTel intake compatibility
+#### OTel and bridge compatibility
 
-TO BE DEFINED
+APM server already infers the `span.destination.service.resource` value from OTel span attributes, this algorithm needs
+to be updated in order to also infer the values of `span.context.service.target.*` fields.
+- `span.context.service.target.type` should be set from the inferred value of `span.subtype` with fallback to `span.type`
+  - For database spans: use value of `db.system` attribute
+  - For HTTP client spans: use `http`
+  - For messaging spans: use value of `messaging.system` attribute
+  - For RPC spans: use value of `rpc.system` attribute
+- `span.context.service.target.name` should be set from OTel attributes if they are present
+  - For database spans: use value of `db.instance` attribute
+  - For HTTP client spans: create `<host>:<port>` string from `http.host`, `net.peer.port` attributes or equivalent
+  - For messaging spans: use value of `messaging.destination` attribute if `messaging.temp_destination` is `false` or absent to limit cardinality
+  - For RPC spans: use value of `rpc.service`
 
-#### Jaeger intake compatibility
-
-TO BE DEFINED
+When OTel bridge data is sent in `_.otel.attributes` for spans and transactions captured through agent OTel bridges,
+the inferred values on OTel attributes shoud take precedence over the equivalent attributes in regular agent protocol.
