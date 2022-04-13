@@ -51,13 +51,13 @@ Because there are a lots of moving pieces, implementation will be split into mul
 - **Phase 1** : APM server ingest (8.3)
   - Spans intake: `span.context.service.target.*`, store them as-is in ES Span documents
   - Transactions intake: add `service_target_type` and `service_target_name` next to `destination_service_resource` in `transaction.dropped_spans_stats` array, the related metrics documents should include `span.service.target.type` and `span.service.target.name` fields.
-  - TODO : is there anything required to ingest metrics with extra dimensions ?
+  - Metrics aggregation should be updated to rely on the new fields.
 - **Phase 2** : modify one or more agents to:
   - Add and capture values for `span.context.service.target.type` and `span.context.service.target.name` for exit spans.
-  - Infer from those new fields the value of `span.destination.service.resource` and keep sending it
+  - Infer from those new fields the value of `span.destination.service.resource` and keep sending it.
   - Add `service_target_*` fields to dropped spans metrics (as described in Phase 1)
   - Handle span compression with new fields (stop relying on `resource` internally)
-- **Phase 3** : infer on APM Server for agents that DO NOT provide the new fields
+- **Phase 3** : infer on APM Server for agents that DO NOT provide the new fields (unknown APM Server version yet)
   - `span.destination.service.resource` inferred from `span.context.service.target.*`
   - dropped spans metrics
 - **Phase 4** : modify the agents not covered in Phase 2
@@ -65,8 +65,10 @@ Because there are a lots of moving pieces, implementation will be split into mul
   - Handle dropped spans metrics with only the new fields
   - Handle span compression with new fields
 - **Phase 5** : cleanup of agents modified in Phase 2
-  - stop inferring & sending `span.destination.service.resource` for APM-server > 8.3
-  - stop computing dropped spans metrics for `span.destination.service.resource` and remove the `destination_service_resource` field.
+  - When sending to APM Server with **Phase3** implemented
+    - stop inferring & sending `span.destination.service.resource` on the agent
+    - stop inferring & sending `destination_service_resource` in dropped spans stats
+  - Keep sending and inferring for previous APM server versions
 
 ### Examples
 
@@ -74,29 +76,32 @@ Because there are a lots of moving pieces, implementation will be split into mul
 2. Database call to a `mysql` server on the `my-instance` database
 3. Send message on `rabbitmq` server without queue
 4. Send message on `rabbitmq` server on the `my-queue` queue
+5. HTTP request to `host:80` server
 
-| Span field                                      | #1      | #2            | #3          | #4                  |
-|-------------------------------------------------|---------|---------------|-------------|---------------------|
-| `span.type`                                     | `db`    | `db`          | `messaging` | `messaging`         |
-| `span.subtype`                                  | `mysql` | `mysql`       | `rabbitmq`  | `rabbitmq`          |
-| `span.context.service.target.type`              | `mysql` | `mysql`       | `rabbitmq`  | `rabbitmq`          |
-| `span.context.service.target.name` (1)          |         | `my-db`       |             | `my-queue`          |
-| `span.context.destination.service.resource` (2) | `mysql` | `mysql/my-db` | `rabbitmq`  | `rabbitmq/my-queue` |
+| Span field                                      | #1      | #2            | #3          | #4                  | #5            |
+|-------------------------------------------------|---------|---------------|-------------|---------------------|---------------|
+| `span.type`                                     | `db`    | `db`          | `messaging` | `messaging`         | `external`    |
+| `span.subtype`                                  | `mysql` | `mysql`       | `rabbitmq`  | `rabbitmq`          | `http`        |
+| `span.context.service.target.type`              | `mysql` | `mysql`       | `rabbitmq`  | `rabbitmq`          | `http`        |
+| `span.context.service.target.name` (1)          |         | `my-db`       |             | `my-queue`          | `host:80`     |
+| `span.context.destination.service.resource` (2) | `mysql` | `mysql/my-db` | `rabbitmq`  | `rabbitmq/my-queue` | `host:80` (3) |
 
 (1) Value depends on the instrumented backend, see [below](#field-values) for details.
 
 (2) Value is inferred and sent by APM agents in Phase 2, inferred on APM Server once Phase 3 is complete
 
-## Implementation details
+(3) We have to omit the `_.type` field in the inferred destination resource for compatibility.
 
-### Field values
+## Implementation details
 
 This specification assumes that values for `span.type` and `span.subtype` fit the [span_types.json](../../tests/agents/json-specs/span_types.json) specification.
 
+### Field values
+
 - `span.context.service.target.*` fields should be omitted for non-exit spans.
 - Values set by user through the agent API should have priority over inferred values.
-- `span.context.service.target.type` should default to the same value as `span.type`.
-- When a `span.subtype` value is available, `span.context.service.target.type` should have the same value as `span.subtype`.
+- `span.context.service.target.type` should have the same value as `span.subtype` and fallback to `span.type`.
+- `span.context.service.target.name` depends on the span context attributes
 
 On agents, the following algorithm should be used to infer the values for `span.context.service.target.*` fields. 
 ```javascript
@@ -137,6 +142,17 @@ if (span.isExit) {
 The values for `span.context.db.instance` are described in [SQL Databases](./tracing-instrumentation-db.md#sql-databases).
 
 The values for `span.context.message.queue.name` are described in [Messaging context fields](./tracing-instrumentation-messaging.md#context-fields)
+
+### User API
+
+Agents SHOULD provide an API entrypoint to set the value of `span.context.destination.service.resource`,
+setting an empty or `null` value allows the user to discard the inferred value.
+This API entrypoint should be marked as deprecated and replaced by the following:
+
+Agents SHOULD provide an API entrypoint to set the value of `span.context.service.target.type` and `span.context.service.target.name`,
+setting an empty or `null` value on both of those fields allows the user to discard the inferred values.
+
+When a user-provided value is set, it should take precedence over inferred values from the span `_.type` `_.subtype` or any `_.context` attribute.
 
 ### Phase 3
 
@@ -201,8 +217,10 @@ if (destination_resource) {
 }
 ```
 
-TODO:
-
 #### OTel intake compatibility
 
-#### Jaeger intake compatibility ?
+TO BE DEFINED
+
+#### Jaeger intake compatibility
+
+TO BE DEFINED
