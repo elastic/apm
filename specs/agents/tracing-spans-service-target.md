@@ -227,10 +227,10 @@ to be updated in order to also infer the values of `span.context.service.target.
   - For messaging spans: use value of `messaging.system` attribute
   - For RPC spans: use value of `rpc.system` attribute
 - `span.context.service.target.name` should be set from OTel attributes if they are present
-  - For database spans: use value of `db.instance` attribute
+  - For database spans: use value of `db.name` attribute
   - For HTTP client spans: create `<host>:<port>` string from `http.host`, `net.peer.port` attributes or equivalent
   - For messaging spans: use value of `messaging.destination` attribute if `messaging.temp_destination` is `false` or absent to limit cardinality
   - For RPC spans: use value of `rpc.service`
 
 When OTel bridge data is sent in `_.otel.attributes` for spans and transactions captured through agent OTel bridges,
-the inferred values on OTel attributes shoud take precedence over the equivalent attributes in regular agent protocol.
+the inferred values on OTel attributes should take precedence over the equivalent attributes in regular agent protocol.
