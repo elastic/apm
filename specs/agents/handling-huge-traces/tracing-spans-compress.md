@@ -153,8 +153,9 @@ boolean isCompressionEligible() {
 
 ### Span buffering
 
-Non-compression-eligible spans may be reported immediately after they have ended.
-When a compression-eligible span ends, it does not immediately get reported.
+When a span ends, if it is not compression-eligible or if its parent has already
+ended, it may be reported immediately.  Otherwise, it does not immediately get
+reported.
 Instead, the span is buffered within its parent.
 A span/transaction can buffer at most one child span.
 
@@ -172,7 +173,7 @@ void onEnd() {
 }
 
 void onChildEnd(Span child) {
-    if (!child.isCompressionEligible()) {
+    if (ended || !child.isCompressionEligible()) {
         if (buffered != null) {
             report(buffered)
             buffered = null
