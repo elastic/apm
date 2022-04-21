@@ -42,7 +42,10 @@ In this case the above mentioned counter for `reported` spans is not incremented
 }
 ```
 
-The total number of spans that an agent created within a transaction is equal to `span_count.started + span_count.dropped`. 
+The total number of spans that an agent created within a transaction is equal to `span_count.started + span_count.dropped`.
+Note that this might be an under count, because spans that end *after* their
+transaction has been reported (typically when the transaction ends) will not be
+counted.
 
 ### Checking the limit
 
@@ -57,7 +60,7 @@ On span end, agents that support the concurrent creation of spans need to check 
 That is because any number of spans may be started before any of them end.
 
 ```java
-if (atomic_get(transaction.span_count.eligible_for_reporting) <= transaction_max_spans // optional optimization 
+if (atomic_get(transaction.span_count.eligible_for_reporting) <= transaction_max_spans // optional optimization
     && atomic_get_and_increment(transaction.span_count.eligible_for_reporting) <= transaction_max_spans ) {
     should_be_reported = true
     atomic_increment(transaction.span_count.reported)
@@ -81,7 +84,7 @@ the value that has been read at the start of the transaction should be used.
 ### Metric collection
 
 Even though we can determine whether to drop a span before starting it, it's not legal to return a `null` or noop span in that case.
-That's because we're [collecting statistics about dropped spans](tracing-spans-dropped-stats.md) as well as 
+That's because we're [collecting statistics about dropped spans](tracing-spans-dropped-stats.md) as well as
 [breakdown metrics](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt)
 even for spans that exceed `transaction_max_spans`.
 
