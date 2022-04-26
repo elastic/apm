@@ -1,5 +1,14 @@
 ## Trace Continuation
 
+### `trace_continuation_strategy` configuration
+
+|                |   |
+|----------------|---|
+| Valid options  | `continue`, `restart`, `restart_external` |
+| Default        | `continue` |
+| Dynamic        | `true` |
+| Central config | `true` |
+
 The `traceparent` header of requests that are traced with our agents might have been added by a 3rd party component.
 
 This situation becomes more and more common as the w3c trace context gets adopted. In such cases we can end up with traces where part of the trace is outside of our system.
@@ -12,4 +21,4 @@ The agent SHOULD offer a configuration called `trace_continuation_strategy` with
 - `restart`: The agent always creates a new trace with a new trace id. In this case the agent MUST create a [span link](span-links.md) in the new transaction pointing to the original traceparent.
 - `restart_external`: The agent first checks the `tracestate` header. If the header contains the `es` vendor flag, it's treated as internal, otherwise (including the case when the `tracestate` header is not present) it's treated as external. In case of external calls the agent MUST create a new trace with a new trace id and MUST create a link in the new transaction pointing to the original trace.
 
-The default is `continue`.
+In the case of internal calls, the agent MUST use the `continue` strategy above.
