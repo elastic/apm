@@ -89,7 +89,7 @@ In the case where the server version is not known, agents MUST assume that the s
 sending non-sampled transactions.
 
 Given the health-check call to APM server might not have returned or even fail when unsampled
-transactions are started, this conservative behavior allows discarding relevant data.
+transactions are started, this conservative behavior avoids discarding relevant data.
 
 #### Pre 8.0
 When connected to an APM Server < 8.0, both sampled and non-sampled transactions MUST be captured by Elastic APM agents.
