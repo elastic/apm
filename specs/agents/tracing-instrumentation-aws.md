@@ -2,6 +2,7 @@
 
 We describe how to instrument some of AWS' services in this document.
 Some of the services can use existing specs. When there are differences or additions, they have been noted below.
+The spec for [instrumenting AWS Lambda](tracing-instrumentation-aws-lambda.md) is in a separate document.
 
 ### S3 (Simple Storage Service)
 

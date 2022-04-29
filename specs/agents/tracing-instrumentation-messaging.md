@@ -15,9 +15,9 @@ occurring within a traced transaction.
 
 ![publish](uml/publish.svg)
 
-### Trace Context
+### Sending Trace Context
 
-if the messaging system exposes an API for sending additional message properties/metadata, it
+If the messaging system exposes a mechanism for sending additional [message metadata](#message-metadata), it
 SHOULD be used to propagate the [Trace Context](https://www.w3.org/TR/trace-context/) of the
 `messaging` span, to continue the [distributed trace](tracing-distributed-tracing.md).
 
@@ -68,19 +68,28 @@ If creating a transaction for the processing of each message in a batch is not p
 the agent SHOULD create a single `messaging` transaction for the processing of the batch
 of messages.
 
-### Trace Context
+### Receiving Trace Context
 
-When message reception is captured as a `messaging` transaction, if the messaging
-system exposes an API for sending additional message properties/metadata, it
-SHOULD be checked for the presence of [Trace Context](https://www.w3.org/TR/trace-context/).
-If Trace Context is present, it SHOULD be propagated to the `messaging` transaction
+This section applies to messaging systems that support [message metadata](#message-metadata).
+The instrumentation of message reception SHOULD check message metadata for the
+presence of [Trace Context](https://www.w3.org/TR/trace-context/).
+
+When single message reception is captured as a `messaging` transaction,
+and a Trace Context is present, it SHOULD be used as the parent of the `messaging` transaction
 to continue the [distributed trace](tracing-distributed-tracing.md).
 
-If a batch of messages is processed in a single `messaging` transaction, it may be
-possible that each message in the batch has its own Trace Context. In this
-scenario, it is not currently possible to propagate a Trace Context to the `messaging`
-transaction, since there a multiple contexts present. It may be possible to capture
-these in future through [span links](https://github.com/elastic/apm/issues/122).
+Otherwise (a single message being captured as a `messaging` span, or a batch
+of messages is processed in a single `messaging` transaction or span), a
+[span link](span-links.md) SHOULD be added for each message with Trace Context.
+This includes the case where the size of the batch of received messages is one.
+
+The number of events processed for trace context SHOULD be limited to a maximum
+of 1000, as a guard on agent overhead for extremely large batches of events.
+(For example, SQS's maximum batch size is 10000 messages. The maximum number of
+span links that could be sent for a single transaction/span to APM server with
+the default configuration is approximately 4000: 307200 bytes
+[APM server `max_event_size` default](https://www.elastic.co/guide/en/apm/server/current/configuration-process.html#max_event_size)
+/ 77 bytes per serialized span link.)
 
 ### Examples
 
@@ -186,6 +195,25 @@ queues/topics/exchanges will be ignored.
 | Default        | empty |
 | Dynamic        | `true` |
 | Central config | `true` |
+
+
+### Message metadata
+
+To support distributed tracing with automatic instrumentation, the messaging
+system must provide a mechanism to add metadata/properties/attributes to
+individual messages, akin to HTTP headers. If an APM agent supports
+trace-context for a given messaging system, it MUST use the following mechanisms
+so that cross-language tracing works:
+
+| Messaging system       | Mechanism |
+| ---------------------- | --------- |
+| Azure Queue            | No mechanism |
+| Azure Service Bus      | Possibly `Diagnostic-Id` [application property](https://docs.microsoft.com/en-us/dotnet/api/azure.messaging.servicebus.servicebusmessage.applicationproperties). See [this doc](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-end-to-end-tracing). |
+| Java Messaging Service | [Message Properties](https://docs.oracle.com/javaee/7/api/javax/jms/Message.html) |
+| Apache Kafka           | [Kafka Record headers](https://cwiki.apache.org/confluence/display/KAFKA/KIP-82%2B-%2BAdd%2BRecord%2BHeaders) using [binary trace context fields](tracing-distributed-tracing.md#binary-fields) |
+| RabbitMQ               | [Message Attributes](https://www.rabbitmq.com/tutorials/amqp-concepts.html#messages) (a.k.a. `AMQP.BasicProperties` in [Java API](https://www.rabbitmq.com/api-guide.html)) |
+| AWS SQS                | [SQS message attributes](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
+| AWS SNS                | [SNS message attributes](https://docs.aws.amazon.com/sns/latest/dg/sns-message-attributes.html), if within message attribute limits. See [AWS instrumentation](tracing-instrumentation-aws.md). |
 
 
 ### AWS messaging systems
