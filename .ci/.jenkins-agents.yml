@@ -18,5 +18,5 @@ agents:
     FEATURES_PATH: "features"
     JSON_SPECS_PATH: "spec/fixtures"
   - REPO: "apm-agent-nodejs"
-    FEATURES_PATH: "test/fixtures/gherkin-specs"
+    FEATURES_PATH: "test/cucumber/gherkin-specs"
     JSON_SPECS_PATH: "test/fixtures/json-specs"
