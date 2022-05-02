@@ -4,6 +4,8 @@
 
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
 
+Help us make Elastic APM better by sharing your experience with Elastic Product Management.  [Schedule a 45-minute session](https://calendly.com/elasticapm-chris) with Elastic Product Management and share your feedback. 
+
 ## What we do…
 
 | Project                   | Repo                  | Docs                                    | Contrib
