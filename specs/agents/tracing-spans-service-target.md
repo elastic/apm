@@ -73,7 +73,7 @@ Because there are a lots of moving pieces, implementation will be split into mul
 ### Examples
 
 1. Database call to a `mysql` server without database instance name
-2. Database call to a `mysql` server on the `my-instance` database
+2. Database call to a `mysql` server on the `my-db` database
 3. Send message on `rabbitmq` server without queue
 4. Send message on `rabbitmq` server on the `my-queue` queue
 5. HTTP request to `host:80` server
