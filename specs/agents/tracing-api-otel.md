@@ -32,7 +32,7 @@ The OTel API/specification goes beyond tracing, as a result, the following OTel 
 - metrics
 - logs
 - span events
-- span links
+- span link *attributes*
 
 ### Spans and Transactions
 
@@ -45,7 +45,7 @@ As a result, when creating Spans through OTel API with a bridge, agents must imp
 ```javascript
 // otel_span contains the properties set through the OTel API
 span_or_transaction = null;
-if (otel_span.remote_contex != null) {
+if (otel_span.remote_context != null) {
     span_or_transaction = createTransactionWithParent(otel_span.remote_context);
 } else if (otel_span.parent == null) {
     span_or_transaction = createRootTransaction();
