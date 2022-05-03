@@ -23,12 +23,15 @@ This is an example of the statistics that are added to the `transaction` events 
   "dropped_spans_stats": [
     {
       "destination_service_resource": "example.com:443",
+      "target_service_type": "http",
+      "target_service_name": "example.com:443",
       "outcome": "failure",
       "duration.count": 28,
       "duration.sum.us": 123456
     },
     {
       "destination_service_resource": "mysql",
+      "target_service_type": "mysql",
       "outcome": "success",
       "duration.count": 81,
       "duration.sum.us": 9876543
