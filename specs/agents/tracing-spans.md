@@ -8,6 +8,9 @@ Each span object will have an `id`. This is generated for each transaction and
 span, and is 64 random bits (with a string representation of 16 hexadecimal
 digits).
 
+Each span will have a `parent_id`, which is the ID of its parent transaction or
+span.
+
 Spans will also have a `transaction_id`, which is the `id` of the current
 transaction. While not necessary for distributed tracing, this inclusion allows
 for simpler and more performant UI queries.
@@ -143,3 +146,15 @@ following are two options how to do that:
 - Add a denylist of span `type` and/or `subtype` to identify exit spans of which underlying protocol supports context propagation by default.
 For example, such list could contain `type == storage, subtype == s3`, preventing context propagation at S3 queries, even though those rely on HTTP/S.
 - Add a list of child IDs to compressed exit spans that can be used when looking up `parent.id` of downstream transactions.
+
+### Span lifetime
+
+In the common case we expect spans to start and end within the lifetime of their
+parent and their transaction. However, agents SHOULD support spans starting
+and/or ending *after* their parent has ended and after their transaction has
+ended.
+
+This may result in [transaction `span_count` values](handling-huge-traces/tracing-spans-limit.md#span-count)
+being low. Agents do not need to wait for children to end before reporting a
+parent.
+
