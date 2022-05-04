@@ -33,6 +33,8 @@ The following fields are relevant for database and datastore spans. Where possib
 |`context.destination.address`|The hostname / address of the database.| :x: |
 |`context.destination.port`|The port under which the database is accessible.| :x: |
 |`context.destination.service.resource`| DEPRECATED, replaced by `service.target.{type,name}` fields | :white_check_mark: mandatory when APM server ignores `service.target.{type,name}`, optional otherwise |
+|`context.destination.service.type`| DEPRECATED, replaced by `service.target.{type,name}` fields | :x: |
+|`context.destination.service.name`| DEPRECATED, replaced by `service.target.{type,name}` fields | :x: |
 |`context.destination.cloud.region`| The cloud region in case the datastore is hosted in a public cloud or is a managed datasatore / database. E.g. AWS regions, such as `us-east-1` | :x: |
 | <hr/> |<hr/>|<hr/>|
 |`service.target.type`| Defines destination service type, the (`type`,`name`) pair replaces deprecated `context.destination.service.resource` | :white_check_mark:|
