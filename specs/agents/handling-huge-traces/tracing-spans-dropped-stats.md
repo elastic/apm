@@ -4,7 +4,8 @@ To still retain some information about dropped spans (for example due to [`trans
 agents SHOULD collect statistics on the corresponding transaction about dropped spans.
 These statistics MUST only be sent for sampled transactions.
 
-Agents SHOULD only collect these statistics for exit spans that have a non-empty `service.target.type` (and `service.target.name`).
+Agents SHOULD only collect these statistics for exit spans that have a non-empty `service.target.type` (and `service.target.name`),
+or a non-empty `destination.service.resource` if they don´t use [Service Target fields](../tracing-spans-service-target.md)
 
 This feature used to rely on the deprecated `destination.service.resource` field, which is replaced by `service.target.type`
 and `service.target.name`.
@@ -26,7 +27,7 @@ This is an example of the statistics that are added to the `transaction` events 
 {
   "dropped_spans_stats": [
     {
-      "destination_service_resource": "example.com:443", // deprecated, but still required for compatibility
+      "destination_service_resource": "example.com:443", // deprecated, but might still be send by agents
       "service_target_type": "http",
       "service_target_name": "example.com:443",
       "outcome": "failure",
@@ -34,7 +35,7 @@ This is an example of the statistics that are added to the `transaction` events 
       "duration.sum.us": 123456
     },
     {
-      "destination_service_resource": "mysql", // deprecated, but still required for compatibility
+      "destination_service_resource": "mysql", // deprecated, but might still be send by agents
       "service_target_type": "mysql",
       "outcome": "success",
       "duration.count": 81,
@@ -43,6 +44,15 @@ This is an example of the statistics that are added to the `transaction` events 
   ]
 }
 ```
+
+### Compatibility
+
+When the `service_target_*` fields are provided, APM server has to infer the equivalent of the `destination_service_resource`
+property by using the same algorithm as described in the [Service Target specification](../tracing-spans-service-target.md).
+
+However, in order to know if the equivalent resource is `example.com:443` or `http/example.com:443`, we have to rely
+on the `service_target_type` value being (or not) part of the list of all known `span.subtype` values of span
+types `external` and `storage`.
 
 ## Limits
 
