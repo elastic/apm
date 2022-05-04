@@ -91,7 +91,8 @@ Because there are a lots of moving pieces, implementation will be split into mul
 
 (2) Value is inferred and sent by APM agents in Phase 2, inferred on APM Server once Phase 3 is complete
 
-(3) We have to omit the `_.type` field in the inferred destination resource for compatibility.
+(3) We have to omit the `_.type` field in the inferred destination resource for compatibility. The spans for which
+only the `_.service.target.name` should be used for `_.destination.service.resource` have their `span.type` in [ `external`, `storage`].
 
 ## Implementation details
 
@@ -169,24 +170,31 @@ destination_resource = undefined;
 
 if (span.service.target.type) {
   // new fields, store them as-provided
-  // infer resource destination from new fields
+  // infer destination resource from new fields
   destination_resource = span.service.target.type;
   if (span.service.target.name) {
-    destination_resource += "/";
-    destination_resource += span.service.target.name;
+    if (['external', 'storage'].indexOf(span.type) >= 0) {
+      // use only name in resource for compatibility
+      destination_resource = span.service.target.name;
+    } else {
+      destination_resource += "/";
+      destination_resource += span.service.target.name;
+    }
+    if (destination_resource) {
+      span.destination.service.resource = destination_resource;
+    }
   }
 
-} else if (['db', 'messaging', 'external'].indexOf(span.type) >= 0) {
-  // agent intake without new fields
-  // only a subset of span types should be included
+} else if (span.destination.service.resource) {
+  // resource field is provided, infer service target type & name
   span.service.target = {};
 
   // inferred service target type & name
   target_type = undefined;
   target_name = undefined;
 
-  if (span.destination.service.resource) {
-    // infer new fields values from destination resource if provided
+  if (['db', 'messaging'].indexOf(span.type) >= 0) {
+    // known types for which we can infer both type & name
     r = span.destination.service.resource;
     separatorIndex = r.indexOf('/');
     if (separatorIndex <= 0) {
@@ -196,13 +204,12 @@ if (span.service.target.type) {
       target_name = r.substr(separatorIndex + 1);
     }
   } else {
-    // no destination resource, fallback from span type & subtype
+    // fallback from span type & subtype
     target_type = span.type;
     if (span.subtype) {
       target_name = span.subtype;
     }
   }
-
   if (target_name.length == 0) {
     // normalization: do not store empty name
     target_name = undefined;
@@ -210,11 +217,6 @@ if (span.service.target.type) {
 
   span.service.target.type = target_type;
   span.service.target.name = target_name;
-
-}
-
-if (destination_resource) {
-  span.destination.service.resource = destination_resource;
 }
 ```
 
