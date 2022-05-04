@@ -51,7 +51,8 @@ Because there are a lots of moving pieces, implementation will be split into mul
 - **Phase 1** : APM server ingest (8.3)
   - Spans intake: `span.context.service.target.*`, store them as-is in ES Span documents
   - Transactions intake: add `service_target_type` and `service_target_name` next to `destination_service_resource` in `transaction.dropped_spans_stats` array, the related metrics documents should include `span.service.target.type` and `span.service.target.name` fields.
-  - On the server, dropped spans metrics aggregation should be updated to use both old and new fields.
+  - On the server, service destination metrics and dropped spans metrics should be updated to include new dimensions: `span.service.target.type` and `span.service.target.name` next to the existing
+   `span.destination.service.resource`, `span.destination.service.response_time.*` fields and their aggregation remain untouched for now.
 - **Phase 2** : modify one or more agents to:
   - Add and capture values for `span.context.service.target.type` and `span.context.service.target.name` for exit spans.
   - Infer from those new fields the value of `span.destination.service.resource` and keep sending it.
