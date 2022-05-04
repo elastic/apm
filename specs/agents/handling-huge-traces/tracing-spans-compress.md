@@ -40,7 +40,9 @@ GET /users
 Two spans are considered to be an exact match if they are of the [same kind](#consecutive-same-kind-compression-strategy) and if their span names are equal:
 - `type`
 - `subtype`
-- `destination.service.resource`
+- `destination.service.resource` (DEPRECATED, replaced by `service.target.{type,name}` )
+- `service.target.type`
+- `service.target.name`
 - `name`
 
 ### Configuration option `span_compression_exact_match_max_duration`
@@ -71,13 +73,17 @@ GET /users
 Two spans are considered to be of the same type if the following properties are equal:
 - `type`
 - `subtype`
-- `destination.service.resource`
+- `destination.service.resource` (DEPRECATED, replaced by `service.target.{type,name}` )
+- `service.target.type`
+- `service.target.name`
+
 
 ```java
 boolean isSameKind(Span other) {
     return type == other.type
         && subtype == other.subtype
-        && destination.service.resource == other.destination.service.resource
+        && service.target.type == other.service.target.type
+        && service.target.name == other.service.target.name
 }
 ```
 
