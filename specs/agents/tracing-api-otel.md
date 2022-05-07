@@ -186,19 +186,18 @@ httpPortFromScheme = function (scheme) {
 parseNetName = function (url) {
     var u = new URL(url); // https://developer.mozilla.org/en-US/docs/Web/API/URL
     if (u.port != '') {
-        return u.hostname; // host:port already in URL
+        return u.host; // host:port already in URL
     } else {
         var port = httpPortFromScheme(u.protocol.substring(0, u.protocol.length - 1));
-        return port > 0 ? u.host + ':'+ port : u.host;
+        return port > 0 ? u.hostname + ':'+ port : u.hostname;
     }
 }
 
-peerPort = a['net.peer.port'];
-netName = a['net.peer.name'] || a['net.peer.ip'];
-
-if (netName && peerPort > 0) {
-    netName += ':';
-    netName += peerPort;
+netPort = a['net.peer.port'] || -1;
+netPeer = a['net.peer.name'] || a['net.peer.ip'];
+netName = netPeer; // netName includes port, if provided
+if (netName && netPort > 0) {
+    netName += ':' + netPort;
 }
 
 if (a['db.system']) {
@@ -236,8 +235,12 @@ if (a['db.system']) {
     type = 'external';
     subtype = 'http';
 
-    if (a['http.host'] && a['http.scheme']) {
-        resource = a['http.host'] + ':' + httpPortFromScheme(a['http.scheme']);
+    httpHost = a['http.host'] || netPeer;
+    if (httpHost) {
+        if (netPort < 0) {
+            netPort = httpPortFromScheme(a['http.scheme']);
+        }
+        resource = netPort < 0 ? httpHost : httpHost + ':' + netPort;
     } else if (a['http.url']) {
         resource = parseNetName(a['http.url']);
     }
