@@ -24,7 +24,7 @@ Alignment to ECS provides the following benefits:
 - Bring APM Agents intake and data stored in ES closer to ECS
 
 On agents side, it splits the values that were previously written into `span.destination.service.resource` in distinct
-fields.It provides a generic way to provide higher-granularity for service map and service dependencies.
+fields. It provides a generic way to provide higher-granularity for service map and service dependencies.
 
 #### APM Agents
 
@@ -58,18 +58,17 @@ Because there are a lots of moving pieces, implementation will be split into mul
   - Infer from those new fields the value of `span.destination.service.resource` and keep sending it.
   - Add `service_target_*` fields to dropped spans metrics (as described in Phase 1)
   - Handle span compression with new fields (stop relying on `resource` internally)
-- **Phase 3** : infer on APM Server for agents that DO NOT provide the new fields (unknown APM Server version yet)
-  - `span.destination.service.resource` inferred from `span.context.service.target.*`
-  - dropped spans metrics
+- **Phase 3** : infer on APM Server for agents that DO NOT provide the new fields (8.3 or later)
+  - fields `span.context.service.target.*` are inferred from `span.destination.service.resource`
+  - dropped spans and destination metrics still able to use provided `span.destination.service.resource`.
 - **Phase 4** : modify the agents not covered in Phase 2
   - Add `span.context.service.target.type` and `span.context.service.target.name`
   - Handle dropped spans metrics with only the new fields
   - Handle span compression with new fields
-- **Phase 5** : cleanup of agents modified in Phase 2
-  - When sending to APM Server with **Phase3** implemented
-    - stop inferring & sending `span.destination.service.resource` on the agent
-    - stop inferring & sending `destination_service_resource` in dropped spans stats
-  - Keep sending and inferring for previous APM server versions
+- **Phase 5** : modify the UI to display and query new fields (to be further clarified)
+  - service dependencies
+  - service maps
+  - display fallback on `resource` field when `span.context.service.target.type` is empty
 
 ### Examples
 
@@ -89,10 +88,10 @@ Because there are a lots of moving pieces, implementation will be split into mul
 
 (1) Value depends on the instrumented backend, see [below](#field-values) for details.
 
-(2) Value is inferred and sent by APM agents in Phase 2, inferred on APM Server once Phase 3 is complete
+(2) Value is always sent by APM agents for compatibility, but they SHOULD NOT rely on it internally.
 
-(3) We have to omit the `_.type` field in the inferred destination resource for compatibility. The spans for which
-only the `_.service.target.name` should be used for `_.destination.service.resource` have their `span.type` in [ `external`, `storage`].
+(3) HTTP spans (and a few other spans) can't have their `resource` value inferred on APM server without relying on a 
+brittle mapping on span `type` and `subtype` and breaking the breakdown metrics where `type` and `subtype` are not available.
 
 ## Implementation details
 
@@ -158,66 +157,56 @@ When a user-provided value is set, it should take precedence over inferred value
 
 ### Phase 3
 
-In Phase 3 the `span.destination.service.resource` field value is inferred on APM Server with the following algorithm:
+In Phase 3 the `span.service.target.{type,name}` fields are inferred on APM Server with the following algorithm and internal
+usage of `resource` field in apm-server can be replaced with `span.service.target.{type,name}` fields.
 
 ```javascript
 
-// span from agent intake
+// Infer new fields values from an existing 'resource' value
+// Empty type value (but not null) that can be used on UI to use the existing resource for display.
+// For internal aggregation on (type,name) and usage this will be equivalent to relying on 'resource' value.
+inferFromResource = function (r) {
+
+    singleSlashRegex = new RegExp('^([a-z]+)/(\w+)$').exec(r);
+    typeOnlyRegex = new RegExp(('^[a-z]$')).exec(r);
+
+    if (singleSlashRegex != null) {
+        // Type + breakdown
+        // e.g. 'mysql/mydatabase', 'rabbitmq/myQueue'
+        return {
+            type: singleSlashRegex[1],
+            name: singleSlashRegex[2]
+        }
+
+    } else if (typeOnlyRegex != null) {
+        // Type only
+        // e.g. 'mysql'
+        return {
+            type: r,
+        };
+
+    } else {
+        // Other cases, should rely on default, UI will have to display resource as fallback
+        // e.g. 'localhost:8080'
+
+        return {
+            type: '',
+            name: r
+        }
+    }
+}
+
+// usage with span from agent intake
 span = {};
 
-// inferred destination resource (if any)
-destination_resource = undefined;
+if (!span.service.target.type) {
+    // try to infer new fields from provided resource
 
-if (span.service.target.type) {
-  // new fields, store them as-provided
-  // infer destination resource from new fields
-  destination_resource = span.service.target.type;
-  if (span.service.target.name) {
-    if (['external', 'storage'].indexOf(span.type) >= 0) {
-      // use only name in resource for compatibility
-      destination_resource = span.service.target.name;
-    } else {
-      destination_resource += "/";
-      destination_resource += span.service.target.name;
-    }
-    if (destination_resource) {
-      span.destination.service.resource = destination_resource;
-    }
-  }
-
-} else if (span.destination.service.resource) {
-  // resource field is provided, infer service target type & name
-  span.service.target = {};
-
-  // inferred service target type & name
-  target_type = undefined;
-  target_name = undefined;
-
-  if (['db', 'messaging'].indexOf(span.type) >= 0) {
-    // known types for which we can infer both type & name
-    r = span.destination.service.resource;
-    separatorIndex = r.indexOf('/');
-    if (separatorIndex <= 0) {
-      target_type = r;
-    } else {
-      target_type = r.substr(0, separatorIndex);
-      target_name = r.substr(separatorIndex + 1);
-    }
-  } else {
-    // fallback from span type & subtype
-    target_type = span.type;
-    if (span.subtype) {
-      target_name = span.subtype;
-    }
-  }
-  if (target_name.length == 0) {
-    // normalization: do not store empty name
-    target_name = undefined;
-  }
-
-  span.service.target.type = target_type;
-  span.service.target.name = target_name;
+    inferred = inferFromResource(span.destination.service.resource);
+    span.service.target.type = inferred.type;
+    span.service.target.name = inferred.name;
 }
+
 ```
 
 #### OTel and bridge compatibility
