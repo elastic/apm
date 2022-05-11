@@ -168,7 +168,7 @@ usage of `resource` field in apm-server can be replaced with `span.service.targe
 inferFromResource = function (r) {
 
     singleSlashRegex = new RegExp('^([a-z]+)/(\w+)$').exec(r);
-    typeOnlyRegex = new RegExp(('^[a-z]$')).exec(r);
+    typeOnlyRegex = new RegExp(('^[a-z]+$')).exec(r);
 
     if (singleSlashRegex != null) {
         // Type + breakdown
