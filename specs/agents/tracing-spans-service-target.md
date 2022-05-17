@@ -160,6 +160,19 @@ When a user-provided value is set, it should take precedence over inferred value
 In Phase 3 the `span.service.target.{type,name}` fields are inferred on APM Server with the following algorithm and internal
 usage of `resource` field in apm-server can be replaced with `span.service.target.{type,name}` fields.
 
+When this phase is implemented, the stored spans can be summarized as follows:
+
+| `span.context._`                                           | `_.destination.service.resource`                | `_.service.target.type`                           | `_.service.target.name`                  |
+|------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------|------------------------------------------|
+| Non-exit span                                              | -                                               | -                                                 | -                                        |
+| Exit span captured before server 8.3                       | `mysql`, `mysql/myDb`                           | -                                                 | -                                        |
+| Exit span captured with server 8.3 or later + legacy agent | `mysql`<br/> `mysql/myDb`<br/> `localhost:8080` | `mysql`<br/> `mysql`<br/> `""` (empty string) (1) | -<br/> `myDb`<br/> `localhost:8080`      |
+| Exit span captured with server 8.3 + latest agent          | `mysql`<br/> `mysql/myDb`<br/> `localhost:8080` | `mysql`<br/> `mysql`<br/> `http` or `grpc`    (2) | -<br/> `myDB`<br/> `localohost:8080` (2) |
+
+(1) : APM Server can't infer the value of the equivalent `service.target.type`, so we use the empty string `""` to allow UI to fallback on using the `_.resource` or `_.service.target.name` for display and compatibility.
+
+(2) : in this case the values are provided by the agent and not inferred by APM server.
+
 ```javascript
 
 // Infer new fields values from an existing 'resource' value
