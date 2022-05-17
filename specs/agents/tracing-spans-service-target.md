@@ -155,6 +155,9 @@ setting an empty or `null` value on both of those fields allows the user to disc
 
 When a user-provided value is set, it should take precedence over inferred values from the span `_.type` `_.subtype` or any `_.context` attribute.
 
+In order to provide compatibility with existing agent API usage, when user calls the deprecated method to set `_.resource` = `"<some-value>"`,
+agents MAY set `_.type` = `""` (empty string) and `_.name` = `"<some-value>"`, which replicates the behavior on APM server described below.
+
 ### Phase 3
 
 In Phase 3 the `span.service.target.{type,name}` fields are inferred on APM Server with the following algorithm and internal
