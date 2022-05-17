@@ -199,7 +199,7 @@ inferFromResource = function (r) {
 // usage with span from agent intake
 span = {};
 
-if (!span.service.target.type) {
+if (!span.service.target.type && span.destination.service.resource) {
     // try to infer new fields from provided resource
 
     inferred = inferFromResource(span.destination.service.resource);
