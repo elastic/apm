@@ -183,8 +183,8 @@ When this phase is implemented, the stored spans can be summarized as follows:
 // For internal aggregation on (type,name) and usage this will be equivalent to relying on 'resource' value.
 inferFromResource = function (r) {
 
-    singleSlashRegex = new RegExp('^([a-z][a-z0-9]*)/(\w+)$').exec(r);
-    typeOnlyRegex = new RegExp(('^[a-z][a-z0-9]*$')).exec(r);
+    singleSlashRegex = new RegExp('^([a-z0-9]+)/(\w+)$').exec(r);
+    typeOnlyRegex = new RegExp(('^[a-z0-9]+$')).exec(r);
 
     if (singleSlashRegex != null) {
         // Type + breakdown
