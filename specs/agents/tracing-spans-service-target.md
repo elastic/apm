@@ -8,13 +8,14 @@ which are used for APM/SIEM integration and focus on network-level attributes.
 - [span.context.destination.address](https://www.elastic.co/guide/en/ecs/current/ecs-destination.html#field-destination-address)
 - [span.context.destination.port](https://www.elastic.co/guide/en/ecs/current/ecs-destination.html#field-destination-port)
 
-APM Agents should now use fields described below in `span.context.service.target`, those are a subset
+APM Agents should now use fields described below in `span.context.service.target` for exit spans, those are a subset
 of [ECS Service fields](https://www.elastic.co/guide/en/ecs/current/ecs-service.html).
 
 - `span.context.service.target.type` : [ECS service.type](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-type)
-  , optional.
+  , optional, might be empty.
 - `span.context.service.target.name` : [ECS service name](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-name)
-  , optional, ignored if `span.context.service.target.type` is not provided.
+  , optional.
+- at least one of those two fields is required to be provided and not empty
 
 Alignment to ECS provides the following benefits:
 
@@ -48,24 +49,23 @@ As a result, we need to make APM server handle the compatibility with those for 
 
 Because there are a lots of moving pieces, implementation will be split into multiple phases:
 
-- **Phase 1** : APM server ingest (8.3)
+- **Phase 1** : APM server ingest + compatibility for older agents
   - Spans intake: `span.context.service.target.*`, store them as-is in ES Span documents
   - Transactions intake: add `service_target_type` and `service_target_name` next to `destination_service_resource` in `transaction.dropped_spans_stats` array, the related metrics documents should include `span.service.target.type` and `span.service.target.name` fields.
   - On the server, service destination metrics and dropped spans metrics should be updated to include new dimensions: `span.service.target.type` and `span.service.target.name` next to the existing
    `span.destination.service.resource`, `span.destination.service.response_time.*` fields and their aggregation remain untouched for now.
+  - compatibility: fields `span.context.service.target.*` are inferred from `span.destination.service.resource`
+  - compatibility: dropped spans and destination metrics still able to use provided `span.destination.service.resource`.
 - **Phase 2** : modify one or more agents to:
   - Add and capture values for `span.context.service.target.type` and `span.context.service.target.name` for exit spans.
   - Infer from those new fields the value of `span.destination.service.resource` and keep sending it.
   - Add `service_target_*` fields to dropped spans metrics (as described in Phase 1)
   - Handle span compression with new fields (stop relying on `resource` internally)
-- **Phase 3** : infer on APM Server for agents that DO NOT provide the new fields (8.3 or later)
-  - fields `span.context.service.target.*` are inferred from `span.destination.service.resource`
-  - dropped spans and destination metrics still able to use provided `span.destination.service.resource`.
-- **Phase 4** : modify the agents not covered in Phase 2
+- **Phase 3** : modify the agents not covered in Phase 2
   - Add `span.context.service.target.type` and `span.context.service.target.name`
   - Handle dropped spans metrics with only the new fields
   - Handle span compression with new fields
-- **Phase 5** : modify the UI to display and query new fields (to be further clarified)
+- **Phase 4** : modify the UI to display and query new fields (to be further clarified)
   - service dependencies
   - service maps
   - display fallback on `resource` field when `span.context.service.target.type` is empty
@@ -158,9 +158,9 @@ When a user-provided value is set, it should take precedence over inferred value
 In order to provide compatibility with existing agent API usage, when user calls the deprecated method to set `_.resource` = `"<some-value>"`,
 agents MAY set `_.type` = `""` (empty string) and `_.name` = `"<some-value>"`, which replicates the behavior on APM server described below.
 
-### Phase 3
+### Phase 1 - server-side compatibility
 
-In Phase 3 the `span.service.target.{type,name}` fields are inferred on APM Server with the following algorithm and internal
+In Phase 1 the `span.service.target.{type,name}` fields are inferred on APM Server with the following algorithm and internal
 usage of `resource` field in apm-server can be replaced with `span.service.target.{type,name}` fields.
 
 When this phase is implemented, the stored spans can be summarized as follows:
