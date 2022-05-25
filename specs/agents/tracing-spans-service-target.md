@@ -170,7 +170,7 @@ When this phase is implemented, the stored spans can be summarized as follows:
 | Non-exit span                                              | -                                               | -                                                 | -                                        |
 | Exit span captured before server 8.3                       | `mysql`, `mysql/myDb`                           | -                                                 | -                                        |
 | Exit span captured with server 8.3 or later + legacy agent | `mysql`<br/> `mysql/myDb`<br/> `localhost:8080` | `mysql`<br/> `mysql`<br/> `""` (empty string) (1) | -<br/> `myDb`<br/> `localhost:8080`      |
-| Exit span captured with server 8.3 + latest agent          | `mysql`<br/> `mysql/myDb`<br/> `localhost:8080` | `mysql`<br/> `mysql`<br/> `http` or `grpc`    (2) | -<br/> `myDB`<br/> `localohost:8080` (2) |
+| Exit span captured with server 8.3 + latest agent          | `mysql`<br/> `mysql/myDb`<br/> `localhost:8080` | `mysql`<br/> `mysql`<br/> `http` or `grpc`    (2) | -<br/> `myDB`<br/> `localhost:8080` (2) |
 
 (1) : APM Server can't infer the value of the equivalent `service.target.type`, so we use the empty string `""` to allow UI to fallback on using the `_.resource` or `_.service.target.name` for display and compatibility.
 
