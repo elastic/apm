@@ -32,8 +32,13 @@ The following fields are relevant for database and datastore spans. Where possib
 | <hr/> |<hr/>|<hr/>|
 |`context.destination.address`|The hostname / address of the database.| :x: |
 |`context.destination.port`|The port under which the database is accessible.| :x: |
-|`context.destination.service.resource`|  Used to detect unique destinations from each service. This field should contain all information that is needed to differentiate different database / storage instances (e.g. in the service map). See details below on how to set this field for specific technologies.| :white_check_mark:|
+|`context.destination.service.resource`| DEPRECATED, replaced by `service.target.{type,name}` fields | :white_check_mark: mandatory when APM server ignores `service.target.{type,name}`, optional otherwise |
+|`context.destination.service.type`| DEPRECATED, replaced by `service.target.{type,name}` fields | :x: |
+|`context.destination.service.name`| DEPRECATED, replaced by `service.target.{type,name}` fields | :x: |
 |`context.destination.cloud.region`| The cloud region in case the datastore is hosted in a public cloud or is a managed datasatore / database. E.g. AWS regions, such as `us-east-1` | :x: |
+| <hr/> |<hr/>|<hr/>|
+|`service.target.type`| Defines destination service type, the (`type`,`name`) pair replaces deprecated `context.destination.service.resource` | :white_check_mark:|
+|`service.target.name`| Defines destination service name, the (`type`,`name`) pair replaces deprecated `context.destination.service.resource`, for relational databases, the value is equal to `context.db.instance` | :x: |
 
 
 ## Specific Databases
@@ -56,10 +61,13 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `dynamodb.us-west-2.amazonaws.com`|
 |`_.port`|e.g. `5432`|
-|`_.service.name`| `dynamodb` |
-|`_.service.type`|`db`|
-|`_.service.resource`| `dynamodb` |
+|`_.service.name`| `dynamodb` | DEPRECATED
+|`_.service.type`|`db`| DEPRECATED
+|`_.service.resource`| `dynamodb` | DEPRECATED
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the table is, if available. |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| `dynamodb` ||
+|`_.name`| e.g. `us-east-1` | Use same value as `context.db.instance` |
 
 ### AWS S3
 
@@ -79,10 +87,13 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `s3.amazonaws.com`| Not available in some cases. Only set if the actual connection is available. |
 |`_.port`|e.g. `443`| Not available in some cases. Only set if the actual connection is available. |
-|`_.service.name`| `s3` |
-|`_.service.type`|`storage`|
-|`_.service.resource`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons`| The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
+|`_.service.name`| `s3` | DEPRECATED, use `service.target.{type,name}`
+|`_.service.type`|`storage`| DEPRECATED, use `service.target.{type,name}`
+|`_.service.resource`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons`| DEPRECATED, use `service.target.{type,name}` |
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the bucket is. |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| `s3` ||
+|`_.name`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons` | The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
 
 ### Elasticsearch
 
@@ -102,9 +113,12 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
-|`_.service.name`| `elasticsearch` |
-|`_.service.type`|`db`|
-|`_.service.resource`| `elasticsearch` |
+|`_.service.name`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
+|`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| `elasticsearch` | |
+|`_.name`| :heavy_minus_sign: | |
 
 ### MongoDB
 
@@ -124,9 +138,12 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
-|`_.service.name`| `mongodb` |
-|`_.service.type`|`db`|
-|`_.service.resource`| `mongodb` |
+|`_.service.name`| `mongodb` | DEPRECATED, use `service.target.{type,name}`  |
+|`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `mongodb` | DEPRECATED, use `service.target.{type,name}` |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| `mongob` | |
+|`_.name`| :heavy_minus_sign: | |
 
 ### Redis
 
@@ -146,9 +163,12 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
-|`_.service.name`| `redis` |
-|`_.service.type`|`db`|
-|`_.service.resource`| `redis` |
+|`_.service.name`| `redis` |DEPRECATED, use `service.target.{type,name}`  |
+|`_.service.type`|`db`|DEPRECATED, use `service.target.{type,name}`  |
+|`_.service.resource`| `redis` |DEPRECATED, use `service.target.{type,name}`  |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| `redis` | |
+|`_.name`| :heavy_minus_sign: | |
 
 ### SQL Databases
 
@@ -156,9 +176,10 @@ The following fields are relevant for database and datastore spans. Where possib
 |-------|:---------------:|---------------|
 |`name`| e.g. `SELECT FROM products` | For SQL operations we perform a limited parsing the statement, and extract the operation name and outer-most table involved (if any). See more details [here](https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA). |
 |`type`|`db`|
+|`subtype`| e.g. `oracle`, `mysql` | [see below](#database-subtype) |
 |`action`|`query`|
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| e.g. `instance-name`| Use instance concept for [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005) and [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15). For Oracle the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`.
+|`_.instance`| e.g. `instance-name`| [see below](#database-instance) |
 |`_.statement`| e.g. `SELECT * FROM products WHERE ...`| The full SQL statement. We store up to 10000 Unicode characters per database statement.  |
 |`_.type`|`sql`|
 |`_.user`| e.g. `readonly_user`|
@@ -166,11 +187,37 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
-|`_.service.type`|`db`|
+|`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}`  |
+|`_.service.resource`| |DEPRECATED, use `service.target.{type,name}`  |
+| __**service.target._**__ |<hr/>|<hr/>|
+|`_.type`| e.g. `mysql` | Same value as `subtype` |
+|`_.name`|  | Database name, same as `db.instance` if available  |
 
-| Field | MySQL | PostgreSQL | MS SQL | Oracle | MariaDB | IBM Db2 |
-|-------|:-----:|:----------:|:------:|:------:|:-------:|:-------:|
-|`subtype`|`mysql`| `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |
-| __**context.destination._**__ |<hr/>|<hr/>|<hr/>|<hr/> |<hr/>|<hr/>|
-|`_.service.name`| `mysql` | `postgresql` | `sqlserver` | `oracle` |  `mariadb` | `db2` |
-|`_.service.resource` | `mysql` | `postgresql` | `sqlserver` | `oracle` |`mariadb` | `db2` |
+#### Database subtype
+
+| Database name        | `subtype`   |
+|:---------------------|:-----------:|
+| MySQL                | `mysql`     |
+| MariaDB              | `mariadb`   |
+| PostgreSQL           | `postgresql`|
+| Microsoft SQL server | `sqlserver` |
+| Oracle               | `oracle`    |
+| IBM Db2              | `db2`       |
+
+#### Database instance
+
+For most relational databases, the value of `db.instance` should map to the concept of "current database".
+When no database selected, for example when creating a database, this field should be omitted.
+
+While the semantics may vary across vendors, the goal here is to have a single string that can be used for correlation,
+it is thus important to be able to get the same value across all agents.
+
+There are multiple ways to capture it, agents SHOULD attempt to capture it with the following priorities:
+1. Parsing the database connection string: parsing can be complex, no runtime impact,
+2. Querying connection metadata at runtime: acceptable as fallback, might trigger extra SQL queries, require caching to minimize overhead
+
+For most databases, the `database` parameter of the connection string should be available. For those that implement the [`INFORMATION_SCHEMA`](https://en.wikipedia.org/wiki/Information_schema) standard, it should be included in the values returned by `SELECT schema_name FROM information_schema.schemata`;
+
+**Oracle** : Use instance as defined in [Oracle DB instances](https://docs.oracle.com/cd/E11882_01/server.112/e40540/startup.htm#CNCPT005), the instance name should be the same as retrieved through `SELECT sys_context('USERENV','INSTANCE_NAME') AS Instance`. When multiple identifiers are available, the following priotity should be applied (first available wins): `INSTANCE_NAME`, `SERVICE_NAME`, `SID`.
+
+**MS SQL** : Use instance as defined in [MS SQL instances](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/database-engine-instances-sql-server?view=sql-server-ver15)

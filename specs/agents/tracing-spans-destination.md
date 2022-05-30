@@ -7,42 +7,41 @@ and the [APM SIEM integration](https://www.elastic.co/blog/elastic-apm-7-6-0-rel
 
 ### Destination service fields
 
+In `context.destination.service`, `_.name` and `_.type` fields are deprecated and replaced by `context.service.target.*` fields.
+See [related specification](tracing-spans-service-target.md) for more details.
+
+The only field still required is `context.destination.service.resource` until APM server is able to infer it.
+
+#### Deprecated fields
+
+- `context.destination.service.name` : deprecated but still required in protocol, thus value should be an empty string `""`.
+- `context.destination.service.type` : deprecated but still required in protocol, thus value should be an empty string `""`.
+
+Agents MUST NOT manually set these fields.
+Agents MUST NOT offer non-deprecated public APIs to set them.
+
+The intake JSON spec (up until at least 7.15) requires the deprecated fields to be present if `context.destination.service.resource` is set.
+Future versions of APM Server will remove the fields from the intake API and drop it if sent by agents.
+
+Agents MAY omit the deprecated fields when sending spans to an APM Server version that doesn't require the field.
+Otherwise, the field MUST be serialized as an empty string if `context.destination.service.resource` is set.
+Both options result in the fields being omitted from the Elasticsearch document.
+
+#### Destination resource
+
+- `context.destination.service.resource` :
+  - ES field: `span.destination.service.resource`
+  - Identifies unique destinations for each service.
+  - value should be inferred from `context.service.target.*` fields
+  - required for compatibility with existing features (Service Map, Dependencies) that rely on it
+  - might become optional in the future once APM server is able to infer the value from `context.service.target.*` fields.
+
 Spans representing an external call MUST have `context.destination.service` information.
 If the span represents a call to an in-memory database, the information SHOULD still be set.
 
 Agents SHOULD have a generic component used in all tests that validates that the destination information is present for exit spans.
 Rather than opting into the validation, the testing should provide an opt-out if,
 for whatever reason, the destination information can't or shouldn't be collected for a particular exit span.
-
-#### `context.destination.service.name`/`context.destination.service.type`
-
-ES field: `span.destination.service.name`/`span.destination.service.type`
-
-The identifier for the destination service.
-
-**Deprecated**
-
-These fields are deprecated and removed from Elasticsearch documents.
-
-However, we can't just remove them from the intake payloads as they're required fields in the intake API.
-
-**Value**
-
-Agents MUST NOT manually set these fields.
-Agents MUST NOT offer non-deprecated public APIs to set them.
-
-The intake JSON spec (up until at least 7.15) requires the fields to be present if `context.destination.service.resource` is set.
-Future versions of APM Server will remove the fields from the intake API and drop it if sent by agents.
-
-Agents MAY omit the fields when sending spans to an APM Server version that doesn't require the field.
-Otherwise, the field MUST be serialized as an empty string if `context.destination.service.resource` is set.
-Both options result in the fields being omitted from the Elasticsearch document.
-
-#### `context.destination.service.resource`
-
-ES field: `span.destination.service.resource`
-
-Identifies unique destinations for each service.
 
 **Usage**
 
