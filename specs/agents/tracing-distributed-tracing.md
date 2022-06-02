@@ -147,7 +147,9 @@ headers, they should be propagated throughout the transaction and mutated as
 specified above before being set on outgoing requests.
 
 There is an edge case where `tracestate` is present but blank `""` - in this
-case, we should not propagate the tracestate header.
+case, we should not propagate the tracestate header. Propagating the header in
+this case can cause downstream receivers of requests from the monitored application
+to error since an empty header is invalid.
 
 The `span-id` part of the `traceparent` header should be the `id` of the span
 representing the outgoing request. If (and only if) that span is not sampled,
