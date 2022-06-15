@@ -7,7 +7,7 @@ Taken strictly, this definition could lead to treating every change in runtime b
 ### Instrumentation versions
 Each agent instruments a number of libraries that are used in their language ecosystem. These libraries themselves may introduce new versions, breaking changes, and deprecate older versions. The APM agents therefore will occasionally introduce changes in their instrumentation of external libraries. The changes that we consider breaking are ones that remove support for older versions. Agents can also continue supporting the instrumentation of a particular older library version but drop its testing of it because of some conflicts in installing test suite dependencies, for example. This change would not be considered breaking as long as it’s properly documented.
 
-### Language support
+### Language and runtime support
 Similar to library version instrumentation, APM agents will typically support multiple versions of its language. Sometimes it is necessary to drop support for older versions of the languages as they themselves are EOL’ed. It is considered a breaking change when an APM agent drops support for a particular language version.
 
 ### Configuration changes
