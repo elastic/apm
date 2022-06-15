@@ -11,7 +11,7 @@ Each agent instruments a number of libraries that are used in their language eco
 Similar to library version instrumentation, APM agents will typically support multiple versions of its language. Sometimes it is necessary to drop support for older versions of the languages as they themselves are EOL’ed. It is considered a breaking change when an APM agent drops support for a particular language version.
 
 ### Configuration changes
-All agents support a set of configuration options and default values. Changes to the configuration offering can be categorized into two types:
+All agents support a set of configuration options and default values. Changes to the configuration offering can be categorized into three types:
 
 __Change in default configuration value__: Each APM agent configuration option has a default value. Sometimes we change what that default configuration value is. We should consider the _effect_ of changing the value when we evaluate whether the change is breaking. For example, the default configuration value could enrich the data and provide an enhanced experience to the user. In this case, we wouldn’t consider the change to be breaking. On the other hand, if a default value is changed, and as a consequence, removes some information the user was previously able to see, we would consider that a breaking change.
 
