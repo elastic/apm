@@ -18,6 +18,7 @@ you can group transaction names that contain dynamic parts with a wildcard expre
 For example,
 the pattern `GET /user/*/cart` would consolidate transactions,
 such as `GET /users/42/cart` and `GET /users/73/cart` into a single transaction name `GET /users/*/cart`, hence reducing the transaction name cardinality.
+The first matching expression wins, so make sure to place more specific expressions before more generic ones, for example: `GET /users/*/cart, GET /users/*`.
 
 |                |                                                                                          |
 |----------------|------------------------------------------------------------------------------------------|
