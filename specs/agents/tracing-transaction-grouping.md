@@ -17,7 +17,7 @@ With this option,
 you can group transaction names that contain dynamic parts with a wildcard expression.
 For example,
 the pattern `GET /user/*/cart` would consolidate transactions,
-such as `GET /users/42/cart`, into a single group.
+such as `GET /users/42/cart` and `GET /users/73/cart` into a single transaction name `GET /users/*/cart`, hence reducing the transaction name cardinality.
 
 |                |                                                                                          |
 |----------------|------------------------------------------------------------------------------------------|
