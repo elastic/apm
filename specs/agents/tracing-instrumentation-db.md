@@ -97,8 +97,8 @@ The following fields are relevant for database and datastore spans. Where possib
 
 ### Elasticsearch
 
-| Field | Value / Examples | Comments |
-|-------|:---------------:|----------|
+| Span Field | Value / Examples | Comments |
+|------------|:----------------:|----------|
 |`name`| e.g. `Elasticsearch: GET /index/_search` |  The span name should be `Elasticsearch: <method> <path>` |
 |`type`|`db`|
 |`subtype`|`elasticsearch`|
@@ -116,9 +116,15 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.name`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
 |`_.service.resource`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
-| __**service.target._**__ |<hr/>|<hr/>|
+| __**context.service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `elasticsearch` | |
 |`_.name`| :heavy_minus_sign: | |
+
+In addition to [the usual error capture specification](./error-tracking.md), the following apply to errors captured for Elasticsearch client auto-instrumentation.
+
+| Error Field | Value / Examples | Comments |
+|-------------|:----------------:|----------|
+| `exception.type` | `$exceptionType` or `${exceptionType} (${esResponseBody.error.type})`, e.g. `ResponseError (index_not_found_exception)` | Some Elasticsearch client errors include an error [response body from Elasticsearch with a `error.type`](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#common-options-error-options). For these errors, the APM agent SHOULD capture that type as in the given example. This helps with error grouping in the APM app. |
 
 ### MongoDB
 
