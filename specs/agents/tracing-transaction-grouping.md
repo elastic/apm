@@ -27,6 +27,7 @@ The first matching expression wins, so make sure to place more specific expressi
 | Dynamic        | `true`                                                                                   |
 | Central config | `true`                                                                                   |
 
+The `url_groups` option that the Java and PHP agent offered is deprecated in favor of `transaction_name_groups`.
 ### When to apply the grouping
 
 The grouping can be applied either every time the transaction name is set, or lazily, when the transaction name is read.
