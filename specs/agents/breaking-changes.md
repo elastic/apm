@@ -33,7 +33,7 @@ __Support for APM server protocols__: Similarly, if the APM agent removes suppor
 
 
 ## What is not a Breaking change
-In general, we don’t consider changes in the data we collect to be breaking. Some examples of these changes are:
+In general, we don’t consider changes in the data we collect to be breaking, unless they have security or privacy implications. Some examples of these changes are:
 - Span metadata, such as the span name or the structured `db.statement`, or destination granularity
 - Span compression (multiple similar or exact consecutive spans collapsed into one)
 - Trace structure (e.g. span links + handling of messaging)
