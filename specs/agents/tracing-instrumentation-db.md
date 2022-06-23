@@ -2,6 +2,7 @@
 ## Table of Contents
 * [Database and Datastore spans](#database-and-datastore-spans)
 * [Specific Databases](#specific-databases)
+  * [Casandra](#cassandra)
   * [AWS DynamoDb](#aws-dynamodb)
   * [AWS S3](#aws-s3)
   * [Elasticsearch](#elasticsearch)
@@ -42,6 +43,17 @@ The following fields are relevant for database and datastore spans. Where possib
 
 
 ## Specific Databases
+
+### Cassandra
+
+| Field                                  | Value / Examples                   | Comments      |
+|----------------------------------------|:-----------------------------------|---------------|
+| `type`                                 | `db`                               |               |
+| `subtype`                              | `cassandra`                        |               |
+| `context.db.instance`                  | e.g. `customers`                   | Keyspace name |
+| `context.destination.service.resource` | `cassandra`, `cassandra/customers` | DEPRECATED    |
+| `service.target.type`                  | `cassandra`                        |               |
+| `service.target.name`                  | e.g. `customers`                   | Keyspace name |
 
 ### AWS DynamoDb
 
