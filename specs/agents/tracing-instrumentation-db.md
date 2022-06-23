@@ -141,7 +141,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`subtype`|`mongodb`|
 |`action`|e.g. `find` , `insert`, etc.| The MongoDB command executed with this action. |
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| :heavy_minus_sign: |
+|`_.instance`| e.g. `customers` | Database name, if available |
 |`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON.|
 |`_.type`|`mongodb`|
 |`_.user`| :heavy_minus_sign: |
@@ -155,7 +155,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.resource`| `mongodb` | DEPRECATED, use `service.target.{type,name}` |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `mongob` | |
-|`_.name`| :heavy_minus_sign: | |
+|`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
 
 ### Redis
 
