@@ -176,11 +176,13 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
    - Intake: key-value pairs, same like `context.request.headers`.
 - **`context.service.framework.name`**: same as `span.subtype`, but not in lowercase, e.g. `Kafka`, `RabbitMQ`
 
-#### Span destination fields
+#### Span context fields
 
 - **`context.destination.address`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.port`**: optional. Not available in some cases. Only set if the actual connection is available.
-- **`context.destination.service.*`**: See [destination spec](tracing-spans-destination.md)
+- **`context.destination.service.resource*`**: mandatory. Value should be either `${span.subtype}/${context.mesage.queue.name}` or `${span.subtype}`.
+- **`context.service.target.type`**: mandatory. Same value as `span.subtype`. See [Service Target](tracing-spans-service-target.md) for details.
+- **`context.service.target.name`**: optional. same value as `context.mesage.queue.name` if available. See [Service Target](tracing-spans-service-target.md) for details.
 
 ### `ignore_message_queues` configuration
 
