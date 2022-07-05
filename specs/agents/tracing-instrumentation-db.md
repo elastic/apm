@@ -75,7 +75,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `dynamodb` | DEPRECATED
 |`_.service.type`|`db`| DEPRECATED
-|`_.service.resource`| `dynamodb` | DEPRECATED
+|`_.service.resource`| `dynamodb`, `dynamodb/us-east-1`| DEPRECATED
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the table is, if available. |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `dynamodb` ||
