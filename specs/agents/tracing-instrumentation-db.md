@@ -2,9 +2,9 @@
 ## Table of Contents
 * [Database and Datastore spans](#database-and-datastore-spans)
 * [Specific Databases](#specific-databases)
-  * [Casandra](#cassandra)
   * [AWS DynamoDb](#aws-dynamodb)
   * [AWS S3](#aws-s3)
+  * [Casandra](#cassandra)
   * [Elasticsearch](#elasticsearch)
   * [MongoDB](#mongodb)
   * [Redis](#redis)
@@ -43,17 +43,6 @@ The following fields are relevant for database and datastore spans. Where possib
 
 
 ## Specific Databases
-
-### Cassandra
-
-| Field                                  | Value / Examples                   | Comments      |
-|----------------------------------------|:-----------------------------------|---------------|
-| `type`                                 | `db`                               |               |
-| `subtype`                              | `cassandra`                        |               |
-| `context.db.instance`                  | e.g. `customers`                   | Keyspace name |
-| `context.destination.service.resource` | `cassandra`, `cassandra/customers` | DEPRECATED    |
-| `service.target.type`                  | `cassandra`                        |               |
-| `service.target.name`                  | e.g. `customers`                   | Keyspace name |
 
 ### AWS DynamoDb
 
@@ -106,6 +95,17 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `s3` ||
 |`_.name`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons` | The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
+
+### Cassandra
+
+| Field                                  | Value / Examples                   | Comments      |
+|----------------------------------------|:-----------------------------------|---------------|
+| `type`                                 | `db`                               |               |
+| `subtype`                              | `cassandra`                        |               |
+| `context.db.instance`                  | e.g. `customers`                   | Keyspace name |
+| `context.destination.service.resource` | `cassandra`, `cassandra/customers` | DEPRECATED    |
+| `service.target.type`                  | `cassandra`                        |               |
+| `service.target.name`                  | e.g. `customers`                   | Keyspace name |
 
 ### Elasticsearch
 
