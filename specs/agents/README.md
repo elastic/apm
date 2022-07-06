@@ -38,6 +38,7 @@ You can find details about each of these in the [APM Data Model](https://www.ela
 - [Metadata](metadata.md)
 - Tracing
   - [Transactions](tracing-transactions.md)
+    - [Transaction Grouping](tracing-transaction-grouping.md)
   - [Spans](tracing-spans.md)
   - [Span destination](tracing-spans-destination.md)
   - [Handling huge traces](handling-huge-traces/)
