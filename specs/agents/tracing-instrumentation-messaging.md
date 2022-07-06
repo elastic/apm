@@ -181,6 +181,8 @@ incoming messages creating a transaction) and not for outgoing messaging spans.
 - **`context.destination.address`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.port`**: optional. Not available in some cases. Only set if the actual connection is available.
 - **`context.destination.service.resource*`**: mandatory. Value should be either `${span.subtype}/${context.mesage.queue.name}` or `${span.subtype}`.
+- **`context.destination.service.type*`**: deprecated but mandatory until 7.14.0. See [destination spec](tracing-spans-destination.md) for details.
+- **`context.destination.service.name`**: deprecated but mandatory until 7.14.0. See [destination spec](tracing-spans-destination.md) for details.
 - **`context.service.target.type`**: mandatory. Same value as `span.subtype`. See [Service Target](tracing-spans-service-target.md) for details.
 - **`context.service.target.name`**: optional. same value as `context.mesage.queue.name` if available. See [Service Target](tracing-spans-service-target.md) for details.
 
