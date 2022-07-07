@@ -152,7 +152,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `mongodb` | DEPRECATED, use `service.target.{type,name}`  |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
-|`_.service.resource`| `mongodb` | DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `mongodb/customers` | DEPRECATED, use `service.target.{type,name}` |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `mongob` | |
 |`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
