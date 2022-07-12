@@ -116,7 +116,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`subtype`|`elasticsearch`|
 |`action`| `request` |
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| :heavy_minus_sign: |
+|`_.instance`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
 |`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body may be recorded. Alternatively, if a query is specified in HTTP query parameters, that may be used instead. If the body is gzip-encoded, the body should be decoded first.|
 |`_.type`|`elasticsearch`|
 |`_.user`| :heavy_minus_sign: |
@@ -127,10 +127,19 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
-|`_.service.resource`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `elasticsearch`, `elasticsearch/my-cluster` | DEPRECATED, use `service.target.{type,name}` |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `elasticsearch` | |
-|`_.name`| :heavy_minus_sign: | |
+|`_.name`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
+
+
+#### Cluster name
+
+The Elasticsearch cluster name is not always available in ES clients, as a result the following strategy should be used (by order of priority):
+- Call internal API in the client library to get cached cluster name.
+- Use `x-found-handling-cluster` HTTP response header value in HTTP response headers.
+- Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
+- execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
 
 ### MongoDB
 
