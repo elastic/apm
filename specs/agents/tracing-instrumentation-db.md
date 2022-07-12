@@ -137,7 +137,7 @@ The following fields are relevant for database and datastore spans. Where possib
 
 The Elasticsearch cluster name is not always available in ES clients, as a result the following strategy should be used (by order of priority):
 - Call internal API in the client library to get cached cluster name.
-- Use `x-found-handling-cluster` HTTP response header value in HTTP response headers.
+- Use `x-found-handling-cluster` HTTP response header value.
 - Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
 - execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
 
