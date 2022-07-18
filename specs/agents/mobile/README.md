@@ -35,14 +35,7 @@ Here is a list of resource attributes that are relevant for our mobile agents:
 | [`deivce.id`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/)            | :x: not mapped yet         | `E733F41E-DF47-4BB4-AAF0-FD784FD95653` |  [Follow this description.](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/) (Device ID should be fix and unique for a device but should not carry PII)  |
 | [`device.model.identifier`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/) | :heavy_exclamation_mark: not mapped yet      | `iPhone4`,`SM-G920F`             |             |
 | [`device.model.name`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/)       | :heavy_exclamation_mark: not mapped yet      | `Samsung Galaxy S6`              |             |
-| [`device.manufacturer`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/)     | :heavy_exclamation_mark: not mapped yet      | `Apple`, `Samsung`               |             |
-
-### Additional Resource Attributes
-The following attributes do not have an OpenTelemetry semantic convention yet:
-
-| Attribute name       | Elastic Convention         | Example                          | Comment                            |
-|----------------------|----------------------------|----------------------------------| -----------------------------------|
-| `session.id`         | :heavy_exclamation_mark: not mapped yet         | `opbeans-swift`                  | Some id for a session. This is not specified in OTel, yet. |     
+| [`device.manufacturer`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/)     | :heavy_exclamation_mark: not mapped yet      | `Apple`, `Samsung`               |             |   
 
 
 ### Common Span attributes
@@ -59,10 +52,13 @@ The following attributes do not have an OpenTelemetry semantic convention yet:
 
 ### Additional Span attributes
 
+The following attributes do not have an OpenTelemetry semantic convention:
+
 | Attribute name                          | Elastic Convention         | Example                          | Comment                            |
 |-----------------------------------------|----------------------------|----------------------------------| -----------------------------------|
 | `telemetry.sdk.elastic_export_timestamp`| N/A: only relevant for APM server.     | `1658149487000000000` | This is required to deal with the time skew on mobile devices. Set this to the timestamp (in nanoseconds) when the span is exported in the OpenTelemetry span processer. :heavy_exclamation_mark: APM server should drop this field and store it in ES.|
 | `type` | `transaction.type` | `mobile` :interrobang: | :heavy_exclamation_mark: Need to define new values for transactions resulting from mobile interactions. |
+| `session.id`         | :heavy_exclamation_mark: not mapped yet         | `opbeans-swift`                  | Some id for a session. This is not specified in OTel, yet. | 
 
 
 ### Attributes on outgoing HTTP spans 
