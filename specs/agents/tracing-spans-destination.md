@@ -20,10 +20,10 @@ The only field still required is `context.destination.service.resource` until AP
 Agents MUST NOT manually set these fields.
 Agents MUST NOT offer non-deprecated public APIs to set them.
 
-The intake JSON spec (up until at least 7.15) requires the deprecated fields to be present if `context.destination.service.resource` is set.
+The intake JSON spec until 7.14.0 requires the deprecated fields to be present if `context.destination.service.resource` is set.
 Future versions of APM Server will remove the fields from the intake API and drop it if sent by agents.
 
-Agents MAY omit the deprecated fields when sending spans to an APM Server version that doesn't require the field.
+Agents MAY omit the deprecated fields when sending spans to an APM Server version >= 7.14.0 .
 Otherwise, the field MUST be serialized as an empty string if `context.destination.service.resource` is set.
 Both options result in the fields being omitted from the Elasticsearch document.
 

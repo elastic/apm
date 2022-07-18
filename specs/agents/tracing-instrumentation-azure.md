@@ -140,7 +140,9 @@ A new span is created when there is a current transaction, and when a message is
 | APM field | Required? | Format | Notes | Example |
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL host | | `accountname.queue.core.windows.net` |
-| `context.destination.service.resource` | yes | `azurequeue/<QueueName>` | | `azurequeue/accountname` |
+| `context.destination.service.resource` | yes | `azurequeue/<QueueName>` | | `azurequeue/queuename` |
+| `context.service.target.type` | yes | `azurequeue` | | |
+| `context.service.target.name` | yes | `<QueueName>` | | `queuename` |
 
 ----
 
@@ -362,6 +364,8 @@ A new span is created when there is a current transaction, and when a message is
 | --------- | --------- | ------ | ----- | ------- |
 | `context.destination.address` | yes | URL host | | `namespace.servicebus.windows.net` |
 | `context.destination.service.resource` | yes | azureservicebus/`<Queue>`\|`<Topic>` | | `azurequeue/myqueue`, `azureservicebus/mytopic` |
+| `context.service.target.type` | yes | `azureservicebus` | | |
+| `context.service.target.name` | yes | `<Queue>`\|`<Topic>` | | `mytopic` |
 
 ----
 
