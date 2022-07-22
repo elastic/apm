@@ -127,9 +127,10 @@ if (span.isExit) {
       service_target.name = span.context.message.queue.name
 
     } else if (context.http.url) { // http spans
-      service_target.name = context.http.host;
-      if (context.http.url.port > 0) {
-        service_target.name += ":" + context.http.port;
+      service_target.name = getHostFromUrl(context.http.url);
+      port = getPortFromUrl(context.http.url);
+      if (port > 0) {
+        service_target.name += ":" + port;
       }
     }
 
