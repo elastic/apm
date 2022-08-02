@@ -19,7 +19,7 @@ In addition to the above properties, HTTP-specific properties should be recorded
 
 By default request bodies are not captured. It should be possible to configure agents to enable their capture using the config variable `ELASTIC_APM_CAPTURE_BODY`. By default agents will capture request headers, but it should be possible to disable their capture using the config variable `ELASTIC_APM_CAPTURE_HEADERS`.
 
-Captured request and response headers, cookies, and form bodies MUST be sanitised (i.e. secrets removed) according to [data sanitization rules](https://github.com/elastic/apm/blob/main/specs/agents/sanitization.md#data-sanitization).
+Captured request and response headers, cookies, and form bodies MUST be sanitised (i.e. secrets removed) according to [data sanitization rules](sanitization.md#data-sanitization).
 
 
 ### `transaction_ignore_urls` configuration
