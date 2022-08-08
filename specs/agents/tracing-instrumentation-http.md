@@ -19,21 +19,8 @@ In addition to the above properties, HTTP-specific properties should be recorded
 
 By default request bodies are not captured. It should be possible to configure agents to enable their capture using the config variable `ELASTIC_APM_CAPTURE_BODY`. By default agents will capture request headers, but it should be possible to disable their capture using the config variable `ELASTIC_APM_CAPTURE_HEADERS`.
 
-Request and response headers, cookies, and form bodies should be sanitised (i.e. secrets removed). Each agent should define a default list of keys to sanitise, which should include at least the following (using wildcard matching):
+Captured request and response headers, cookies, and form bodies MUST be sanitised (i.e. secrets removed) according to [data sanitization rules](sanitization.md#data-sanitization).
 
-  - `password`
-  - `passwd`
-  - `pwd`
-  - `secret`
-  - `*key`
-  - `*token*`
-  - `*session*`
-  - `*credit*`
-  - `*card*`
-  - `authorization`
-  - `set-cookie`
-
-Agents may may include additional patterns if there are common conventions specific to language frameworks.
 
 ### `transaction_ignore_urls` configuration
 

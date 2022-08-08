@@ -106,6 +106,10 @@ This behavior is not expected with OTel API with status, thus bridged spans/tran
 altered by reporting (or lack of reporting) of an error. Here the behavior should be identical to when the end-user provides
 the outcome explicitly and thus have higher priority over the inferred value.
 
+For OTel spans that are mapped to Elastic Transactions, agent should ensure that `transaction.result` is not sent and let
+the server infer the value from `otel.attributes`. This allows to have consistent values for `transaction.result` between
+agent intake and native OTLP intake.
+
 ### Attributes mapping
 
 OTel relies on key-value pairs for span attributes.

@@ -4,6 +4,7 @@
 * [Specific Databases](#specific-databases)
   * [AWS DynamoDb](#aws-dynamodb)
   * [AWS S3](#aws-s3)
+  * [Casandra](#cassandra)
   * [Elasticsearch](#elasticsearch)
   * [MongoDB](#mongodb)
   * [Redis](#redis)
@@ -63,7 +64,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `dynamodb` | DEPRECATED
 |`_.service.type`|`db`| DEPRECATED
-|`_.service.resource`| `dynamodb` | DEPRECATED
+|`_.service.resource`| `dynamodb`, `dynamodb/us-east-1`| DEPRECATED
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the table is, if available. |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `dynamodb` ||
@@ -95,6 +96,17 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.type`| `s3` ||
 |`_.name`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons` | The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
 
+### Cassandra
+
+| Field                                  | Value / Examples                   | Comments      |
+|----------------------------------------|:-----------------------------------|---------------|
+| `type`                                 | `db`                               |               |
+| `subtype`                              | `cassandra`                        |               |
+| `context.db.instance`                  | e.g. `customers`                   | Keyspace name |
+| `context.destination.service.resource` | `cassandra`, `cassandra/customers` | DEPRECATED    |
+| `service.target.type`                  | `cassandra`                        |               |
+| `service.target.name`                  | e.g. `customers`                   | Keyspace name |
+
 ### Elasticsearch
 
 | Span Field | Value / Examples | Comments |
@@ -104,7 +116,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`subtype`|`elasticsearch`|
 |`action`| `request` |
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| :heavy_minus_sign: |
+|`_.instance`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
 |`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body may be recorded. Alternatively, if a query is specified in HTTP query parameters, that may be used instead. If the body is gzip-encoded, the body should be decoded first.|
 |`_.type`|`elasticsearch`|
 |`_.user`| :heavy_minus_sign: |
@@ -115,16 +127,25 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
-|`_.service.resource`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `elasticsearch`, `elasticsearch/my-cluster` | DEPRECATED, use `service.target.{type,name}` |
 | __**context.service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `elasticsearch` | |
-|`_.name`| :heavy_minus_sign: | |
+|`_.name`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
 
 In addition to [the usual error capture specification](./error-tracking.md), the following apply to errors captured for Elasticsearch client auto-instrumentation.
 
 | Error Field | Value / Examples | Comments |
 |-------------|:----------------:|----------|
 | `exception.type` | `$exceptionType` or `${exceptionType} (${esResponseBody.error.type})`, e.g. `ResponseError (index_not_found_exception)` | Some Elasticsearch client errors include an error [response body from Elasticsearch with a `error.type`](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#common-options-error-options). For these errors, the APM agent MAY capture that type as in the given example. This helps with error grouping in the APM app. |
+
+#### Cluster name
+
+The Elasticsearch cluster name is not always available in ES clients, as a result the following strategy should be used (by order of priority):
+- Call internal API in the client library to get cached cluster name.
+- Use `x-found-handling-cluster` HTTP response header value.
+- Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
+- execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
+
 
 ### MongoDB
 
@@ -135,7 +156,7 @@ In addition to [the usual error capture specification](./error-tracking.md), the
 |`subtype`|`mongodb`|
 |`action`|e.g. `find` , `insert`, etc.| The MongoDB command executed with this action. |
 | __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| :heavy_minus_sign: |
+|`_.instance`| e.g. `customers` | Database name, if available |
 |`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON.|
 |`_.type`|`mongodb`|
 |`_.user`| :heavy_minus_sign: |
@@ -146,10 +167,10 @@ In addition to [the usual error capture specification](./error-tracking.md), the
 |`_.port`|e.g. `5432`|
 |`_.service.name`| `mongodb` | DEPRECATED, use `service.target.{type,name}`  |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
-|`_.service.resource`| `mongodb` | DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| `mongodb/customers` | DEPRECATED, use `service.target.{type,name}` |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `mongob` | |
-|`_.name`| :heavy_minus_sign: | |
+|`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
 
 ### Redis
 
