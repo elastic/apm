@@ -157,7 +157,7 @@ Field | Value | Description | Source
 `context.service.origin.name` | e.g. `targetgroup/lambda...5c45c6791a` | ELB target group | Derived from the 6th segment of `event.requestContext.elb.targetGroupArn`
 `context.service.origin.id` | e.g. `arn:aws:elasticlo...65c45c6791a` | ELB target group ARN | `event.requestContext.elb.targetGroupArn` |
 `context.cloud.origin.service.name` | `elb` | Constant value for ELB. | -
-`context.cloud.origin.account.id` | e.g. `123456789012` | Account ID of the ELB. | Derived from the 5th segment of `event.requestContext.elb.targetGroupArn`
+`context.cloud.origin.account.id` | e.g. `123456789012` | Account ID for the ELB. | Derived from the 5th segment of `event.requestContext.elb.targetGroupArn`
 `context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 Note that the `context.service.origin.version` is omitted for ELB requests.
