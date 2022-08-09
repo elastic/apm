@@ -82,7 +82,7 @@ Agents should poll the APM Server for config periodically by sending an HTTP req
 
 The server will respond with a JSON object, where each key maps a config attribute to a string value. The string value should be interpreted the same as if it were passed in via an environment variable. Upon receiving these config changes, the agent will update its configuration dynamically, overriding any config previously specified. That is, config via Kibana takes highest precedence.
 
-To ensure graceful recovery if the APM Server is offline or there is a network partition, agents should only retry central configuration requests occasionally, and should add a modest random delay when retrying to avoid thundering herd issues when the partition resolves.
+To ensure graceful recovery if the APM Server is offline or there is a network partition, agents should only retry at a maximum every 5 seconds, regardless of Cache-Control headers being less than that value.
 
 To minimise the amount of work required by users, agents should aim to enable this feature by default. This excludes RUM, where there is a performance penalty.
 
