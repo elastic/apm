@@ -151,7 +151,7 @@ Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `type` | `request`| Transaction type: constant value for ELB. | -
 `name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
-`transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error (see [Lambda error handling doc](https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#services-apigateway-errors). If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html#http-api-develop-integrations-lambda.response), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
+`transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error. If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#respond-to-load-balancer), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
 `faas.trigger.type` | `http` | Constant value for ELB. | -
 `faas.trigger.request_id` | e.g. `Root=1-xxxxxxxxxxxxxx` | AWS Trace ID of the ELB request. | `event.headers.x-amzn-trace-id`
 `context.service.origin.name` | e.g. `targetgroup/lambda...5c45c6791a` | ELB target group | Derived from the 6th segment of `event.requestContext.elb.targetGroupArn`
