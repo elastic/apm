@@ -117,11 +117,20 @@ The following fields are relevant for database and datastore spans. Where possib
 |`action`| `request` |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
-|`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body may be recorded. Alternatively, if a query is specified in HTTP query parameters, that may be used instead. If the body is gzip-encoded, the body should be decoded first.|
+|`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body SHOULD be recorded according to the `elasticsearch_capture_body_urls` option (see below). If the body is gzip-encoded, the body should be decoded first.|
 |`_.type`|`elasticsearch`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
 |`_.rows_affected`| :heavy_minus_sign: |
+| __**context.http._**__ |<hr/>|<hr/>|
+|`_.status_code`|`200`|
+|`_.method`|`GET`|
+|`_.url.full`|`https://localhost:9200/index/_search?q=user.id:kimchy`|
+|`_.url.protocol`|`https`|
+|`_.url.hostname`|`localhost`|
+|`_.url.port`|`9200`|
+|`_.url.pathname`|`/index/_search`|
+|`_.url.search`|`q=user.id:kimchy`|
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
@@ -140,6 +149,19 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 - Use `x-found-handling-cluster` HTTP response header value.
 - Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
 - execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
+
+#### `elasticsearch_capture_body_urls` configuration
+
+The URL patterns for which the agent is capturing the request body for Elasticsearch clients.
+ 
+Agents MAY offer this configuration option.
+If they don't, they MUST use hard-coded list of URLs that correspond with the default value of this option.
+
+|                |            |
+|----------------|------------|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | `*_search, *_msearch, *_msearch/template, *_search/template, *_count`                    |
+| Central config | `false`                                                                                  |
 
 ### MongoDB
 
