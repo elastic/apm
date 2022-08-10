@@ -155,7 +155,7 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 The URL patterns for which the agent is capturing the request body for Elasticsearch clients.
  
 Agents MAY offer this configuration option.
-If they don't, they MUST use hard-coded list of URLs that correspond with the default value of this option.
+If they don't, they MUST use a hard-coded list of URLs that correspond with the default value of this option.
 
 |                |            |
 |----------------|------------|
