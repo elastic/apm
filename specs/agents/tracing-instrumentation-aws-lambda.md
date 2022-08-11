@@ -103,7 +103,7 @@ Field | Value | Description | Source
 `context.service.origin.name` | e.g. `gdnrpwmtsb...amazonaws.com` | The full domain name of the API Gateway. | `event.requestContext.domainName`
 `context.service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` |
 `context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | `event.version` (or `1.0` if that field is not present)
-`context.cloud.origin.service.name` | `api gateway` or `lambda url` | Constant value. | Detect lambda URLs by searching for `.lambda-url.` in the URL. Otherwise assume API Gateway.
+`context.cloud.origin.service.name` | `api gateway` or `lambda url` | Constant value. | Detect lambda URLs by searching for `.lambda-url.` in the `event.requestContext.domainName`. Otherwise assume API Gateway.
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
 `context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
