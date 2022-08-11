@@ -160,7 +160,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |                |            |
 |----------------|------------|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `*_search, *_msearch, *_msearch/template, *_search/template, *_count`                    |
+| Default        | `*/_search, */_search/template, */_msearch, */_msearch/template, */_async_search, */_count, */_sql, */_eql/search`|
 | Central config | `false`                                                                                  |
 
 ### MongoDB
