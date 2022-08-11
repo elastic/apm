@@ -125,12 +125,7 @@ The following fields are relevant for database and datastore spans. Where possib
 | __**context.http._**__ |<hr/>|<hr/>|
 |`_.status_code`|`200`|
 |`_.method`|`GET`|
-|`_.url.full`|`https://localhost:9200/index/_search?q=user.id:kimchy`|
-|`_.url.protocol`|`https`|
-|`_.url.hostname`|`localhost`|
-|`_.url.port`|`9200`|
-|`_.url.pathname`|`/index/_search`|
-|`_.url.search`|`q=user.id:kimchy`|
+|`_.url`|`https://localhost:9200/index/_search?q=user.id:kimchy`|
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `localhost`|
 |`_.port`|e.g. `5432`|
