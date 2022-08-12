@@ -109,8 +109,8 @@ The following fields are relevant for database and datastore spans. Where possib
 
 ### Elasticsearch
 
-| Field | Value / Examples | Comments |
-|-------|:---------------:|----------|
+| Span Field | Value / Examples | Comments |
+|------------|:----------------:|----------|
 |`name`| e.g. `Elasticsearch: GET /index/_search` |  The span name should be `Elasticsearch: <method> <path>` |
 |`type`|`db`|
 |`subtype`|`elasticsearch`|
@@ -128,10 +128,15 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.service.name`| `elasticsearch` | DEPRECATED, use `service.target.{type,name}` |
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
 |`_.service.resource`| `elasticsearch`, `elasticsearch/my-cluster` | DEPRECATED, use `service.target.{type,name}` |
-| __**service.target._**__ |<hr/>|<hr/>|
+| __**context.service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `elasticsearch` | |
 |`_.name`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
 
+In addition to [the usual error capture specification](./error-tracking.md), the following apply to errors captured for Elasticsearch client auto-instrumentation.
+
+| Error Field | Value / Examples | Comments |
+|-------------|:----------------:|----------|
+| `exception.type` | `$exceptionType` or `${exceptionType} (${esResponseBody.error.type})`, e.g. `ResponseError (index_not_found_exception)` | Some Elasticsearch client errors include an error [response body from Elasticsearch with a `error.type`](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#common-options-error-options). For these errors, the APM agent MAY capture that type as in the given example. This helps with error grouping in the APM app. |
 
 #### Cluster name
 
@@ -140,6 +145,7 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 - Use `x-found-handling-cluster` HTTP response header value.
 - Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
 - execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
+
 
 ### MongoDB
 
