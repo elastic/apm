@@ -117,7 +117,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`action`| `request` |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `my-cluster` | [Cluster name](#cluster-name), if available.
-|`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body SHOULD be recorded according to the `elasticsearch_capture_body_urls` option (see below). If the body is gzip-encoded, the body should be decoded first.|
+|`_.statement`| e.g. <pre lang="json">{"query": {"match": {"user.id": "kimchy"}}}</pre> | For Elasticsearch search-type queries, the request body SHOULD be recorded according to the `elasticsearch_capture_body_urls` option (see below). If the body is gzip-encoded, the body MUST be decoded first.|
 |`_.type`|`elasticsearch`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
