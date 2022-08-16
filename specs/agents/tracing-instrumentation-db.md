@@ -4,7 +4,7 @@
 * [Specific Databases](#specific-databases)
   * [AWS DynamoDb](#aws-dynamodb)
   * [AWS S3](#aws-s3)
-  * [Casandra](#cassandra)
+  * [Cassandra](#cassandra)
   * [Elasticsearch](#elasticsearch)
   * [MongoDB](#mongodb)
   * [Redis](#redis)
@@ -169,7 +169,7 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 |`_.service.type`|`db`| DEPRECATED, use `service.target.{type,name}` |
 |`_.service.resource`| `mongodb/customers` | DEPRECATED, use `service.target.{type,name}` |
 | __**service.target._**__ |<hr/>|<hr/>|
-|`_.type`| `mongob` | |
+|`_.type`| `mongodb` | |
 |`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
 
 ### Redis
