@@ -70,19 +70,21 @@ Same cardinality otherwise.
 
 **API**
 
-Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not 
-sufficient. If set to `null` or an empty value, agents MUST omit the `span.destination.service` field altogether, thus 
-providing a way to manually disable the automatic setting/inference of this field (e.g. in order to remove a node 
+Agents SHOULD offer a public API to set this field so that users can customize the value if the generic mapping is not
+sufficient. If set to `null` or an empty value, agents MUST omit the `span.destination.service` field altogether, thus
+providing a way to manually disable the automatic setting/inference of this field (e.g. in order to remove a node
 from a service map or an external service from the dependencies table).
 A user-supplied value MUST have the highest precedence, regardless if it was set before or after the automatic setting is invoked.
 
 **Value**
 
-For all [exit spans](tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty 
+For all [exit spans](tracing-spans.md#exit-spans), unless the `context.destination.service.resource` field was set by the user to `null` or an empty
 string through API, agents MUST infer the value of this field based on properties that are set on the span.
 
-If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring 
+If no value is set to the `context.destination.service.resource` field, the logic for automatically inferring
 it MUST be the following:
+
+Q3: Though above it is says "value should be inferred from `context.service.target.*` fields", this pseudo-code does not consider service.target. Should this be updated to calculate from service.target?
 
 ```groovy
 if (context.db)
@@ -91,20 +93,20 @@ if (context.db)
   else
     subtype ?: type
 else if (context.message)
-  if (context.message.queue?.name) 
+  if (context.message.queue?.name)
     "${subtype ?: type}/${context.message.queue.name}"
   else
     subtype ?: type
 else if (context.http?.url)
-  if (context.http.url.port > 0)  
+  if (context.http.url.port > 0)
     "${context.http.url.host}:${context.http.url.port}"
   else if (context.http.url.host)
     context.http.url.host
-else 
+else
   subtype ?: type
 ```
 
-If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST 
+If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST
 omit the `context.destination.service` field from the reported span event.
 
 The inference of `context.destination.service.resource` SHOULD be implemented in a central place within the agent,
@@ -134,7 +136,7 @@ ES field: [`destination.address`](https://www.elastic.co/guide/en/ecs/current/ec
 
 Address is the destination network address: hostname (e.g. `localhost`), FQDN (e.g. `elastic.co`), IPv4 (e.g. `127.0.0.1`) IPv6 (e.g. `::1`)
 
-Agents MAY offer a public API to set this field so that users can override the automatically discovered one. 
+Agents MAY offer a public API to set this field so that users can override the automatically discovered one.
 This includes the ability to set `null` or empty value in order to unset the automatically-set value.
 A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
 
@@ -144,6 +146,6 @@ ES field: [`destination.port`](https://www.elastic.co/guide/en/ecs/current/ecs-d
 
 Port is the destination network port (e.g. 443)
 
-Agents MAY offer a public API to set this field so that users can override the automnatically discovered one. 
+Agents MAY offer a public API to set this field so that users can override the automnatically discovered one.
 This includes the ability to set a non-positive value in order to unset the automatically-set value.
 A user-supplied value MUST have the highest precedence, regardless of whether it was set before or after the automatic setting is invoked.
