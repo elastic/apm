@@ -105,7 +105,10 @@ This specification assumes that values for `span.type` and `span.subtype` fit th
 - `span.context.service.target.name` depends on the span context attributes
 
 On agents, the following algorithm should be used to infer the values for `span.context.service.target.*` fields.
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 ```javascript
 // span created on agent
 span = {};
