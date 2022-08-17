@@ -113,19 +113,21 @@ span = {};
 if (span.isExit) {
   service_target = span.context.service.target;
 
-  if ('type' in service_target) { // if not manually specified, infer type from span type & subtype
-
-    // use sub-type if provided, fallback on type othewise
+  if ('type' in service_target) { // If not manually specified, infer type from span type & subtype.
     service_target.type = span.subtype || span.type;
   }
 
-  if (!service_target.name) { // infer name from span attributes
+  if (!service_target.name) { // If not manually specified, infer name from span attributes.
 
     if (span.context.db) {  // database spans
-      service_target.name = span.context.db.instance;
+      if (span.context.db.instance) {
+        service_target.name = span.context.db.instance;
+      }
 
     } else if (span.context.message) { // messaging spans
-      service_target.name = span.context.message.queue?.name
+      if (span.context.message.queue?.name) {
+        service_target.name = span.context.message.queue?.name
+      }
 
     } else if (context.http?.url) { // http spans
       service_target.name = getHostFromUrl(context.http.url);
