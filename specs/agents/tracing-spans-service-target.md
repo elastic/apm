@@ -90,7 +90,7 @@ Because there are a lots of moving pieces, implementation will be split into mul
 
 (2) Value is always sent by APM agents for compatibility, but they SHOULD NOT rely on it internally.
 
-(3) HTTP spans (and a few other spans) can't have their `resource` value inferred on APM server without relying on a 
+(3) HTTP spans (and a few other spans) can't have their `resource` value inferred on APM server without relying on a
 brittle mapping on span `type` and `subtype` and breaking the breakdown metrics where `type` and `subtype` are not available.
 
 ## Implementation details
@@ -104,29 +104,30 @@ This specification assumes that values for `span.type` and `span.subtype` fit th
 - `span.context.service.target.type` should have the same value as `span.subtype` and fallback to `span.type`.
 - `span.context.service.target.name` depends on the span context attributes
 
-On agents, the following algorithm should be used to infer the values for `span.context.service.target.*` fields. 
+On agents, the following algorithm should be used to infer the values for `span.context.service.target.*` fields.
+
 ```javascript
 // span created on agent
 span = {};
 
 if (span.isExit) {
   service_target = span.context.service.target;
-  
-  if (!service_target.type) { // infer type from span type & subtype
-      
+
+  if ('type' in service_target) { // if not manually specified, infer type from span type & subtype
+
     // use sub-type if provided, fallback on type othewise
     service_target.type = span.subtype || span.type;
   }
-  
+
   if (!service_target.name) { // infer name from span attributes
-      
-    if (span.context.db.instance) {  // database spans
+
+    if (span.context.db) {  // database spans
       service_target.name = span.context.db.instance;
 
     } else if (span.context.message) { // messaging spans
-      service_target.name = span.context.message.queue.name
+      service_target.name = span.context.message.queue?.name
 
-    } else if (context.http.url) { // http spans
+    } else if (context.http?.url) { // http spans
       service_target.name = getHostFromUrl(context.http.url);
       port = getPortFromUrl(context.http.url);
       if (port > 0) {
