@@ -117,7 +117,7 @@ if (span.isExit) {
     service_target.type = span.subtype || span.type;
   }
 
-  if (!service_target.name) { // If not manually specified, infer name from span attributes.
+  if ('name' in service_target) { // If not manually specified, infer name from span attributes.
 
     if (span.context.db) {  // database spans
       if (span.context.db.instance) {
