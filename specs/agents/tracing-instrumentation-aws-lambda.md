@@ -154,8 +154,7 @@ Field | Value | Description | Source
 `name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
 `transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error. If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#respond-to-load-balancer), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
 `faas.trigger.type` | `http` | Constant value for ELB. | -
-`faas.trigger.request_id` | e.g. `Root=1-5bdb40ca-556d8b0c50dc66f0511bf520` | AWS Trace ID of the ELB request. | `event.headers.x-amzn-trace-id`
-`context.service.origin.name` | e.g. `targetgroup/lambda...5c45c6791a` | ELB target group | Derived from the 6th segment of `event.requestContext.elb.targetGroupArn`
+`context.service.origin.name` | e.g. `targetgroup` | ELB target group | `event.requestContext.elb.targetGroupArn` is formed as `arn:aws:elasticloadbalancing:region-code:account-id:targetgroup/target-group-name/target-group-id`, so use `targetGroupArn.split(':')[5].split('/')[1]` to get the `target-group-name`.
 `context.service.origin.id` | e.g. `arn:aws:elasticlo...65c45c6791a` | ELB target group ARN | `event.requestContext.elb.targetGroupArn` |
 `context.cloud.origin.service.name` | `elb` | Constant value for ELB. | -
 `context.cloud.origin.account.id` | e.g. `123456789012` | Account ID for the ELB. | Derived from the 5th segment of `event.requestContext.elb.targetGroupArn`
