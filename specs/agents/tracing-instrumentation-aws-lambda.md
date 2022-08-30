@@ -82,7 +82,7 @@ Lambda functions can be triggered in many different ways. A generic transaction 
 
 If none of the above apply, the fallback should be a generic instrumentation (as described above) that can deal with any type of trigger (thus capturing only the minimal available information).
 
-### API Gateway (V1 & V2)
+### API Gateway / Lambda URLS
 There are two different API Gateway versions (V1 & V2) that differ slightly in the information (`event` object) that is passed to the Lambda handler function.
 
 With both versions, the `event` object contains information about the http request.
@@ -103,9 +103,9 @@ Field | Value | Description | Source
 `context.service.origin.name` | e.g. `gdnrpwmtsb...amazonaws.com` | The full domain name of the API Gateway. | `event.requestContext.domainName`
 `context.service.origin.id` | e.g. `gy415nu...` | `event.requestContext.apiId` |
 `context.service.origin.version` | e.g. `1.0` | `1.0` for API Gateway V1, `2.0` for API Gateway V2. | `event.version` (or `1.0` if that field is not present)
-`context.cloud.origin.service.name` | `api gateway` | Fix value for API gateway. | -
+`context.cloud.origin.service.name` | `api gateway` or `lambda url` | Constant value. | Detect lambda URLs by searching for `.lambda-url.` in the `event.requestContext.domainName`. Otherwise assume API Gateway.
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the API gateway. | `event.requestContext.accountId`
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
+`context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 **Set `transaction.name` for the API Gateway trigger**
 
@@ -132,6 +132,67 @@ In version 2.0, the `${event.requestContext.routeKey}` can have the format `GET 
 
 If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.requestContext.http.method} ${event.requestContext.http.path}` as the transaction name.
 
+### Elastic Load Balancer (ELB)
+
+Elastic Load Balancer (ELB) can be attached directly to lambda, without the use
+of API Gateway. In this case the `event` object will be structured differently.
+
+The agent should use the information in the request and response objects to
+fill the HTTP context (`context.request` and `context.response`) fields in the
+same way it is done for HTTP transactions.
+[Request/Response Docs](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#receive-event-from-load-balancer)
+
+In particular, agents must use the `event.headers` to retrieve the
+`traceparent` and the `tracestate` and use them to start the transaction for
+the lambda function execution.
+
+In addition the following fields should be set for ELB-based Lambda functions:
+
+Field | Value | Description | Source
+---   | ---   | ---         | ---
+`type` | `request`| Transaction type: constant value for ELB. | -
+`name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
+`transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error. If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#respond-to-load-balancer), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
+`faas.trigger.type` | `http` | Constant value for ELB. | -
+`context.service.origin.name` | e.g. `targetgroup` | ELB target group | `event.requestContext.elb.targetGroupArn` is formed as `arn:aws:elasticloadbalancing:region-code:account-id:targetgroup/target-group-name/target-group-id`, so use `targetGroupArn.split(':')[5].split('/')[1]` to get the `target-group-name`.
+`context.service.origin.id` | e.g. `arn:aws:elasticlo...65c45c6791a` | ELB target group ARN | `event.requestContext.elb.targetGroupArn` |
+`context.cloud.origin.service.name` | `elb` | Constant value for ELB. | -
+`context.cloud.origin.account.id` | e.g. `123456789012` | Account ID for the ELB. | Derived from the 5th segment of `event.requestContext.elb.targetGroupArn`
+`context.cloud.origin.region` | e.g. `us-east-2` | Cloud region. | Derived from the 4th segment of `event.requestContext.elb.targetGroupArn`
+`context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
+
+Note that the `context.service.origin.version` is omitted for ELB requests.
+
+An example ELB event:
+
+```
+{
+    "requestContext": {
+        "elb": {
+            "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:123456789012:targetgroup/lambda-279XGJDqGZ5rsrHC2Fjr/49e9d65c45c6791a"
+        }
+    },
+    "httpMethod": "POST",
+    "path": "/toolz/api/v2.0/downloadPDF/PDF_2020-09-11_11-06-01.pdf",
+    "queryStringParameters": {
+        "test%40key": "test%40value",
+        "language": "en-DE"
+    },
+    "headers": {
+        "accept-encoding": "gzip,deflate",
+        "connection": "Keep-Alive",
+        "host": "blabla.com",
+        "user-agent": "Apache-HttpClient/4.5.13 (Java/11.0.15)",
+        "x-amzn-trace-id": "Root=1-5bdb40ca-556d8b0c50dc66f0511bf520",
+        "x-forwarded-for": "199.99.99.999",
+        "x-forwarded-port": "443",
+        "x-forwarded-proto": "https"
+    },
+    "body": "blablablabody",
+    "isBase64Encoded": false
+}
+```
+
 ### SQS / SNS
 
 Lambda functions that are triggered by SQS (or SNS) accept an `event` input that may contain one or more SQS / SNS messages in the `event.records` array. All message-related context information (including the `traceparent`) is encoded in the individual message attributes (if at all).
@@ -154,10 +215,10 @@ Field | Value | Description | Source
 `faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
 `context.service.origin.name` | e.g. `my-queue` | SQS queue name | Simple queue name can be derived from the 6th segment of `records[0].eventSourceArn`.
 `context.service.origin.id` | e.g. `arn:aws:sqs:us-east-2:123456789012:my-queue` | SQS queue ARN. | `records[0].eventSourceArn`
-`context.cloud.origin.service.name` | `sqs` | Fix value for SQS. | -
+`context.cloud.origin.service.name` | `sqs` | Constant value for SQS. | -
 `context.cloud.origin.region` | e.g. `us-east-1` | SQS queue region. | `records[0].awsRegion`
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SQS queue. | Parse account segment (5th) from `records[0].eventSourceArn`.
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
+`context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 An example SQS event:
 
@@ -224,10 +285,10 @@ Field | Value | Description | Source
 `faas.trigger.type` | `pubsub` | Constant value for message based triggers | -
 `context.service.origin.name` | e.g. `my-topic` | SNS topic name | Simple topic name can be derived from the 6th segment of `records[0].sns.topicArn`.
 `context.service.origin.id` | e.g. `arn:aws:sns:us-east-2:123456789012:my-topic` | SNS topic ARN. | `records[0].sns.topicArn`
-`context.cloud.origin.service.name` | `sns` | Fix value for SNS. | -
+`context.cloud.origin.service.name` | `sns` | Constant value for SNS. | -
 `context.cloud.origin.region` | e.g. `us-east-1` | SNS topic region. | Parse region segment (4th) from `records[0].sns.topicArn`.
 `context.cloud.origin.account.id` | e.g. `12345678912` | Account ID of the SNS topic. | Parse account segment (5th) from `records[0].sns.topicArn`.
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
+`context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 An example SNS event:
 
@@ -285,9 +346,9 @@ Field | Value | Description | Source
 `context.service.origin.name` | e.g. `mybucket` | S3 bucket name. | `record.s3.bucket.name`
 `context.service.origin.id` | e.g. `arn:aws:s3:::mybucket` | S3 bucket ARN. | `record.s3.bucket.arn`
 `context.service.origin.version` | e.g. `2.1` | S3 event version. | `record.eventVersion`
-`context.cloud.origin.service.name` | `s3` | Fix value for S3. | -
+`context.cloud.origin.service.name` | `s3` | Constant value for S3. | -
 `context.cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
-`context.cloud.origin.provider` | `aws` | Use `aws` as fix value. | -
+`context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 ## Data Flushing
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
