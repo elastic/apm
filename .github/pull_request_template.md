@@ -41,5 +41,6 @@ This extended template ensures that we have a meta issue and tracking issues so 
   - Remove PM from reviewers if impact on product is negligible
   - Remove agents from reviewers if the change is not relevant for them
 - [ ] Approved by at least 2 agents + PM (if relevant)
-- [ ] Merge after 7 days passed without objections
+- [ ] Merge after 7 days passed without objections \
+      To auto-merge the PR, add <code>/</code>`schedule YYYY-MM-DD` to the PR description.
 - [ ] [Create implementation issues through the meta issue template](https://github.com/elastic/apm/issues/new?assignees=&labels=meta%2C+apm-agents&template=apm-agents-meta.md) (this will automate issue creation for individual agents)
