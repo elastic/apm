@@ -50,6 +50,8 @@ Here is a list of resource attributes that are relevant for our mobile agents:
 | [`net.host.carrier.mcc`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | `network.carrier.mcc` | [see OTEL](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | :x: no||
 | [`net.host.carrier.mnc`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | `network.carrier.mnc` | [see OTEL](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | :x: no||
 | [`net.host.carrier.icc`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | `network.carrier.icc` | [see OTEL](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/) | :x: no||
+| [`http.client_ip`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-server-semantic-conventions) | `client.ip` | `10.121.13.12` | :x: no | This field is used to derive the geo location of the IP. |
+
 
 ### Additional Span attributes
 
