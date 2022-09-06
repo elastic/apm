@@ -16,7 +16,7 @@ how an agent will sanitize data.
 |                |   |
 |----------------|---|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `password, passwd, pwd, secret, *key, *token*, *session*, *credit*, *card*, *auth*, set-cookie` |
+| Default        | `password, passwd, pwd, secret, *key, *token*, *session*, *credit*, *card*, *auth*, set-cookie, *principal*` |
 | Dynamic        | `true` |
 | Central config | `true` |
 
@@ -25,7 +25,7 @@ how an agent will sanitize data.
 Agents MUST provide a minimum default configuration of
 
     [ 'password', 'passwd', 'pwd', 'secret', '*key', '*token*', '*session*',
-      '*credit*','*card*', '*auth*', 'set-cookie']
+      '*credit*','*card*', '*auth*', 'set-cookie', '*principal*' ]
 
 for the `sanitize_field_names` configuration value.  Agent's MAY include the
 following extra fields in their default configuration to avoid breaking changes
