@@ -169,13 +169,14 @@ if (span_kind == 'SERVER' && (isRpc || isHttp)) {
 }
 ```
 
-#### Span type, sub-type and destination service resource
+#### Span type, sub-type and service target
 
 ```javascript
 a = span.otel.attributes;
 type = undefined;
 subtype = undefined;
-resource = undefined;
+serviceTargetType = null;
+serviceTargetName = null;
 
 httpPortFromScheme = function (scheme) {
     if ('http' == scheme) {
@@ -207,11 +208,8 @@ if (netName && netPort > 0) {
 if (a['db.system']) {
     type = 'db'
     subtype = a['db.system'];
-    resource = netName || subtype;
-    if (a['db.name']) {
-        resource += '/'
-        resource += a['db.name'];
-    }
+    serviceTargetType = subtype;
+    serviceTargetName = a['db.name'] || null;
 
 } else if (a['messaging.system']) {
     type = 'messaging';
@@ -220,33 +218,28 @@ if (a['db.system']) {
     if (!netName && a['messaging.url']) {
         netName = parseNetName(a['messaging.url']);
     }
-    resource = netName || subtype;
-    if (a['messaging.destination']) {
-        resource += '/';
-        resource += a['messaging.destination'];
-    }
+    serviceTargetType = subtype;
+    serviceTargetName = a['messaging.destination'] || null;
 
 } else if (a['rpc.system']) {
     type = 'external';
     subtype = a['rpc.system'];
-    resource = netName || subtype;
-    if (a['rpc.service']) {
-        resource += '/';
-        resource += a['rpc.service'];
-    }
+    serviceTargetType = subtype;
+    serviceTargetName = netName || a['rpc.service'] || null;
 
 } else if (a['http.url'] || a['http.scheme']) {
     type = 'external';
     subtype = 'http';
+    serviceTargetType = subtype;
 
     httpHost = a['http.host'] || netPeer;
     if (httpHost) {
         if (netPort < 0) {
             netPort = httpPortFromScheme(a['http.scheme']);
         }
-        resource = netPort < 0 ? httpHost : httpHost + ':' + netPort;
+        serviceTargetName = netPort < 0 ? httpHost : httpHost + ':' + netPort;
     } else if (a['http.url']) {
-        resource = parseNetName(a['http.url']);
+        serviceTargetName = parseNetName(a['http.url']);
     }
 }
 
@@ -260,7 +253,9 @@ if (type === undefined) {
 }
 span.type = type;
 span.subtype = subtype;
-span.destination.service.resource = resource;
+if (serviceTargetType || serviceTargetName) {
+    span.setServiceTarget(serviceTargetType, serviceTargetName);
+}
 ```
 
 ### Active Spans and Context
