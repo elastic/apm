@@ -8,7 +8,7 @@
 ### Memory Metrics
 | Name                   | Type             | Units | Description                             |
 |------------------------|------------------|-------|-----------------------------------------|
-| `system.memory.usage`  | Observable Guage | bytes | The application's memory usage in bytes |
+| `system.memory.usage`  | Gauge | bytes | The application's memory usage in bytes |
 
 
 ### Application Metrics
