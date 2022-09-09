@@ -136,7 +136,6 @@ if (span.isExit) {
         service_target.name += ":" + port;
       }
     }
-
   }
 } else {
     // non-exit spans should not have service.target.* fields
