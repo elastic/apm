@@ -87,7 +87,7 @@ boolean isSameKind(Span other) {
 }
 ```
 
-When applying this compression strategy, the `span.name` is set to `Calls to <...>` determined as follows:
+When applying this compression strategy, the `span.name` is set to `Calls to <...>` determined from `service.target.*` as follows:
 
 ```js
 function getCompositeSpanName(serviceTarget) {
