@@ -227,7 +227,7 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 | MySQL                | `mysql`     |
 | MariaDB              | `mariadb`   |
 | PostgreSQL           | `postgresql`|
-| Microsoft SQL server | `sqlserver` |
+| Microsoft SQL server | `mssql`     |
 | Oracle               | `oracle`    |
 | IBM Db2              | `db2`       |
 
