@@ -3,7 +3,7 @@
 ### CPU metrics
 | Name               | Type             | Units      | Description                     |
 |--------------------|------------------|------------|---------------------------------|
-| `system.cpu.usage` | Observable Guage | percentage | A percentage value of cpu usage |
+| `system.cpu.usage` | Gauge | percentage | A percentage value of cpu usage |
 
 ### Memory Metrics
 | Name                   | Type             | Units | Description                             |
