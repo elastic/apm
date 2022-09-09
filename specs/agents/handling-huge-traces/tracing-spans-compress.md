@@ -87,7 +87,25 @@ boolean isSameKind(Span other) {
 }
 ```
 
-When applying this compression strategy, the `span.name` is set to `Calls to $span.destination.service.resource`.
+When applying this compression strategy, the `span.name` is set to `Calls to <...>` determined as follows:
+
+```js
+function getCompositeSpanName(serviceTarget) {
+    const prefix = 'Calls to '
+    if (!serviceTarget.type) {
+        if (!serviceTarget.name) {
+            return prefix + 'unknown'
+        } else {
+            return prefix + serviceTarget.name
+        }
+    } else if (!serviceTarget.name) {
+        return prefix + serviceTarget.type
+    } else {
+        return prefix + serviceTarget.type + '/' + serviceTarget.name
+    }
+}
+```
+
 The rest of the context, such as the `db.statement` will be determined by the first compressed span, which is turned into a composite span.
 
 ### Configuration option `span_compression_same_kind_max_duration`
