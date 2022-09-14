@@ -13,11 +13,13 @@
 
 ### Application Metrics
 #### load times
-| Name                                          | Type      | Units   | Description                                                           |
-|-----------------------------------------------|-----------|---------|-----------------------------------------------------------------------|
-| `application.launch.optimizedTimeToFirstDraw` | histogram | seconds | The amount of time spent launching the app until loaded (optimized)   |
-| `application.launch.timeToFirstDraw`          | histogram | seconds | The amound of time spent launching the app until loaded               |
-| `application.launch.resumeTime`               | histogram | seconds | the amount of time spent resuming the application from the background | 
+| Name                                 | Type      | Units   | Description                                                           |
+|--------------------------------------|-----------|---------|-----------------------------------------------------------------------|
+| `application.launch.time`            | histogram | seconds | The amount of time spent launching the app                            |
+
+| Labels | Values                                          | Description                                         |
+|--------|-------------------------------------------------|-----------------------------------------------------|
+| `type` | `first draw`, `first draw (optimized)`, `resume`| The type of application launch that is being timed. |
 
 #### responsiveness
 | Name                                   | Type      | Units   | Description                                                 |
