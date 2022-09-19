@@ -110,6 +110,8 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
 If the Kubernetes pod name is not the hostname, it can be overridden by the `KUBERNETES_POD_NAME` environment variable, using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/). In a similar manner, you can inform the agent of the node name and namespace, using the environment variables `KUBERNETES_NODE_NAME` and `KUBERNETES_NAMESPACE`.
 
+*Note:* [cgroup_parsing.json](../../tests/agents/json-specs/cgroup_parsing.json) provides test cases for parsing cgroup lines.
+
 ### Process metadata
 
 Process level metadata relates to the process running the service being monitored:
