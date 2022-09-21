@@ -127,6 +127,8 @@ Central config failure. Invalid value for transactionSampleRate: 1.2 (out of ran
 
 Failure to process one config attribute should not affect processing of others.
 
+To ensure graceful recovery if the APM Server is offline or there is a network partition, agents should only retry at a maximum every 5 seconds, regardless of Cache-Control headers being less than that value. If the Cache-Control header is zero (or less than zero), it should be treated as missing (i.e. use default retry time).
+
 #### Feature flag
 
 Agents should implement a [configuration option](https://docs.google.com/spreadsheets/d/1JJjZotapacA3FkHc2sv_0wiChILi3uKnkwLTjtBmxwU), (`CENTRAL_CONFIG`) which lets users disable the central configuration polling.
