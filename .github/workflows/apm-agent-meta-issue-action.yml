@@ -18,7 +18,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.APM_TECH_USER_TOKEN }}
     - name: Create sub issues
       if: steps.checkUserMember.outputs.isTeamMember == 'true' && contains(github.event.issue.labels.*.name, 'meta') && contains(github.event.issue.labels.*.name, 'apm-agents')
-      uses: elastic/gh-action-meta-subissues-creator@1.0.1
+      uses: elastic/gh-action-meta-subissues-creator@1.0.2
       id: create_sub_issues
       with:
         token: "${{ secrets.APM_TECH_USER_TOKEN }}"
