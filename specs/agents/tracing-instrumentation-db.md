@@ -48,7 +48,7 @@ The `context.db.statement` field contains the database statement and is captured
 There might be a few use-cases where this capture is not desirable, for example:
 - sensitive PII exposed directly in SQL statements when not using prepared statements
 - verbose statements that incur important storage costs
-- added performance overhead in agents due to statement capture, for example with MongoDB BSON documents have to be serialized.
+- added performance overhead in agents due to statement capture, for example when MongoDB BSON documents have to be serialized.
 
 Agents SHOULD provide a `capture_db_statement` configuration option (default value `true`) allowing to disable statement capture in cases where it is not desirable.
 When set to `false`, no value should be captured for the `context.db.statement` field.
