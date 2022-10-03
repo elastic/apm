@@ -41,6 +41,17 @@ The following fields are relevant for database and datastore spans. Where possib
 |`service.target.type`| Defines destination service type, the (`type`,`name`) pair replaces deprecated `context.destination.service.resource` | :white_check_mark:|
 |`service.target.name`| Defines destination service name, the (`type`,`name`) pair replaces deprecated `context.destination.service.resource`, for relational databases, the value is equal to `context.db.instance` | :x: |
 
+### Statement capture
+
+The `context.db.statement` field contains the database statement and is captured by default for databases that support it.
+
+There might be a few use-cases where this capture is not desirable, for example:
+- sensitive PII exposed directly in SQL statements when not using prepared statements
+- verbose statements that incur important storage costs
+- added performance overhead in agents due to statement capture, for example with MongoDB BSON documents have to be serialized.
+
+Agents SHOULD provide a `db_statement_capture` configuration option (default value `true`) allowing to disable statement capture in cases where it is not desirable.
+When set to `false`, no value should be captured for the `context.db.statement` field.
 
 ## Specific Databases
 
