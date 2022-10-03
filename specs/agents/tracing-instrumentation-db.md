@@ -50,7 +50,7 @@ There might be a few use-cases where this capture is not desirable, for example:
 - verbose statements that incur important storage costs
 - added performance overhead in agents due to statement capture, for example with MongoDB BSON documents have to be serialized.
 
-Agents SHOULD provide a `db_statement_capture` configuration option (default value `true`) allowing to disable statement capture in cases where it is not desirable.
+Agents SHOULD provide a `capture_db_statement` configuration option (default value `true`) allowing to disable statement capture in cases where it is not desirable.
 When set to `false`, no value should be captured for the `context.db.statement` field.
 
 ## Specific Databases
