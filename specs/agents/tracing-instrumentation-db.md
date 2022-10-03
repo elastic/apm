@@ -78,13 +78,6 @@ The following fields are relevant for database and datastore spans. Where possib
 |`type`|`storage`|
 |`subtype`|`s3`|
 |`action`| e.g. `GetObject` | The operation name in PascalCase. |
-| __**context.db._**__  |<hr/>|<hr/>|
-|`_.instance`| e.g. `us-east-1` | The AWS region where the bucket is. |
-|`_.statement`| :heavy_minus_sign: |  |
-|`_.type`|`s3`|
-|`_.user`| :heavy_minus_sign: |
-|`_.link`| :heavy_minus_sign: |
-|`_.rows_affected`| :heavy_minus_sign: |
 | __**context.destination._**__ |<hr/>|<hr/>|
 |`_.address`|e.g. `s3.amazonaws.com`| Not available in some cases. Only set if the actual connection is available. |
 |`_.port`|e.g. `443`| Not available in some cases. Only set if the actual connection is available. |
@@ -153,7 +146,7 @@ The Elasticsearch cluster name is not always available in ES clients, as a resul
 #### `elasticsearch_capture_body_urls` configuration
 
 The URL patterns for which the agent is capturing the request body for Elasticsearch clients.
- 
+
 Agents MAY offer this configuration option.
 If they don't, they MUST use a hard-coded list of URLs that correspond with the default value of this option.
 
@@ -161,7 +154,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |----------------|------------|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
 | Default        | `*/_search, */_search/template, */_msearch, */_msearch/template, */_async_search, */_count, */_sql, */_eql/search`|
-| Central config | `false`     
+| Central config | `false`
 
 ### MongoDB
 
