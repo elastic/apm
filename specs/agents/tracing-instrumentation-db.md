@@ -236,7 +236,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 | MySQL                | `mysql`     |
 | MariaDB              | `mariadb`   |
 | PostgreSQL           | `postgresql`|
-| Microsoft SQL server | `sqlserver` |
+| Microsoft SQL server | `mssql`     |
 | Oracle               | `oracle`    |
 | IBM Db2              | `db2`       |
 

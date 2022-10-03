@@ -85,23 +85,16 @@ If no value is set to the `context.destination.service.resource` field, the logi
 it MUST be the following:
 
 ```groovy
-if (context.db)
-  if (context.db.instance)
-    "${subtype ?: type}/${context.db.instance}"
-  else
-    subtype ?: type
-else if (context.message)
-  if (context.message.queue?.name)
-    "${subtype ?: type}/${context.message.queue.name}"
-  else
-    subtype ?: type
-else if (context.http?.url)
-  if (context.http.url.port > 0)
-    "${context.http.url.host}:${context.http.url.port}"
-  else if (context.http.url.host)
-    context.http.url.host
+if (!span.context.service.target.name)
+  span.context.service.target.type
+else if (!span.context.service.target.type)
+  span.context.service.target.name
+else if (span.type == 'external')
+  // Special case for HTTP, gRPC, and other rpc.system spans: skip the
+  // "${service.target.type}/" prefix.
+  span.context.service.target.name
 else
-  subtype ?: type
+  "${span.context.service.target.type}/${span.context.service.target.name}"
 ```
 
 If an agent API was used to set the `context.destination.service.resource` to `null` or an empty string, agents MUST

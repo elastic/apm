@@ -105,6 +105,7 @@ This specification assumes that values for `span.type` and `span.subtype` fit th
 - `span.context.service.target.name` depends on the span context attributes
 
 On agents, the following algorithm should be used to infer the values for `span.context.service.target.*` fields.
+
 ```javascript
 // span created on agent
 span = {};
@@ -112,28 +113,29 @@ span = {};
 if (span.isExit) {
   service_target = span.context.service.target;
 
-  if (!service_target.type) { // infer type from span type & subtype
-
-    // use sub-type if provided, fallback on type othewise
+  if (!('type' in service_target)) { // If not manually specified, infer type from span type & subtype.
     service_target.type = span.subtype || span.type;
   }
 
-  if (!service_target.name) { // infer name from span attributes
+  if (!('name' in service_target)) { // If not manually specified, infer name from span attributes.
 
-    if (span.context.db.instance) {  // database spans
-      service_target.name = span.context.db.instance;
+    if (span.context.db) {  // database spans
+      if (span.context.db.instance) {
+        service_target.name = span.context.db.instance;
+      }
 
     } else if (span.context.message) { // messaging spans
-      service_target.name = span.context.message.queue.name
+      if (span.context.message.queue?.name) {
+        service_target.name = span.context.message.queue?.name
+      }
 
-    } else if (context.http.url) { // http spans
+    } else if (context.http?.url) { // http spans
       service_target.name = getHostFromUrl(context.http.url);
       port = getPortFromUrl(context.http.url);
       if (port > 0) {
         service_target.name += ":" + port;
       }
     }
-
   }
 } else {
     // non-exit spans should not have service.target.* fields
