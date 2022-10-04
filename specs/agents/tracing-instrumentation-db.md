@@ -173,7 +173,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |`action`|e.g. `find` , `insert`, etc.| The MongoDB command executed with this action. |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `customers` | Database name, if available |
-|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON.|
+|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON, if `mongodb_capture_statement` is set to `true` |
 |`_.type`|`mongodb`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
@@ -187,6 +187,13 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `mongodb` | |
 |`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
+
+#### Statement capture
+
+The `mongodb_capture_statement` (experimental, default: `false`)  configuration option allows to
+enable capture MongoDB requests statements.
+
+Statement capture is disabled by default to avoid performance overhead and capturing potentially sensitive data.
 
 ### Redis
 
