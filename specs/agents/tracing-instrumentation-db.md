@@ -193,7 +193,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 The `mongodb_capture_statement` (experimental, default: `false`)  configuration option allows to
 enable capture MongoDB requests statements.
 
-Statement capture is disabled by default to avoid performance overhead and capturing potentially sensitive data.
+Statement capture SHOULD be disabled by default to avoid performance overhead and capturing potentially sensitive data.
 
 ### Redis
 
