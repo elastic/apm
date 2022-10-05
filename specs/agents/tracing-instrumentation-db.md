@@ -188,12 +188,17 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |`_.type`| `mongodb` | |
 |`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
 
-#### Statement capture
+#### `mongodb_capture_statement` configuration
 
-The `mongodb_capture_statement` (experimental, default: `false`)  configuration option allows to
-enable capture MongoDB requests statements.
+Agents that support capturing MongoDB statements SHOULD implement this option.
 
 Statement capture SHOULD be disabled by default to avoid performance overhead and capturing potentially sensitive data.
+
+|                |           |
+|----------------|-----------|
+| Type           | `boolean` |
+| Default        | `false`   |
+| Central config | `false`   |
 
 ### Redis
 
