@@ -173,7 +173,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |`action`|e.g. `find` , `insert`, etc.| The MongoDB command executed with this action. |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `customers` | Database name, if available |
-|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON, if `mongodb_capture_statement` is set to `true` |
+|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON, if `mongodb_capture_statement_commands` is set |
 |`_.type`|`mongodb`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
@@ -188,17 +188,21 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |`_.type`| `mongodb` | |
 |`_.name`| e.g. `customers` | Database name, same as `db.instance` if available  |
 
-#### `mongodb_capture_statement` configuration
+#### `mongodb_capture_statement_commands` configuration
 
 Agents that support capturing MongoDB statements SHOULD implement this option.
 
 Statement capture SHOULD be disabled by default to avoid performance overhead and capturing potentially sensitive data.
 
-|                |           |
-|----------------|-----------|
-| Type           | `boolean` |
-| Default        | `false`   |
-| Central config | `false`   |
+|                |  |
+|----------------|--|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | `""` (empty) |
+| Central config | `false` |
+
+Examples:
+- capture all MongoDB statements: `*`
+- capture common read operations: `aggregate,count,distinct,mapReduce`
 
 ### Redis
 
