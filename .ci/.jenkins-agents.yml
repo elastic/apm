@@ -2,7 +2,7 @@
 agents:
   - REPO: "apm-agent-dotnet"
     FEATURES_PATH: "test/Elastic.Apm.Feature.Tests/Features"
-    JSON_SPECS_PATH: "test/Elastic.Apm.Tests/TestResources/json-specs"
+    JSON_SPECS_PATH: "test/Elastic.Apm.Tests.Utilities/TestResources/json-specs"
   - REPO: "apm-agent-go"
     FEATURES_PATH: "features"
     JSON_SPECS_PATH: "internal/testdata/json-specs"
