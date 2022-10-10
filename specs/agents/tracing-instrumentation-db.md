@@ -202,7 +202,7 @@ Statement capture SHOULD be disabled by default to avoid performance overhead an
 
 Examples:
 - capture all MongoDB statements: `*`
-- capture common read operations: `aggregate,count,distinct,mapReduce`
+- capture common read operations: `find,aggregate,count,distinct,mapReduce`
 
 ### Redis
 
