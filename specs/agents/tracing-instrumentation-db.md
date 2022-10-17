@@ -197,12 +197,13 @@ Statement capture SHOULD be disabled by default to avoid performance overhead an
 |                |  |
 |----------------|--|
 | Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `""` (empty) |
+| Default        | `"find,aggregate,count,distinct,mapReduce"` |
 | Central config | `false` |
 
 Examples:
-- capture all MongoDB statements: `*`
+- capture all statements: `*`
 - capture common read operations: `find,aggregate,count,distinct,mapReduce`
+- capture no statement : `""` (empty)
 
 ### Redis
 
