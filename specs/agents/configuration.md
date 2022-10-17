@@ -176,8 +176,15 @@ See this example PR on how to add an option: https://github.com/elastic/kibana/p
 
 Agent devs are not expected to set up a local Kibana development environment.
 Just create a draft PR using your best judgement given the examples on how to add the configuration option.
+By the time you're adding the configuration option, chances are that no agent has implemented the option, yet.
+Therefore, set `includeAgents: []` in the option declaration.
+When an agent implements the option, they just need to add the agent name to this section, without having to test the changes.
+Please manually add a checkbox to all the implementation issues to make sure agents don't forget that step.
+
 Add the labels `release_note:enhancement`, `Team:APM`, `v<next minor stack release>`, and [`ci:cloud-deploy`](https://github.com/elastic/kibana/labels/ci%3Acloud-deploy).
 After the build succeeds, there will be a link where you can test out the PR in cloud.
 To test the changes, just try out whether the option is rendered as expected and triple-check that the option name matches the one in the spec.
+For testing purposes, add at least one agent to the `includeAgents` declaration and remember to remove it after testing if the agent didn't actually implement the option, yet.
+
 If everything works smoothly, request a review from the [apm-ui](https://github.com/orgs/elastic/teams/apm-ui) team.
 If you need help, drop a message in the #apm-dev channel so that agent devs that did this before or UI devs can chime in.
