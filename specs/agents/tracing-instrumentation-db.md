@@ -190,9 +190,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 
 #### `mongodb_capture_statement_commands` configuration
 
-Agents that support capturing MongoDB statements SHOULD implement this option.
-
-Statement capture SHOULD be disabled by default to avoid performance overhead and capturing potentially sensitive data.
+Agents that support capturing MongoDB statements MUST implement this option.
 
 |                |  |
 |----------------|--|
@@ -202,7 +200,7 @@ Statement capture SHOULD be disabled by default to avoid performance overhead an
 
 Examples:
 - capture all statements: `*`
-- capture common read operations: `find,aggregate,count,distinct,mapReduce`
+- capture common read commands: `find,aggregate,count,distinct,mapReduce`
 - capture no statement : `""` (empty)
 
 ### Redis
