@@ -146,22 +146,27 @@ This naming pattern allows the UI to display inline help on how to manually conf
 
 ### Adding a new configuration option
 
+#### Configuration option spec template
+
 When adding a new configuration option to the spec, please use the following template:
 
-#### <option_name_in_central_config_notation> configuration
+```
+### <option_name_in_central_config_notation> configuration
 
 The description of the option.
 Try to phrase it in a way that lets agents easily copy/paste the description into their configuration documentation page.
 This should also match the description in the [central configuration](https://github.com/elastic/kibana/blob/main/x-pack/plugins/apm/common/agent_configuration/setting_definitions/general_settings.ts) in the APM UI.
 
-|                |                                                                         |
-|----------------|-------------------------------------------------------------------------|
-| Type           | See the [Configuration Value Types](#configuration-value-types) section |
-| Default        | `<default value>`                                                       |
-| Central config | `<true/false>`                                                          |
+|                |                                           |
+|----------------|-------------------------------------------|
+| Type           | See the Configuration Value Types section |
+| Default        | `<default value>`                         |
+| Central config | `<true/false>`                            |
 
 Additional description of the option that should not be part of the documentation.
 For example, whether agents SHOULD or MUST implement the option.
+
+```
 
 #### Adding to central configuration
 
