@@ -137,11 +137,8 @@ In addition to [the usual error capture specification](./error-tracking.md), the
 
 #### Cluster name
 
-The Elasticsearch cluster name is not always available in ES clients, as a result the following strategy should be used (by order of priority):
-- Call internal API in the client library to get cached cluster name.
-- Use `x-found-handling-cluster` HTTP response header value.
-- Instrument `_node/http` calls and cache the result in the agent with `host:port` as key.
-- execute a request to Elasticsearch and cache the result in the agent with `host:port` as key.
+The Elasticsearch cluster name is not available in Elasticsearch clients.
+When using an Elastic Cloud deployment, the name of the Elasticsearch cluster is provided by the `x-found-handling-cluster` HTTP response header.
 
 #### `elasticsearch_capture_body_urls` configuration
 
