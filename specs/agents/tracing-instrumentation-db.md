@@ -173,7 +173,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 |`action`|e.g. `find` , `insert`, etc.| The MongoDB command executed with this action. |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `customers` | Database name, if available |
-|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON, if `mongodb_capture_statement_commands` is set |
+|`_.statement`| e.g. <pre lang="json">find({status: {$in: ["A","D"]}})</pre> | The MongoDB command encoded as MongoDB Extended JSON, if the command name matches `mongodb_capture_statement_commands`. |
 |`_.type`|`mongodb`|
 |`_.user`| :heavy_minus_sign: |
 |`_.link`| :heavy_minus_sign: |
@@ -190,6 +190,7 @@ If they don't, they MUST use a hard-coded list of URLs that correspond with the 
 
 #### `mongodb_capture_statement_commands` configuration
 
+This config var specifies the MongoDB command names for which the agent will capture the statement.
 Agents that support capturing MongoDB statements MUST implement this option.
 
 |                |  |
@@ -199,7 +200,7 @@ Agents that support capturing MongoDB statements MUST implement this option.
 | Central config | `false` |
 
 Examples:
-- capture all statements: `*`
+- capture for all commands: `*` (This should be discouraged, because it can lead to capturing sensitive information in `insert` and `update` commands.)
 - capture common read commands: `find,aggregate,count,distinct,mapReduce`
 - capture no statement : `""` (empty)
 
