@@ -150,7 +150,7 @@ This naming pattern allows the UI to display inline help on how to manually conf
 
 When adding a new configuration option to the spec, please use the following template:
 
-```
+```markdown
 ### <option_name_in_central_config_notation> configuration
 
 The description of the option.
