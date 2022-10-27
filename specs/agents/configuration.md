@@ -176,7 +176,6 @@ However, sometimes it might not be feasible if agents need to read the value at 
 
 When adding a centrally configurable option,
 the spec owner is expected to create a pull request in the Kibana repository to add the option to central configuration.
-As all the configuration options are added declaratively, this is no rocket science.
 
 To make sure the tests are passing and to update some generated files, you need a local clone of Kibana and execute the build.
 Follow [Kibana's contribution guide](https://github.com/elastic/kibana/blob/main/CONTRIBUTING.md) to get a local environment running.
