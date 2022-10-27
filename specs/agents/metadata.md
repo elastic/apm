@@ -275,6 +275,27 @@ to each agent to determine whether it is useful to implement
 for their language ecosystem. See [azure_app_service_metadata specs](../../tests/agents/gherkin-specs/azure_app_service_metadata.feature)
 for scenarios and expected outcomes.
 
+##### Azure Functions
+
+Azure Functions running within a consumption/premium plan (see [Azure Functions hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale)) are a FaaS offering within Azure that do not have access
+to the internal [Azure metadata endpoint](#azure-vms). Metadata about an Azure Function can however be
+retrieved from environment variables.  
+**Note:** These environment variables slightly differ from those available to [Azure App Services](#azure_app_service-optional).
+
+| Cloud metadata field  | Environment variable |
+| --------------------  | ------------------- |
+| `account.id`          | Token `{subscription id}` from `WEBSITE_OWNER_NAME` |
+| `instance.name`       | `WEBSITE_SITE_NAME` |
+| `project.name`        | `WEBSITE_RESOURCE_GROUP` (fallback: `{resource group}` from `WEBSITE_OWNER_NAME`) |
+| `provider`            | azure               |
+| `region`              | `REGION_NAME`  (fallback: `{region}` from `WEBSITE_OWNER_NAME`) |
+
+The environment variable `WEBSITE_OWNER_NAME` has the following form:
+
+`{subscription id}+{resource group}-{region}webspace{.*}`
+
+Example: `d2cd53b3-acdc-4964-9563-3f5201556a81+wolfgangfaas_group-CentralUSwebspace-Linux`
+
 ### Global labels
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
