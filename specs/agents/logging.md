@@ -104,7 +104,7 @@ Additionally, agents SHOULD report information about their environment (e.g. hos
 
 The start of the configuration block MUST be denoted as such (e.g. `Agent Configuration:`).
 
-If a configuration file was used in the configuration process, its fully-qualified path
+If configuration files are used in the configuration process, their fully-qualified paths
 SHOULD be logged.
 
 Configuration item names MUST be provided in normalized (lower-case, snake_case) notation.
@@ -132,7 +132,10 @@ For each configuration option its **source** SHOULD be reported. These sources c
 Example:
 
 ```text
-Agent Configuration (file: '/path/to/some/config.json'):
+Agent Configuration:
+- configuration files used:
+  - '/path/to/some/config.json'
+  - '/path/to/some/other/config.xml'
 - server_url: 'http://localhost:8200' (default)
 - secret_token: [MASKED] (environment)
 - service_name: `unknown-dotnet-service` (default)
