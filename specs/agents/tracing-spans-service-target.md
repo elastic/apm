@@ -132,12 +132,10 @@ if (span.isExit) {
     } else if (context.http?.url) { // http spans
       service_target.name = getHostFromUrl(context.http.url);
       //
-      // Note: Default ports (80/http and 443/https) MUST be ignored (e.g. returned as 0 here).
+      // We always expect a valid port number here (80/443 default).
       //
       port = getPortFromUrl(context.http.url);
-      if (port > 0) {
-        service_target.name += ":" + port;
-      }
+      service_target.name += ":" + port;
     }
   }
 } else {
