@@ -29,13 +29,13 @@
 ### Application exit
 Traces application exit counts in both healthy and unhealthy (crashes) states
 
-| Name               | Type  | Units | Description                   |
-|--------------------|-------|-------|-------------------------------|
-| `application.exit` | count |  unit | A count of application exits. |
+| Name                | Type  | Units | Description                   |
+|---------------------|-------|-------|-------------------------------|
+| `application.exits` | count |  unit | A count of application exits. |
 
 
-| Labels     |  Values                                                                                        |  Description                                                                   | 
-|------------|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------| 
+| Labels     |  Values                                                                                        |  Description                                                                   |
+|------------|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | `appState` | `background`, `foreground`                                                                     | This denotes whether the application exited in the background or foreground    |
 | `type`     | `memoryResourceLimit`, `AppWatchDog`, `BadAccess`, `Abnormal`,  `IllegalInstruction`, `Normal` | The cause of the application exit. All but normal could be considered a crash. |
 
