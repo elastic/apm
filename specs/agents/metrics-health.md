@@ -57,6 +57,37 @@ If the queue capacity is in bytes, the usage can be computed based on the number
 
 All event queue metrics can be disabled via the `disable_metrics` configuration.
 
+#### Possible implementation for agents
+
+In order to track these metrics, most likely a custom implementation is required on top of the underlying queue.
+
+One approach can be to have two variables `min_size` and `max_size`, which are atomically updated on changes to the queue:
+ * When an item is added to the queue, update `max_size` with the current queue size if it is greater than `max_size`
+ * When an item is removed from the queue, update `min_size` with the current queue size if it is less than `min_size`
+ * When an item cannot be added to the queue (dropped), set `max_size` to `queue_capacity`
+
+After the metrics are exported, `min_size` and `max_size` need to be reset tu the current queue size.
+
+An atomic min/max can be implemented using the following algorithm:
+```java
+AtomicLong maxSize = new AtomicLong();
+
+public void updateMaxSize(long currentSize) {
+    //alternatively abort after like 10 iterations for constant latency
+    while (true) { 
+        long current = maxSize.get();
+        if (current >= currentSize) {
+            return;
+        }
+        boolean casSuccess = maxSize.compareAndSet(current, currentSize);
+        if (casSuccess) {
+            return;
+        }
+    }
+}
+
+```
+
 ### Event Request Metrics
 
 Agents SHOULD expose the following metrics regarding Intake API networking:
