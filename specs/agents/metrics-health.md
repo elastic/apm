@@ -33,10 +33,10 @@ For example, when an request to the Intake API fails without a response, all eve
 In reality, it is possible that e.g. half of the data was actually successfully received and forwarded by the APM server.
 When the APM server responds with an HTTP error code, the number of dropped events SHOULD be computed by subtracting the `accepted` field from the response body from the total number of inflight events of this request.
 
-The `agent.events.total` metric MUST have the label `eventType`. The possible values for `eventType` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `other`.
+The `agent.events.total` metric MUST have the label `eventType`. The possible values for `eventType` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
 The `agent.events.dropped.*` metrics MUST NOT have any labels.
 
-Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `other` MUST be used instead.
+Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
 
 All event count metrics can be disabled via the `disable_metrics` configuration.
 
