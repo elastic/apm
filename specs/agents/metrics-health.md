@@ -104,7 +104,7 @@ All event request metrics can be disabled via the `disable_metrics` configuratio
 
 ### Agent Overhead Metrics
 
-If possible with a reasonable amount of runtime and implementation overhead, agents SHOULD expose the following metrics for approximating their own resource usage:
+If possible with a reasonable amount of runtime and implementation overhead, agents MAY expose the following metrics for approximating their own resource usage:
 
  - `agent.background.cpu.overhead.pct`: The fraction of the process cpu usage caused by the agent in a range [0-1] within the last reporting interval.
  - `agent.background.cpu.total.pct`: The approximate CPU usage caused by the agent. Derived by multiplying `agent.background.cpu.overhead.pct` with `system.process.cpu.total.norm.pct`.
