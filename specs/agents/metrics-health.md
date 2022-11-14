@@ -95,7 +95,7 @@ Agents SHOULD expose the following metrics regarding Intake API networking:
  - `agent.events.requests.count`: `COUNTER` of the number of requests made or attempted to the Intake API of the APM server
  - `agent.events.requests.bytes`: `COUNTER` of the approximate number of bytes on the wire sent to the Intake API of the APM
 
-All these metrics MUST have the label `success`, which can have the values `true` or `false`. A request is counted with `success=true` iff the APM Server responded with `2xx`.
+The `agent.events.requests.*` metrics MUST have the label `success`, which can have the values `true` or `false`. A request is counted with `success=true` iff the APM Server responded with `2xx`.
 
 The metric `agent.events.requests.bytes` does not need to represent the exact network usage.
 Instead the number of compressed bytes within the request body can be used as approximation.
