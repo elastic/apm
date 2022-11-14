@@ -29,7 +29,7 @@ Therefore an event MUST be taken into account for these metrics if an attempt is
 Events dropped before this attempt (e.g. due to [sampling](tracing-sampling.md) or [transaction_max_spans](handling-huge-traces/tracing-spans-limit.md)) are NOT counted.
 
 The value of `agent.events.dropped.error` is an upper bound for the actual number of dropped events after entering the queue.
-For example, when an request to the Intake API fails without a response, all events within this request MUST be considered as failed.
+For example, when a request to the Intake API fails without a response, all events within this request MUST be considered as failed.
 In reality, it is possible that e.g. half of the data was actually successfully received and forwarded by the APM server.
 When the APM server responds with an HTTP error code, the number of dropped events SHOULD be computed by subtracting the `accepted` field from the response body from the total number of inflight events of this request.
 
@@ -55,7 +55,7 @@ The queue usage can be computed based on how the agent defines the queue capacit
 E.g. if the queue capacity is a fixed number of events, the usage can be computed based on the current number of events.
 If the queue capacity is in bytes, the usage can be computed based on the number of bytes currently occupied in the queue.
 
-All event queue metrics can be disabled via the `disable_metrics` configuration.
+All event queue metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
 #### Possible implementation for agents
 
@@ -98,9 +98,9 @@ Agents SHOULD expose the following metrics regarding Intake API networking:
 The `agent.events.requests.*` metrics MUST have the label `success`, which can have the values `true` or `false`. A request is counted with `success=true` iff the APM Server responded with `2xx`.
 
 The metric `agent.events.requests.bytes` does not need to represent the exact network usage.
-Instead the number of compressed bytes within the request body can be used as approximation.
+Instead, the number of compressed bytes within the request body can be used as approximation.
 
-All event request metrics can be disabled via the `disable_metrics` configuration.
+All event request metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
 ### Agent Overhead Metrics
 
