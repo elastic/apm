@@ -33,7 +33,7 @@ For example, when a request to the Intake API fails without a response, all even
 In reality, it is possible that e.g. half of the data was actually successfully received and forwarded by the APM server.
 When the APM server responds with an HTTP error code, the number of dropped events SHOULD be computed by subtracting the `accepted` field from the response body from the total number of inflight events of this request.
 
-The `agent.events.total` metric MUST have the label `eventType`. The possible values for `eventType` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
+The `agent.events.total` metric MUST have the label `event_type`. The possible values for `event_type` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
 The `agent.events.dropped.*` metrics MUST NOT have any labels.
 
 Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
@@ -54,6 +54,10 @@ We capture both `min_size` and `max_size` to allow to distinguish between reason
 The queue usage can be computed based on how the agent defines the queue capacity.
 E.g. if the queue capacity is a fixed number of events, the usage can be computed based on the current number of events.
 If the queue capacity is in bytes, the usage can be computed based on the number of bytes currently occupied in the queue.
+
+
+If agents use multiple queues (e.g. separating `metricsets` from other events), they SHOULD expose the `agent.events.queue.*` metrics for every queue and add a `queue_name` label.
+The values for the `queue_name` label are implementation-defined.
 
 All event queue metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
