@@ -143,3 +143,56 @@ By default, agents MUST send data to the APM Server at `http://localhost:8200/`.
 If possible, agents SHOULD detect sensible defaults for `service.name` and `service.version`.
 In any case agents MUST include `service.name` - if discovering it is not possible then the default value: `unknown-${service.agent.name}-service` MUST be used.
 This naming pattern allows the UI to display inline help on how to manually configure the name.
+
+### Adding a new configuration option
+
+#### Configuration option spec template
+
+When adding a new configuration option to the spec, please use the following template:
+
+```markdown
+### <option_name_in_central_config_notation> configuration
+
+The description of the option.
+Try to phrase it in a way that lets agents easily copy/paste the description into their configuration documentation page.
+This should also match the description in the [central configuration](https://github.com/elastic/kibana/blob/main/x-pack/plugins/apm/common/agent_configuration/setting_definitions/general_settings.ts) in the APM UI.
+
+|                |                                           |
+|----------------|-------------------------------------------|
+| Type           | See the Configuration Value Types section |
+| Default        | `<default value>`                         |
+| Central config | `<true/false>`                            |
+
+Additional description of the option that should not be part of the documentation.
+For example, whether agents SHOULD or MUST implement the option.
+
+```
+
+#### Adding to central configuration
+
+One of the things to determine when proposing to add a new configuration option is whether it should be added to central configuration.
+In general, we should try to make the majority of options available in central configuration.
+However, sometimes it might not be feasible if agents need to read the value at startup and changing the value at runtime is very difficult to achieve.
+
+When adding a centrally configurable option,
+the spec owner is expected to create a pull request in the Kibana repository to add the option to central configuration.
+
+To make sure the tests are passing and to update some generated files, you need a local clone of Kibana and execute the build.
+Follow [Kibana's contribution guide](https://github.com/elastic/kibana/blob/main/CONTRIBUTING.md) to get a local environment running.
+
+Add the configuration option(s) using this [example PR](https://github.com/elastic/kibana/pull/143668) as a reference.
+By the time you're adding the configuration option, chances are that no agent has implemented the option, yet.
+Therefore, set `includeAgents: []` in the option declaration.
+When an agent implements the option, they just need to add the agent name to this section, without having to test the changes.
+Please manually add a checkbox to all the implementation issues to make sure agents don't forget that step.
+
+Before creating a PR, execute the [jest tests and update the generated snapshot files](https://github.com/elastic/kibana/blob/main/x-pack/plugins/apm/dev_docs/testing.md#unit-tests-jest).
+For testing purposes, comment out the `includeAgents` declaration and remember add it back in after testing.
+This ensures that you can just select `all` services and `all` environments in the central configuration UI.  
+To test the changes, run Elasticsearch and Kibana as described in the contribution guide.
+Just try out whether the option is rendered as expected and triple-check that the option name matches the one in the spec.
+
+When creating the PR, add the labels `release_note:enhancement`, `Team:APM`, and `v<next minor stack release>`.
+
+If everything works smoothly, request a review from the [apm-ui](https://github.com/orgs/elastic/teams/apm-ui) team.
+If you need help, drop a message in the #apm-dev channel so that agent devs that did this before or UI devs can chime in.
