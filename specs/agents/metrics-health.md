@@ -38,7 +38,7 @@ The `agent.events.dropped.*` metrics MUST NOT have any labels.
 
 Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
 
-All event count metrics can be disabled via the `disable_metrics` configuration.
+All event count metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
 ### Event Queue Metrics
 
