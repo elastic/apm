@@ -209,7 +209,7 @@ curl -X GET "http://metadata.google.internal/computeMetadata/v1/?recursive=true"
 
 From the returned metadata, the following fields are useful
 
-| Cloud metadata field  | AWS Metadata field  |
+| Cloud metadata field  | GCP Metadata field  |
 | --------------------  | ------------------- |
 | `instance.id`         | `instance.id`       |
 | `instance.name`       | `instance.name`     |
@@ -235,7 +235,7 @@ curl -X GET "http://169.254.169.254/metadata/instance/compute?api-version=2019-0
 
 From the returned metadata, the following fields are useful
 
-| Cloud metadata field  | AWS Metadata field  |
+| Cloud metadata field  | Azure Metadata field|
 | --------------------  | ------------------- |
 | `account.id`          | `subscriptionId`    |
 | `instance.id`         | `vmId`              |
