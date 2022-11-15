@@ -67,9 +67,9 @@ In order to track these metrics, most likely a custom implementation is required
 One approach can be to have two variables `min_size` and `max_size`, which are atomically updated on changes to the queue:
  * When an item is added to the queue, update `max_size` with the current queue size if it is greater than `max_size`
  * When an item is removed from the queue, update `min_size` with the current queue size if it is less than `min_size`
- * When an item cannot be added to the queue (dropped), set `max_size` to `queue_capacity`
+ * When an item cannot be added to the queue (dropped), set `max_size` to `1`
 
-After the metrics are exported, `min_size` and `max_size` need to be reset tu the current queue size.
+After the metrics are exported, `min_size` and `max_size` need to be reset to the current queue size.
 
 An atomic min/max can be implemented using the following algorithm:
 ```java
