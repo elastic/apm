@@ -21,22 +21,24 @@ Agents send their data to the Intake API of the APM-server in the form of a stre
 
 The following metrics counting these events SHOULD be exposed:
  - `agent.events.total`: `COUNTER` of events either submitted to the internal reporting queue or dropped upon submit attempt
- - `agent.events.dropped.queue`: `COUNTER` of events where the attempt to add it to the reporting queue failed (e.g. due to a full queue)
- - `agent.events.dropped.error`: `COUNTER` of events dropped after they previously have been successfully added to the queue.
+ - `agent.events.dropped`: `COUNTER` of events which failed to be transmitted to the APM server and therefore were dropped
 
 If an agent supports these metrics, the metrics MUST be captured for all events which would reach the APM-Server in an ideal, failure-free world.
 Therefore an event MUST be taken into account for these metrics if an attempt is made to submit it to the internal reporting queue, regardless of the success.
 Events dropped before this attempt (e.g. due to [sampling](tracing-sampling.md) or [transaction_max_spans](handling-huge-traces/tracing-spans-limit.md)) are NOT counted.
 
-The value of `agent.events.dropped.error` is an upper bound for the actual number of dropped events after entering the queue.
+The `agent.events.total` metric MUST have the label `event_type`. The possible values for `event_type` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
+The `agent.events.dropped.*` metrics MUST NOT have any labels.
+Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
+
+The `agent.events.dropped` metric MUST have a value for the `reason` label. The following values MUST be used:
+* `queue` MUST be used for events where the attempt to add it to the reporting queue failed (e.g. due to a full queue)
+* `error` MUST be used for events dropped after they previously have been successfully added to the queue.
+
+The value of `agent.events.dropped` with `reason=error` is an upper bound for the actual number of dropped events after entering the queue.
 For example, when a request to the Intake API fails without a response, all events within this request MUST be considered as failed.
 In reality, it is possible that e.g. half of the data was actually successfully received and forwarded by the APM server.
 When the APM server responds with an HTTP error code, the number of dropped events SHOULD be computed by subtracting the `accepted` field from the response body from the total number of inflight events of this request.
-
-The `agent.events.total` metric MUST have the label `event_type`. The possible values for `event_type` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
-The `agent.events.dropped.*` metrics MUST NOT have any labels.
-
-Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
 
 All event count metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
