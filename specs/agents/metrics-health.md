@@ -55,8 +55,8 @@ The queue usage can be computed based on how the agent defines the queue capacit
 E.g. if the queue capacity is a fixed number of events, the usage can be computed based on the current number of events.
 If the queue capacity is in bytes, the usage can be computed based on the number of bytes currently occupied in the queue.
 
-If agents use multiple queues (e.g. separating `metricsets` from other events), they SHOULD expose the `agent.events.queue.*` metrics for every queue and add a `queue_name` label.
-The values for the `queue_name` label are implementation-defined.
+The `agent.events.queue.*` metrics must have a `queue_name` label. If agents use multiple queues, the `agent.events.queue.*` SHOULD be exposed for each queue with a implementation-defined value for `queue_name` per queue.
+If agents use just a single queue or have a shared primary queue, the value `generic` SHOULD be used as value for `queue_name` for this queue.
 
 All event queue metrics MUST be able to be disabled by the `disable_metrics` configuration option.
 
