@@ -50,6 +50,9 @@ The agent logging preamble consists of 3 blocks:
 * **Environment**: This block is optional but for supportability reasons it should be provided.
 * **Configuration**: This block mandatory and contains a minimum set of relevant configuration values.
 
+**Note** that this specification does not prescribe a specific format to be used for creating 
+the log messages. It is up to the implementing agent to chose a format (e.g. ecs-logging format).
+
 ### Agent
 
 On startup, all APM agents MUST log basic information regarding their technology (language, runtime),
@@ -63,8 +66,8 @@ Example:
 Elastic APM .NET Agent, version: 1.19.1-preview, build date: 2022-10-27 10:55:42 UTC
 ```
 
-Agents SHOULD also report when they are running in a **non-production** scenario (e.g. a debug
-or pre-release build) using the `warning` logging level.
+Agents SHOULD also detect when they are running in a non-final version (e.g. a debug
+or pre-release build) and report that fact using the `warning` logging level.
 
 Example:
 
@@ -82,12 +85,16 @@ Additionally, agents SHOULD report information about their environment (e.g. hos
 | Process Name | The executable image name or the full path to it.  | `w3wp.exe`, `/usr/local/share/dotnet/dotnet` |
 | Command Line | The full command line used to launch this process as available to the runtime. | `/Users/acme/some_app/bin/Debug/net7.0/some_app.dll foo=bar` |
 | Operating System | OS name and version in a human-readable format. | `macOS Version 12.6.1 (build 21G217)` |
-| CPU architecture | One of the well-known values from the table below. | `arm64` |
+| CPU architecture | See table below. | `arm64` |
 | Host | The (optionally fully-qualified) host name. | `MacBook-Pro.localdomain` |
 | Time zone | The local time zone in UTC-offset notation. | `UTC+0200` |
 | Runtime | Name and version of the executing runtime. | `.NET Framework 4.8.4250.0`|
 
 **CPU Architecture:**
+
+This table provides an exemplary list of well-known values for reporting the CPU architecture.
+An agent can decide to use different values that might be readily availalbe to their language/runtime
+ecosystem (e.g. Node.js' `os.arch()`).
 
 | Value | Description |
 | - | - |
@@ -115,7 +122,8 @@ Agents MUST provide information about following essential configuration items:
 | Item | Needs masking | Example |
 | - | - | - | - |
 | `server_url` | no | `http://localhost:8200` |
-| `secret_token` | yes | `*****` |
+| `secret_token` | yes | `[REDACTED]` |
+| `api_key` | yes | `[REDACTED]` |
 | `service_name` | no | `foo` |
 | `log_level` | no | `warning` |
 
@@ -137,7 +145,8 @@ Agent Configuration:
   - '/path/to/some/config.json'
   - '/path/to/some/other/config.xml'
 - server_url: 'http://localhost:8200' (default)
-- secret_token: [MASKED] (environment)
+- secret_token: [REDACTED] (environment)
+- api_key: [REDACTED] (default)
 - service_name: `unknown-dotnet-service` (default)
 - log_level: info (file)
 - disable_metrics: '*' (file)
