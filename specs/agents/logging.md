@@ -48,7 +48,7 @@ The agent logging preamble consists of 3 blocks:
 
 * **Agent**: This block is mandatory and contains basic version and build date information.
 * **Environment**: This block is optional but for supportability reasons it should be provided.
-* **Configuration**: This block mandatory and contains a minimum set of relevant configuration values.
+* **Configuration**: This block is mandatory and contains a minimum set of relevant configuration values.
 
 **Note** that this specification does not prescribe a specific format to be used for creating 
 the log messages. It is up to the implementing agent to chose a format (e.g. ecs-logging format).
