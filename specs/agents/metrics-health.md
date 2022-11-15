@@ -28,7 +28,6 @@ Therefore an event MUST be taken into account for these metrics if an attempt is
 Events dropped before this attempt (e.g. due to [sampling](tracing-sampling.md) or [transaction_max_spans](handling-huge-traces/tracing-spans-limit.md)) are NOT counted.
 
 The `agent.events.total` metric MUST have the label `event_type`. The possible values for `event_type` are the lowercase names of the events according to the [spec](https://github.com/elastic/apm-server/tree/main/docs/spec/v2) (e.g. `transaction`, `metricset`) or the value `undefined`.
-The `agent.events.dropped.*` metrics MUST NOT have any labels.
 Agents SHOULD attempt to assign the appropriate label value based on the counted event. If this would impose significant implementation overhead, the value `undefined` MUST be used instead.
 
 The `agent.events.dropped` metric MUST have a value for the `reason` label. The following values MUST be used:
