@@ -125,7 +125,7 @@ Configuration value strings MUST be printed in quotes (so accidental leading or 
 
 Agents SHOULD log all configuration items that do not have default values.
 At the very minimum, agents MUST provide information about following essential configuration items.
-Items denoted as *"Log always* MUST be logged in any case (i.e. having a default value or a custom one).
+Items denoted as *"Log always"* MUST be logged in any case (i.e. having a default value or a custom one).
 
 | Item | Needs masking | Log Always | Example |
 | - | - | - | - |
