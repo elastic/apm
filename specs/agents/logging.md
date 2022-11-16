@@ -94,6 +94,7 @@ Additionally, agents SHOULD report information about their environment (e.g. hos
 | Host | The (optionally fully-qualified) host name. | `MacBook-Pro.localdomain` |
 | Time zone | The local time zone in UTC-offset notation. | `UTC+0200` |
 | Runtime | Name and version of the executing runtime. | `.NET Framework 4.8.4250.0`|
+| Framework | Name and version of the instrumented framework. | `Django 4.1.3`, `ASP.NET 4.8.4494.0`|
 
 [1]: Due to privacy concerns in the past (see e.g. [here](https://github.com/elastic/apm-agent-nodejs/issues/1916)),
 agents may decided to not log this information.
