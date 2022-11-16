@@ -145,7 +145,7 @@ For each configuration option its **source** SHOULD be reported. These sources c
 * `environment`: Environment variable
 * `file`: Configuration file
 * `central`: Central Configuration
-  * **Note:** Agents MAY print their configuration block again on changed in the central configuration.
+  * **Note:** Agents MAY print their configuration block again on changes in the central configuration.
 
 Example:
 
