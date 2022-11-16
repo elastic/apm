@@ -56,7 +56,10 @@ the log messages. It is up to the implementing agent to chose a format (e.g. ecs
 ### Agent
 
 On startup, all APM agents MUST log basic information regarding their technology (language, runtime),
-version information, and build date in a format chosen by the respective agent.
+and version information.
+This log message MUST provide sufficient data to uniquely identify the agent build that generated the
+log message. Hence, if e.g. the version information is not sufficient, agents
+MUST include further information (e.g. build timestamp, git hash) that uniquely identifies an agent build.
 
 This SHOULD be the very first log message that is created by an agent.
 
@@ -114,10 +117,11 @@ The start of the configuration block MUST be denoted as such (e.g. `Agent Config
 If configuration files are used in the configuration process, their fully-qualified paths
 SHOULD be logged.
 
-Configuration item names MUST be provided in normalized (lower-case, snake_case) notation.
+Configuration item names SHOULD be provided in normalized (lower-case, snake_case) notation.
 Configuration value strings MUST be printed in quotes (so accidental leading or trailing whitespace can be spotted).
 
-Agents MUST provide information about following essential configuration items:
+Agents SHOULD log all configuration items that do not have default values.
+At the very minimum, agents MUST provide information about following essential configuration items:
 
 | Item | Needs masking | Example |
 | - | - | - | - |
@@ -126,8 +130,6 @@ Agents MUST provide information about following essential configuration items:
 | `api_key` | yes | `[REDACTED]` |
 | `service_name` | no | `foo` |
 | `log_level` | no | `warning` |
-
-Additional configurations items MAY be logged after that as well.
 
 For each configuration option its **source** SHOULD be reported. These sources can be:
 
