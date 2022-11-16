@@ -99,7 +99,7 @@ agents may decided to not log this information.
 **CPU Architecture:**
 
 This table provides an exemplary list of well-known values for reporting the CPU architecture.
-An agent can decide to use different values that might be readily availalbe to their language/runtime
+An agent can decide to use different values that might be readily available to their language/runtime
 ecosystem (e.g. Node.js' `os.arch()`).
 
 | Value | Description |
