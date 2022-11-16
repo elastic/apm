@@ -75,7 +75,7 @@ or pre-release build) and report that fact using the `warning` logging level.
 Example:
 
 ```text
-This a pre-release version and not intended for use in production environments!
+This is a pre-release version and not intended for use in production environments!
 ```
 
 ### Environment
