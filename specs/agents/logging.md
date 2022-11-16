@@ -75,7 +75,7 @@ or pre-release build) and report that fact using the `warning` logging level.
 Example:
 
 ```text
-This a pre-release version and not intended for use in production environments!
+This is a pre-release version and not intended for use in production environments!
 ```
 
 ### Environment
@@ -86,12 +86,15 @@ Additionally, agents SHOULD report information about their environment (e.g. hos
 | - | - | - |
 | Process ID | The Process ID in decimal format. | `83606` |
 | Process Name | The executable image name or the full path to it.  | `w3wp.exe`, `/usr/local/share/dotnet/dotnet` |
-| Command Line | The full command line used to launch this process as available to the runtime. | `/Users/acme/some_app/bin/Debug/net7.0/some_app.dll foo=bar` |
+| Command Line | The full command line used to launch this process as available to the runtime. [1]  | `/Users/acme/some_app/bin/Debug/net7.0/some_app.dll foo=bar` |
 | Operating System | OS name and version in a human-readable format. | `macOS Version 12.6.1 (build 21G217)` |
 | CPU architecture | See table below. | `arm64` |
 | Host | The (optionally fully-qualified) host name. | `MacBook-Pro.localdomain` |
 | Time zone | The local time zone in UTC-offset notation. | `UTC+0200` |
 | Runtime | Name and version of the executing runtime. | `.NET Framework 4.8.4250.0`|
+
+[1]: Due to privacy concerns in the past (see e.g. [here](https://github.com/elastic/apm-agent-nodejs/issues/1916)),
+agents may decided to not log this information.
 
 **CPU Architecture:**
 
@@ -121,15 +124,20 @@ Configuration item names SHOULD be provided in normalized (lower-case, snake_cas
 Configuration value strings MUST be printed in quotes (so accidental leading or trailing whitespace can be spotted).
 
 Agents SHOULD log all configuration items that do not have default values.
-At the very minimum, agents MUST provide information about following essential configuration items:
+At the very minimum, agents MUST provide information about following essential configuration items.
+Items denoted as *"Log always* MUST be logged in any case (i.e. having a default value or a custom one).
 
-| Item | Needs masking | Example |
+| Item | Needs masking | Log Always | Example |
 | - | - | - | - |
-| `server_url` | no | `http://localhost:8200` |
-| `secret_token` | yes | `[REDACTED]` |
-| `api_key` | yes | `[REDACTED]` |
-| `service_name` | no | `foo` |
-| `log_level` | no | `warning` |
+| `server_url` | no | yes | `http://localhost:8200` [2] |
+| `service_name` | no | yes | `foo` |
+| `service_version` | no | yes | `42` |
+| `log_level` | no | yes | `warning` |
+| `secret_token` | yes | no | `[REDACTED]` |
+| `api_key` | yes | no | `[REDACTED]` |
+
+[2]: Agents MAY decide to mask potential sensitive data (e.g. basic authentication information)
+that could be part of this URL.
 
 For each configuration option its **source** SHOULD be reported. These sources can be:
 
