@@ -39,7 +39,7 @@ For example, when a request to the Intake API fails without a response, all even
 In reality, it is possible that e.g. half of the data was actually successfully received and forwarded by the APM server.
 When the APM server responds with an HTTP error code, the number of dropped events SHOULD be computed by subtracting the `accepted` field from the response body from the total number of inflight events of this request.
 
-All event count metrics MUST be able to be disabled by the `disable_metrics` configuration option.
+It MUST be possible to disable all event count metrics via the `disable_metrics` configuration option.
 
 ### Event Queue Metrics
 
@@ -56,10 +56,10 @@ The queue usage can be computed based on how the agent defines the queue capacit
 E.g. if the queue capacity is a fixed number of events, the usage can be computed based on the current number of events.
 If the queue capacity is in bytes, the usage can be computed based on the number of bytes currently occupied in the queue.
 
-The `agent.events.queue.*` metrics must have a `queue_name` label. If agents use multiple queues, the `agent.events.queue.*` SHOULD be exposed for each queue with a implementation-defined value for `queue_name` per queue.
+The `agent.events.queue.*` metrics MUST have a `queue_name` label. If agents use multiple queues, the `agent.events.queue.*` SHOULD be exposed for each queue with a implementation-defined value for `queue_name` per queue.
 If agents use just a single queue or have a shared primary queue, the value `generic` SHOULD be used as value for `queue_name` for this queue.
 
-All event queue metrics MUST be able to be disabled by the `disable_metrics` configuration option.
+It MUST be possible to disable all event queue metrics via the `disable_metrics` configuration option.
 
 #### Possible implementation for agents
 
@@ -104,7 +104,7 @@ The `agent.events.requests.*` metrics MUST have the label `success`, which can h
 The metric `agent.events.requests.bytes` does not need to represent the exact network usage.
 Instead, the number of compressed bytes within the request body can be used as approximation.
 
-All event request metrics MUST be able to be disabled by the `disable_metrics` configuration option.
+It MUST be possible to disable all event request metrics via the `disable_metrics` configuration option.
 
 ### Agent Overhead Metrics
 
