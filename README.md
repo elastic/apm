@@ -4,7 +4,7 @@
 
 <p align='center'>This project includes resources and general issue tracking for Elastic APM.</p>
 
-Help us make Elastic APM better by sharing your experience with Elastic Product Management.  [Schedule a 45-minute session](https://calendly.com/elasticapm-chris) with Elastic Product Management and share your feedback. 
+Help us make Elastic APM better by sharing your experience with Elastic Product Management.  [Schedule a 45-minute session](https://calendly.com/elasticapm-chris) with Elastic Product Management and share your feedback.
 
 ## What we do…
 
@@ -12,6 +12,7 @@ Help us make Elastic APM better by sharing your experience with Elastic Product 
 | :-                        | :-                    | :-                                      | :-
 | APM Server                | [apm-server][]        | [📘 elastic.co][apm-server-docs]        | [📂 contrib][apm-server-contrib]
 | APM UI                    | [apm-ui][]            | [📘 elastic.co][apm-ui-docs]            | [📂 contrib][apm-ui-contrib]
+| Android Agent (🚧 In Development) | [apm-agent-android][] | [📘 elastic.co][apm-agent-android-docs] | [📂 contrib][apm-agent-android-contrib]
 | Go Agent                  | [apm-agent-go][]      | [📘 elastic.co][apm-agent-go-docs]      | [📂 contrib][apm-agent-go-contrib]
 | iOS Agent (🚧 In Development) | [apm-agent-ios][]     | [📘 elastic.co][apm-agent-ios-docs]     | [📂 contrib][apm-agent-ios-contrib]
 | Java Agent                | [apm-agent-java][]    | [📘 elastic.co][apm-agent-java-docs]    | [📂 contrib][apm-agent-java-contrib]
@@ -30,6 +31,10 @@ Help us make Elastic APM better by sharing your experience with Elastic Product 
 [apm-ui-contrib]: https://github.com/elastic/apm-contrib/tree/main/apm-ui
 [apm-ui-docs]: https://www.elastic.co/guide/en/kibana/current/xpack-apm.html
 [apm-ui]: https://github.com/elastic/kibana/tree/main/x-pack/plugins/apm
+
+[apm-agent-android-contrib]: https://github.com/elastic/apm-contrib/tree/main/apm-agent-android
+[apm-agent-android-docs]: https://www.elastic.co/guide/en/apm/agent/android/current/index.html
+[apm-agent-android]: https://github.com/elastic/apm-agent-android
 
 [apm-agent-go-contrib]: https://github.com/elastic/apm-contrib/tree/main/apm-agent-go
 [apm-agent-go-docs]: https://www.elastic.co/guide/en/apm/agent/go/current/index.html
