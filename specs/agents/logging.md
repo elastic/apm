@@ -41,10 +41,12 @@ Also, the documentation should not mention the old log levels going forward.
 
 ## Logging Preamble
 
-For supportability reasons, all agents MUST print this preamble on startup.
+The intention of this logging preamble is to ensure agent supportability. Relevant
+data about an agent (e.g. version) and the environment it is running in (e.g. host,
+operating system) should be provided in it.
 
-All log messages described in this section MUST be printed using the `info` logging level
-unless a different level is explicitly mentioned.
+All agents MUST print this preamble on startup using the `info` logging level unless
+a different level is explicitly mentioned.
 
 The agent logging preamble consists of 3 blocks:
 
