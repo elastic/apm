@@ -12,7 +12,11 @@ In case of an HTTP invocation/trigger there is e.g. [`HttpRequestData`](https://
 ## Generic Instrumentation
 
 In general, to instrument an Azure Functions application, we create transactions that wrap the execution of its handler methods. In cases where we cannot assume any trigger type or extract trigger-specific data (e.g. if the trigger type is unsupported),
-we wrap the handler method with a transaction, while using the generic context object to derive necessary fields:
+we wrap the handler method with a transaction, while using the generic context object to derive necessary fields.
+
+**Note:** This table represents generic values that agents SHOULD always provide regardless of the
+actual `faas.trigger.type`. For trigger types that are specifically supported (e.g HTTP) these values
+can vary on trigger-specific specifications apply.
 
 | Field | Value | Description | Source |
 | - | - | - | - |
@@ -23,9 +27,8 @@ we wrap the handler method with a transaction, while using the generic context o
 | `faas.name` | e.g. `MySampleTrigger` | The function name. | *generic context* |
 | `faas.id` | e.g. `/subscriptions/d2ba53be-0815-4...` | The [fully qualified resource ID](https://learn.microsoft.com/en-us/rest/api/resources/resources/get-by-id) of the Azure Function, which has this format: `/subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>` | *generic context*, environment |
 | `faas.trigger.type` | `other` | The trigger type. Use `other` if the trigger type is unknown or cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). |
-
 | `faas.execution` | `203621a2-62f...` | The unique invocation id of the function. | *generic context* |
-| `faas.coldstart` | `true`/`false` | A boolean value indicating whether this function invocation was a cold start or not. | [see section below](deriving-cold-starts)
+| `faas.coldstart` | `true`/`false` | A boolean value indicating whether this function invocation was a cold start or not. See the [Deriving cold starts](#deriving-cold-starts) section below. |
 
 ### Metadata
 
@@ -50,6 +53,9 @@ In addition to those described in [Metadata](./metadata.md), following metadata 
 A cold start occurs if the Azure Functions runtime needs to be initialized in order to handle the first function execution.
 Since an Azure Function app can provide multiple function entry points, those may run concurrently.
 Hence, cold start detection must happen in a thread-safe manner.
+
+The first function invocation MUST be reported as `faas.coldstart=true` and all subsequent invocations
+to this function or other functions in the same function app MUST be reported as `faas.coldstart=false`.
 
 **Note:** The Azure Functions [Premium plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale)
 guarantees pre-warmed workers (no cold starts). Nonetheless, reporting the first function execution as such might still make
@@ -98,6 +104,6 @@ In addition the following fields should be set for HTTP trigger invocations:
 | Field | Value | Description | Source |
 | - | - | - | - |
 | `type` | `request`| Transaction type. Constant value for HTTP trigger invocations. | |
-| `name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: HTTP method followed by a whitespace and the (resource) path. | *request object* |
+| `name` | e.g. `GET products/{category:alpha}/{id:int?}`, `GET /api/SampleHttpTrigger` | Transaction name: HTTP method followed by a whitespace and low cardinality representation of the function (route pattern or resource path). | *request object* |
 | `transaction.result` | `HTTP Xxx` / `success` | `HTTP Xxx` based on the *response object* status code, otherwise `success`. | *response object* |
 | `faas.trigger.type` | `http` | Constant value for HTTP trigger invocations. | |
