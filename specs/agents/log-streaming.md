@@ -43,3 +43,6 @@ When `log_streaming` option is enabled, the agent should also send its own logs 
 
 For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
+
+Unlike the application logs written with ecs-logging, the `service.name` value for agent logs will always be the one
+set at agent level.
