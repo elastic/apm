@@ -39,3 +39,11 @@ Those agents should still accept their "native" log levels to preserve backwards
 However, in central config,
 there will only be a dropdown with the levels that are consistent across agents.
 Also, the documentation should not mention the old log levels going forward.
+
+## Logging
+
+Agents may provide the following log-related features:
+
+- [Log correlation](log-correlation.md): inject current trace/transaction/error ID into logs.
+- [Log reformatting](log-reformatting.md): reformat plain-text logs to ECS, equivalent to using [ecs logging](https://github.com/elastic/ecs-logging) 
+without modifying the application nor its dependencies.

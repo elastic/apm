@@ -1,4 +1,4 @@
-# Log Onboarding
+# Log reformatting
 
 The Agents will be a critical part of log collection onboarding for their
 application logs. This is primarily accomplished via the `log_ecs_reformatting`
@@ -70,12 +70,21 @@ but will not cause errors if they are omitted:
 
 ### `service.name`
 
-Agents should always populate `service.name` even if there is not an active
-transaction.
+Agents should always populate `service.name` even if there is not an active transaction.
+
+When using [ecs-logging](https://github.com/elastic/ecs-logging) directly in the application, the logs are already
+written to ECS format, however the agent has to provide a fallback value if `service.name` is not set by the application.
 
 The `service.name` is used to be able to add a logs tab to the service view in
 the UI. This lets users quickly get a stream of all logs for a particular
 service.
+
+### `service.version`
+
+Agents may populate the `service.version` if a value is set in the agent configuration.
+
+When using [ecs-logging](https://github.com/elastic/ecs-logging) directly in the application, the logs are already
+written to ECS format, however the agent should provide a fallback value if `service.version` is not set by the application.
 
 ### `event.dataset`
 
@@ -98,6 +107,7 @@ Some examples:
 - opbeans.checkout
 - opbeans.login
 - opbeans.audit
+
 ## Testing
 
 Due to differences in the possible Agent implementations of this feature, no
