@@ -50,11 +50,11 @@ Agents should not send the `system.process.cgroup.memory.mem.limit.bytes` metric
 
 Agent should record runtime-specific metrics, such as garbage collection pauses. Due to their runtime-specific nature, these will differ for each agent.
 
-When capturing runtime metrics, keep in mind the end use-case: how will they be used? Is the format in which they are recorded appropriate for visualisation in Kibana? Do not record metrics just because it is easy; record them because they are useful.
+When capturing runtime metrics, keep in mind the end use-case: how will they be used? Is the format in which they are recorded appropriate for visualization in Kibana? Do not record metrics just because it is easy; record them because they are useful.
 
 ### Transaction and span breakdown
 
-Agents should record "breakdown metrics", which is a summarisation of how much time is spent per span type/subtype in each transaction group. This is described in detail in the [Breakdown Graphs](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt) document, so we do not repeat it here.
+Agents should record "breakdown metrics", which is a summarization of how much time is spent per span type/subtype in each transaction group. This is described in detail in the [Breakdown Graphs](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt) document, so we do not repeat it here.
 
 ## Shutdown behavior
 
