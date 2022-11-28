@@ -77,7 +77,7 @@ Also known as "central configuration". Agents can query the APM Server for confi
 
 Agents should poll the APM Server for config periodically by sending an HTTP request to the `/config/v1/agents` endpoint. Agents must specify their service name, and optionally environment. The server will use these to filter the configuration down to the relevant service and environment. There are two methods for sending these parameters:
 
-1. Using the `GET` method, pass them as query parameters: `http://localhost:8200/config/v1/agents?service.name=opbeans&service.environment=production`
+1. Using the `GET` method, pass them as query parameters: `http://127.0.0.1:8200/config/v1/agents?service.name=opbeans&service.environment=production`
 2. Using the `POST` method, encode the parameters as a JSON object in the body, e.g. `{"service": {"name": "opbeans", "environment": "production"}}`
 
 The server will respond with a JSON object, where each key maps a config attribute to a string value. The string value should be interpreted the same as if it were passed in via an environment variable. Upon receiving these config changes, the agent will update its configuration dynamically, overriding any config previously specified. That is, config via Kibana takes highest precedence.
@@ -139,7 +139,7 @@ To decrease onboarding friction,
 APM agents MUST not require any configuration to send data to a local APM Server.
 After onboarding, users can customize settings for which the defaults aren't appropriate.
 
-By default, agents MUST send data to the APM Server at `http://localhost:8200/`.
+By default, agents MUST send data to the APM Server at `http://127.0.0.1:8200/`.
 If possible, agents SHOULD detect sensible defaults for `service.name` and `service.version`.
 In any case agents MUST include `service.name` - if discovering it is not possible then the default value: `unknown-${service.agent.name}-service` MUST be used.
 This naming pattern allows the UI to display inline help on how to manually configure the name.
