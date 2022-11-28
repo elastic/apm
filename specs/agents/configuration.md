@@ -60,7 +60,7 @@ Snapshotted configuration options:
  * `span_compression_exact_match_max_duration`
  * `span_compression_same_kind_max_duration`
  * `exit_span_min_duration`
- 
+
 
 #### Duration/Size Config Legacy Considerations
 
@@ -188,7 +188,7 @@ Please manually add a checkbox to all the implementation issues to make sure age
 
 Before creating a PR, execute the [jest tests and update the generated snapshot files](https://github.com/elastic/kibana/blob/main/x-pack/plugins/apm/dev_docs/testing.md#unit-tests-jest).
 For testing purposes, comment out the `includeAgents` declaration and remember add it back in after testing.
-This ensures that you can just select `all` services and `all` environments in the central configuration UI.  
+This ensures that you can just select `all` services and `all` environments in the central configuration UI.
 To test the changes, run Elasticsearch and Kibana as described in the contribution guide.
 Just try out whether the option is rendered as expected and triple-check that the option name matches the one in the spec.
 
