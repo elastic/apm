@@ -4,13 +4,4 @@ Agents should provide instrumentation/hooks for popular logging libraries in ord
 
 By adding trace context to log records, users will be able to move between the APM UI and Logs UI.
 
-### `enable_log_correlation` configuration
-
-|                |                 |
-|----------------|-----------------|
-| Valid options  | `true`, `false` |
-| Default        | `false`         |
-| Dynamic        | `true`          |
-| Central config | `true`          |
-
 See also the [log-reformatting](log-reformatting.md) spec.

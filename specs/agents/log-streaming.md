@@ -39,10 +39,19 @@ The ECS logging fields are the same as the ones defined in log reformatting:
 
 ### Agent log
 
-When `log_streaming` option is enabled, the agent should also send its own logs to APM server.
+When `log_streaming` option is enabled, agents may also send its own logs to APM server.
+
+Agents usually have internal debug/trace logging statements that allow to diagnose communication issues and serialized data
+sent to APM server. Special care must be taken to ensure that sending APM agent logs do not trigger an exponential loop
+of log events. For APM agent logs, ignoring those log statements is an acceptable compromise, if there is any
+communication or serialization issue with APM server it will already be logged for application traces, logs and metrics
+sent by the agent.
+
+When the agent starts, agent log events might require some buffering until the agent initialization is complete. This
+allows to capture the early log messages when the agent initializes.
 
 For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
 
 Unlike the application logs written with ecs-logging, the `service.name` value for agent logs will always be the one
-set at agent level.
+set in agent configuration.
