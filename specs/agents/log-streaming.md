@@ -47,8 +47,8 @@ of log events. For APM agent logs, ignoring those log statements is an acceptabl
 communication or serialization issue with APM server it will already be logged for application traces, logs and metrics
 sent by the agent.
 
-When the agent starts, agent log events might require some buffering until the agent initialization is complete. This
-allows to capture the early log messages when the agent initializes.
+When the agent starts, agent log events might require some limited buffering until the agent initialization is complete.
+This allows to capture the early log messages when the agent initializes.
 
 For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
