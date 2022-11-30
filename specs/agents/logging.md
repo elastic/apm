@@ -99,7 +99,7 @@ Additionally, agents SHOULD report information about their environment (e.g. hos
 | Framework | Name and version of the instrumented framework. | `Django 4.1.3`, `ASP.NET 4.8.4494.0`|
 
 [1]: Due to privacy concerns in the past (see e.g. [here](https://github.com/elastic/apm-agent-nodejs/issues/1916)),
-agents may decided to not log this information.
+agents may decide to not log this information.
 
 **CPU Architecture:**
 
