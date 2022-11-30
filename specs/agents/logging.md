@@ -47,4 +47,4 @@ Agents may provide the following log-related features:
 - [Log correlation](log-correlation.md): inject current trace/transaction/error ID into logs.
 - [Log reformatting](log-reformatting.md): reformat plain-text logs to ECS, equivalent to using [ecs logging](https://github.com/elastic/ecs-logging) 
 without modifying the application nor its dependencies.
-- [Log streaming](log-streaming.md): send logs directly to APM server.
+- [Log sending](log-sending.md): send logs directly to APM server.

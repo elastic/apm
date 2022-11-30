@@ -1,6 +1,6 @@
-# Log streaming
+# Log sending
 
-### `log_streaming` configuration
+### `log_sending` configuration
 
 **Warning**: experimental feature, may be subject to change until GA. Also, only a small subset of agents will provide it before GA.
 
@@ -37,21 +37,23 @@ The ECS logging fields are the same as the ones defined in log reformatting:
 - [required fields](./log-reformatting.md#required-fields)
 - [recommended fields](./log-reformatting.md#recommended-fields)
 
+However, the values of `service.name` and `service.version` can be omitted as they are redundant to the values that are
+already sent in the [ND-JSON metadata](metadata.md). In the case where the formatted ECS log event already contains
+them it might be more efficient to send the event as-is than rewriting the event.
+
 ### Agent log
 
-When `log_streaming` option is enabled, agents may also send its own logs to APM server.
+When `log_sending` option is enabled, agents may also send their own logs to APM server.
 
 Agents usually have internal debug/trace logging statements that allow to diagnose communication issues and serialized data
 sent to APM server. Special care must be taken to ensure that sending APM agent logs do not trigger an exponential loop
-of log events. For APM agent logs, ignoring those log statements is an acceptable compromise, if there is any
-communication or serialization issue with APM server it will already be logged for application traces, logs and metrics
-sent by the agent.
+of log events or excessively large log event.
+For APM agent logs, ignoring those log statements is an acceptable compromise, if there is any communication or 
+serialization issue with APM server it will already be logged for application traces, logs and metrics sent by the agent.
 
 When the agent starts, agent log events might require some limited buffering until the agent initialization is complete.
-This allows to capture the early log messages when the agent initializes.
+This allows to capture the early log messages when the agent initializes which often provide details about the agent
+setup and configuration which are often required for support. 
 
 For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
-
-Unlike the application logs written with ecs-logging, the `service.name` value for agent logs will always be the one
-set in agent configuration.
