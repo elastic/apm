@@ -53,7 +53,7 @@ serialization issue with APM server it will already be logged for application tr
 
 When the agent starts, agent log events might require some limited buffering until the agent initialization is complete.
 This allows to capture the early log messages when the agent initializes which often provide details about the agent
-setup and configuration which are often required for support. 
+setup and configuration which are required for support.
 
 For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
