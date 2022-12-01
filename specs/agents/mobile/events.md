@@ -8,11 +8,11 @@ Event names will be recording using the `event.name`
 This event represents the occurrence of app entering the foreground or background or other application lifecycle states.
 
 #### Attributes
-| Name         | Type   | Units | Description            |
-|--------------|--------|-------|------------------------|
-| `event.name` | String | N/A   | `ApplicationLifecycle` |
-| `state`      | String | N/A   | `foreground`           |
-| `state.last` | String | N/A   | `background`           |
+| Name         | Type   | Values                 | Description                                        |
+|--------------|--------|------------------------|----------------------------------------------------|
+| `event.name` | String | `ApplicationLifecycle` | The name of the event                              |
+| `state`      | String | `foreground`           | The lifecycle state the app is transitioning to.   | 
+| `state.last` | String | `background`           | The lifecycle state the app is transitioning from. | 
 
 
 
@@ -20,7 +20,7 @@ This event represents the occurrence of app entering the foreground or backgroun
 This event represents the occurrence of an 'ANR' error reported by the Android OS.
 
 #### Attributes
-| Name           | Type | Units | Description |
+| Name           | Type | Value | Description |
 |----------------|------|-------|-------------|
 | `event.name`   |      |       |             |
 
@@ -29,24 +29,25 @@ This event represents the occurrence of an 'ANR' error reported by the Android O
 An event that allows customers to add events to a common `Event` that allows them to retrace users' steps. 
 
 #### Attributes
-| Name           | Type    | Units | Description  |
-|----------------|---------|-------|--------------|
-| `event.name`   | String  | N/A   | `Breadcrumb` |
+| Name           | Type    | Value        | Description            |
+|----------------|---------|--------------|------------------------|
+| `event.name`   | String  | `Breadcrumb` | The name of the Event  |
 
 ### Crashes
 
 This event represent a crash event
+
 #### Attributes
-| Name           | Type    | Units | Description |
-|----------------|---------|-------|-------------|
-| `event.name`   | String  | N/A   | `Crash`     |
-| `stacktrace`   | String  | N/A   |             | 
+| Name           | Type    | Values  | Description    |
+|----------------|---------|---------|----------------|
+| `event.name`   | String  | `Crash` | The event name | 
+| `stacktrace`   | String  | N/A     | A Stacktrace   | 
 
 ### `Application Opens`
 
 An event that represents when an app is opened.
 
 #### Attributes
-| Name           | Type   | Units | Description           |
-|----------------|--------|-------|-----------------------|
-| `event.name`   | String | N/A   | `Application Opened`  |
+| Name           | Type   | Value                | Description    |
+|----------------|--------|----------------------|----------------|
+| `event.name`   | String | `Application Opened` | The event name | 
