@@ -136,6 +136,37 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 Services running on AWS Lambda [require specific values](tracing-instrumentation-aws-lambda.md) for some of the above mentioned fields.
 
+#### Installation method
+
+Most of the APM Agents can be installed in several ways. Agents SHOULD collect information about the used installation method and send it in the `service.agent.installation.method` field within the metadata.
+
+The intention of this field is to drive telemetry so there is a way to know which installation methods are commonly used. This field MUST produce data with very low cardinality, therefore agents SHOULD use one of the values defined below.
+
+There are some well-known installation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.installation.method`:
+
+- `aws-lambda-layer`: when the agent runs in AWS lambda and uses [the AWS lambda extension](https://github.com/elastic/apm-aws-lambda).
+- `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-mutating-webhook).
+- `env-attach`: when the agent is installed by setting some environment variables.
+- `azure-functions`: when the agent runs within an Azure function.
+- `fleet`: when the agent is attached via fleet.
+
+Cross agent installation methods defined above have higher priority than agent specific values below.
+If none of the above matches the installation method, agents define specific values for specific scenarios.
+
+Node.js:
+- `require`
+- `import`
+- `preload`
+
+Java:
+- `javaagent-flag`
+- `apm-agent-attach-cli`
+- `programmatic-self-attach`
+
+.NET:
+- `nuget`
+- `profiler`
+
 ### Cloud Provider Metadata
 
 [Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
