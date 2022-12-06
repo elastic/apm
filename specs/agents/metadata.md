@@ -144,10 +144,9 @@ The intention of this field is to drive telemetry so there is a way to know whic
 
 There are some well-known installation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.installation.method`:
 
-- `aws-lambda-layer`: when the agent runs in AWS lambda and uses [the AWS lambda extension](https://github.com/elastic/apm-aws-lambda).
+- `aws-lambda-layer`: when the agent was installed as a Lambda layer.
 - `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-mutating-webhook).
-- `env-attach`: when the agent is installed by setting some environment variables.
-- `azure-functions`: when the agent runs within an Azure function.
+- `env-attach`: when the agent is installed by setting some environment variables. Only use this if there is a single way to install the agent via an environment variable. If the given runtime offers multiple environment variables to install the agent, use more specific values to avoid ambiguity.
 - `fleet`: when the agent is attached via fleet.
 
 Cross agent installation methods defined above have higher priority than agent specific values below.
@@ -159,13 +158,14 @@ Node.js:
 - `preload`
 
 Java:
-- `javaagent-flag`
-- `apm-agent-attach-cli`
-- `programmatic-self-attach`
+- `javaagent-flag`: when the agent is attached via the `-javaagent` JVM flag.
+- `apm-agent-attach-cli`: when the agent is attached via the `apm-agent-attach-cli` tool.
+- `programmatic-self-attach`: when the agent is attached by manually calling the `ElasticApmAttacher` API in user code.
 
 .NET:
-- `nuget`
-- `profiler`
+- `nuget`: when the agent was installed via a NuGet package.
+- `profiler`: when the agent was installed via the CLR Profiler.
+- `startup-hook`: when the agent relies on the `DOTNET_STARTUP_HOOKS` mechanism to install the agent.
 
 ### Cloud Provider Metadata
 
