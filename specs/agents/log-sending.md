@@ -39,7 +39,7 @@ The ECS logging fields are the same as the ones defined in log reformatting:
 
 However, the values of `service.name` and `service.version` can be omitted as they are redundant to the values that are
 already sent in the [ND-JSON metadata](metadata.md). In the case where the formatted ECS log event already contains
-them it might be more efficient to send the event as-is than rewriting the event.
+them it might be more efficient to send the event as-is, rather than rewriting the event.
 
 ### Agent log
 
