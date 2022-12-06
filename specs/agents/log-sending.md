@@ -13,6 +13,9 @@ Controls the ability to send logs directly from the agent to APM server.
 | Dynamic        | `true`          |
 | Central config | `true`          |
 
+When set to `true`, the agent will duplicate log events and send them to apm-server.
+Original log events are unaltered and written to their usual destinations (file, stdout, ...).
+
 The APM server only supports log events as of version 8.6+, thus trying to use this with an older version should
 issue a warning/error in the agent logs.
 
