@@ -136,21 +136,23 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 Services running on AWS Lambda [require specific values](tracing-instrumentation-aws-lambda.md) for some of the above mentioned fields.
 
-#### Installation method
+#### Activation method
 
-Most of the APM Agents can be installed in several ways. Agents SHOULD collect information about the used installation method and send it in the `service.agent.installation.method` field within the metadata.
+Most of the APM Agents can be activated in several ways. Agents SHOULD collect information about the used activation method and send it in the `service.agent.activation.method` field within the metadata.
 
-The intention of this field is to drive telemetry so there is a way to know which installation methods are commonly used. This field MUST produce data with very low cardinality, therefore agents SHOULD use one of the values defined below.
+The intention of this field is to drive telemetry so there is a way to know which activation methods are commonly used. This field MUST produce data with very low cardinality, therefore agents SHOULD use one of the values defined below.
 
-There are some well-known installation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.installation.method`:
+If the agent is unable to infer the activation method, it SHOULD send `unknown`.
+
+There are some well-known activation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.activation.method`:
 
 - `aws-lambda-layer`: when the agent was installed as a Lambda layer.
 - `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-mutating-webhook).
-- `env-attach`: when the agent is installed by setting some environment variables. Only use this if there is a single way to install the agent via an environment variable. If the given runtime offers multiple environment variables to install the agent, use more specific values to avoid ambiguity.
-- `fleet`: when the agent is attached via fleet.
+- `env-attach`: when the agent is activated by setting some environment variables. Only use this if there is a single way to activate the agent via an environment variable. If the given runtime offers multiple environment variables to activate the agent, use more specific values to avoid ambiguity.
+- `fleet`: when the agent is activated via fleet.
 
-Cross agent installation methods defined above have higher priority than agent specific values below.
-If none of the above matches the installation method, agents define specific values for specific scenarios.
+Cross agent activation methods defined above have higher priority than agent specific values below.
+If none of the above matches the activation method, agents define specific values for specific scenarios.
 
 Node.js:
 - `require`
