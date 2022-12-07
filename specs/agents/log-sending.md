@@ -51,8 +51,7 @@ When `log_sending` option is enabled, agents may also send their own logs to APM
 Agents usually have internal debug/trace logging statements that allow to diagnose communication issues and serialized data
 sent to APM server. Special care must be taken to ensure that sending APM agent logs do not trigger an exponential loop
 of log events or excessively large log event.
-For APM agent logs, ignoring those log statements is an acceptable compromise, if there is any communication or 
-serialization issue with APM server it will already be logged for application traces, logs and metrics sent by the agent.
+For APM agent logs, ignoring those log statements is an acceptable compromise -- diagnosis of agent errors in serializing or communicating with APM server may rely on local logging.
 
 When the agent starts, agent log events might require some limited buffering until the agent initialization is complete.
 This allows to capture the early log messages when the agent initializes which often provide details about the agent
