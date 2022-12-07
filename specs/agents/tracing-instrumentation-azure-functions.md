@@ -73,8 +73,9 @@ The following agent functionalities SHOULD to be turned off when tracing Azure F
 setting `ELASTIC_APM_METRICS_INTERVAL = 0`
 * **Remote configuration:** equivalent to setting `ELASTIC_APM_CENTRAL_CONFIG = false`
 * **Cloud metadata discovery:**
-  * Equivalent to setting `ELASTIC_APM_CLOUD_PROVIDER = none`
-  * Instead an Azure Functions specific metadata detection MUST be performed (see see [Metadata](./metadata.md)).
+  * Agents SHOULD disable their generic cloud metadata discovery mechanism to avoid pointless
+    HTTP requests to non-existent metadata endpoints (as  described [here](https://github.com/elastic/apm/blob/main/specs/agents/metadata.md#cloud-provider-metadata)).
+  * Instead an Azure Functions specific metadata detection MUST be performed (see [Metadata](./metadata.md)).
 * **System metadata discovery:** in some agents, this may be a relatively heavy task. For example, the Java agent
 executes external commands in order to discover the hostname, which is not required for tracing Azure Functions. All other
 agents read and parse files to extract container and k8s metadata, which is not required as well.
