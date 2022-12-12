@@ -24,7 +24,7 @@ can vary on trigger-specific specifications apply.
 | `type` | e.g. `request`, `messaging` | The transaction type. | Use `request` if trigger type is undefined. |
 | `outcome` | `success`/`failure` | Set to `failure` if a function error can be detected otherwise `success`. | |
 | `result` | `success`/`failure` |Set to `failure` if a function error can be detected, otherwise `success`. | Trigger specific. |
-| `faas.name` | e.g. `MySampleTrigger` | The function name. | *generic context* |
+| `faas.name` | e.g. `MyFunctionApp/MySampleTrigger` | The function app name and the function name, using this format: `<FUNCTION_APP_NAME>/FUNCTION_NAME>`. | *generic context* |
 | `faas.id` | e.g. `/subscriptions/d2ba53be-0815-4...` | The [fully qualified resource ID](https://learn.microsoft.com/en-us/rest/api/resources/resources/get-by-id) of the Azure Function, which has this format: `/subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>` | *generic context*, environment |
 | `faas.trigger.type` | `other` | The trigger type. Use `other` if the trigger type is unknown or cannot be specified. | More concrete triggers are `http`, `pubsub`, `datasource`, `timer` (see specific triggers below). |
 | `faas.execution` | `203621a2-62f...` | The unique invocation id of the function. | *generic context* |
