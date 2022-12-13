@@ -39,6 +39,15 @@ However, in central config,
 there will only be a dropdown with the levels that are consistent across agents.
 Also, the documentation should not mention the old log levels going forward.
 
+## Logging
+
+Agents may provide the following log-related features:
+
+- [Log correlation](log-correlation.md): inject current trace/transaction/error ID into logs.
+- [Log reformatting](log-reformatting.md): reformat plain-text logs to ECS, equivalent to using [ecs logging](https://github.com/elastic/ecs-logging) 
+without modifying the application nor its dependencies.
+- [Log sending](log-sending.md): send logs directly to APM server.
+
 ## Logging Preamble
 
 The intention of this logging preamble is to ensure agent supportability. Relevant
