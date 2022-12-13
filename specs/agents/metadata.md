@@ -155,9 +155,9 @@ Cross agent activation methods defined above have higher priority than agent spe
 If none of the above matches the activation method, agents define specific values for specific scenarios.
 
 Node.js:
-- `require`
-- `import`
-- `preload`
+- `require`: when the agent is started via CommonJS `require('elastic-apm-node').start()` or `require('elastic-apm-node/start')`.
+- `import`: when the agent is started via ESM, e.g. `import 'elastic-apm-node/start.js'`.
+- `preload`: when the agent is started via the Node.js `--require` flag, e.g. `node -r elastic-apm-node/start ...`, without using `NODE_OPTIONS`.
 
 Java:
 - `javaagent-flag`: when the agent is attached via the `-javaagent` JVM flag.
