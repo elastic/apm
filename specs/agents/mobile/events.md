@@ -4,16 +4,14 @@ This document describes event used by the Mobile SDKs using the [OpenTelementry 
 All events collected by the mobile agents should set the `event.domain` to `device`.
 Event names will be recording using the `event.name`
 
+### Application Lifecycle events 
+These event represents the occurrence of app entering the foreground or background or other application lifecycle states.
+The precise names of these events are still to be determined. They may mirror the lifecycle events their respective mobile platforms.
 
-### `ApplicationLaunch` 
-This event represents the occurrence of app entering the foreground or background or other application lifecycle states.
-
-#### Attributes
-| Name         | Type   | Values                 | Description                                        |
-|--------------|--------|------------------------|----------------------------------------------------|
-| `event.name` | String | `ApplicationLifecycle` | The name of the event                              |
-| `state`      | String | `foreground`           | The lifecycle state the app is transitioning to.   | 
-| `state.last` | String | `background`           | The lifecycle state the app is transitioning from. | 
+| Name           | Type   | Values   | Description                                        |
+|----------------|--------|----------|----------------------------------------------------|
+| `event.name`   | String | tbd      | The name of the event                              |
+| `event.domain` | String | `device` | The lifecycle state the app is transitioning to.   | 
 
 
 
@@ -39,16 +37,11 @@ An event that allows customers to add events to a common `Event` that allows the
 This event represent a crash event
 
 #### Attributes
-| Name           | Type    | Values  | Description    |
-|----------------|---------|---------|----------------|
-| `event.name`   | String  | `crash` | The event name | 
-| `stacktrace`   | String  | N/A     | A Stacktrace   | 
 
-### `Application Opens`
+| Name           | Type    | Values  | Description       |
+|----------------|---------|---------|-------------------|
+| `event.name`   | String  | `crash` | The event name    | 
+| `event.domain` | String | `device` | the event domain  |
+| `stacktrace`   | String  | N/A     | A Stacktrace      |
 
-An event that represents when an app is opened.
 
-#### Attributes
-| Name           | Type   | Value                | Description    |
-|----------------|--------|----------------------|----------------|
-| `event.name`   | String | `Application Opened` | The event name | 
