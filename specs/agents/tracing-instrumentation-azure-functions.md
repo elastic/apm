@@ -50,7 +50,8 @@ In addition to those described in [Metadata](./metadata.md), following metadata 
 | `service.framework.name` | `Azure Functions` | Constant value for the framework name. | |
 | `service.framework.version` | e.g. `~4` | Version of the Azure Functions runtime. | `FUNCTIONS_EXTENSION_VERSION` |
 | `service.runtime.name`| e.g. `dotnet-isolated` | The language worker runtime (see [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#functions_worker_runtime)). | `FUNCTIONS_WORKER_RUNTIME` |
-| `cloud.service.name` | 'functions' | Constant for the Azure service. See [ECS fields doc](https://www.elastic.co/guide/en/ecs/current/ecs-cloud.html#field-cloud-service-name). | - |
+| `service.node.configured_name` | e.g. `25d4009bce1d ...` | Unique ID of the VM instance. | `WEBSITE_INSTANCE_ID` ([Azure docs](https://learn.microsoft.com/en-us/azure/app-service/reference-app-settings#scaling)) |
+
 ### Deriving cold starts
 
 A cold start occurs if the Azure Functions runtime needs to be initialized in order to handle the first function execution.
