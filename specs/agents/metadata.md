@@ -289,6 +289,7 @@ retrieved from environment variables.
 | `project.name`        | `WEBSITE_RESOURCE_GROUP` (fallback: `{resource group}` from `WEBSITE_OWNER_NAME`) |
 | `provider`            | azure               |
 | `region`              | `REGION_NAME`  (fallback: `{region}` from `WEBSITE_OWNER_NAME`) |
+| `service.name` | `functions` see the [ECS fields doc](https://www.elastic.co/guide/en/ecs/current/ecs-cloud.html#field-cloud-service-name). |
 
 The environment variable `WEBSITE_OWNER_NAME` has the following form:
 
