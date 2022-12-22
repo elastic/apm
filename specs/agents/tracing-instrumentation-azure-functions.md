@@ -46,6 +46,7 @@ In addition to those described in [Metadata](./metadata.md), following metadata 
 | Field | Value | Description | Source |
 | - | - | - | - |
 | `service.name` | e.g. `MyFunctionApp` | If the service name is *explicitly* specified through the `service_name` agent config option, use that value. Otherwise, use the name of the Function App. | If `service_name` is not specified, use `WEBSITE_SITE_NAME`. |
+| `service.name` | e.g. `MyFunctionApp` | If the service name is *explicitly* specified through the `service_name` agent config option, use that value. Otherwise, use the name of the Function App. | If `service_name` is not specified, use `WEBSITE_SITE_NAME`. |
 | `service.framework.name` | `Azure Functions` | Constant value for the framework name. | |
 | `service.framework.version` | e.g. `~4` | Version of the Azure Functions runtime. | `FUNCTIONS_EXTENSION_VERSION` |
 | `service.runtime.name`| e.g. `dotnet-isolated` | The language worker runtime (see [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#functions_worker_runtime)). | `FUNCTIONS_WORKER_RUNTIME` |
