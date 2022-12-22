@@ -45,10 +45,11 @@ In addition to those described in [Metadata](./metadata.md), following metadata 
 
 | Field | Value | Description | Source |
 | - | - | - | - |
+| `service.name` | e.g. `MyFunctionApp` | If the service name is *explicitly* specified through the `service_name` agent config option, use that value. Otherwise, use the name of the Function App. | If `service_name` is not specified, use `WEBSITE_SITE_NAME`. |
 | `service.framework.name` | `Azure Functions` | Constant value for the framework name. | |
 | `service.framework.version` | e.g. `~4` | Version of the Azure Functions runtime. | `FUNCTIONS_EXTENSION_VERSION` |
 | `service.runtime.name`| e.g. `dotnet-isolated` | The language worker runtime (see [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#functions_worker_runtime)). | `FUNCTIONS_WORKER_RUNTIME` |
-
+| `cloud.service.name` | 'functions' | Constant for the Azure service. See [ECS fields doc](https://www.elastic.co/guide/en/ecs/current/ecs-cloud.html#field-cloud-service-name). | - |
 ### Deriving cold starts
 
 A cold start occurs if the Azure Functions runtime needs to be initialized in order to handle the first function execution.
@@ -106,6 +107,6 @@ In addition the following fields should be set for HTTP trigger invocations:
 | Field | Value | Description | Source |
 | - | - | - | - |
 | `type` | `request`| Transaction type. Constant value for HTTP trigger invocations. | |
-| `name` | e.g. `GET products/{category:alpha}/{id:int?}`, `GET /api/SampleHttpTrigger` | Transaction name: HTTP method followed by a whitespace and low cardinality representation of the function (route pattern or resource path). | *request object* |
+| `name` | e.g. `GET /api/MyFuncName`, `GET /api/products/{category:alpha}/{id:int?}` | `<HTTP-method> /<route-prefix>/<route-pattern-or-function-name>` | `<HTTP-method>` from the request object. `<route-prefix>` from "extensions.http.routePrefix" in host.json, defaults to `api`. `<route-pattern>` from "[`<function-dir>`](https://learn.microsoft.com/en-us/azure/azure-functions/functions-referencefolder-structure)/function.json", defaults to the function name. [Azure docs link](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook-trigger#customize-the-http-endpoint). |
 | `transaction.result` | `HTTP Xxx` / `success` | `HTTP Xxx` based on the *response object* status code, otherwise `success`. | *response object* |
 | `faas.trigger.type` | `http` | Constant value for HTTP trigger invocations. | |
