@@ -22,7 +22,17 @@ To avoid such conflicts, agents MUST replace all dots in metric names with `_` u
 In OpenTelemetry the [AggregationTemporality](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#temporality) defines whether metrics report the total, cumulative observed values or the delta since the last export.
 The temporality is fully controlled by exporters / MetricReaders, therefore we can decide which temporality to use.
 
-For now, Agents MUST use the delta temporality. The reason is that monotonic counter metrics are currently more difficult to handle and visualize in kibana and elasticsearch.
+For now, Agents MUST use the delta-preferred temporality:
+
+| **Instrument Type**         | **Temporality**            |
+|-----------------------------|----------------------------|
+|  Counter                    | Delta                      |
+|  Asynchronous Counter       | Delta                      |
+|  UpDownCounter              | Cumulative                 |
+|  Asynchronous UpDownCounter | Cumulative                 |
+|  Histogram                  | Delta                      |
+
+The reason is that monotonic counter metrics are currently more difficult to handle and visualize in kibana and elasticsearch.
 As soon as the support gets better, we will revisit this spec and allow users to switch between cumulative and delta temporality via configuration.
 
 ## Aggregation
