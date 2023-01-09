@@ -17,6 +17,8 @@ To avoid such conflicts, agents MUST replace all dots in metric names with `_` u
 | Dynamic        | `true`    |
 | Central config | `false`   |
 
+Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics. If `dedot_custom_metrics` is disabled, agents MUST check `disable_metrics` for the non-dedoted metric name. Iff `dedot_custom_metrics` is enabled, agents MUST check `disable_metrics` for both the non-dedoted and the dedoted metric name: If either matches, the metric must be disabled. This allows disabling metrics based on both what arrives at elasticsearch as well as based on how the metrics are defined via the OpenTelemetry API.
+
 ## Aggregation Temporality
 
 In OpenTelemetry the [AggregationTemporality](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#temporality) defines whether metrics report the total, cumulative observed values or the delta since the last export.
@@ -34,6 +36,9 @@ For now, Agents MUST use the delta-preferred temporality:
 
 The reason is that monotonic counter metrics are currently more difficult to handle and visualize in kibana and elasticsearch.
 As soon as the support gets better, we will revisit this spec and allow users to switch between cumulative and delta temporality via configuration.
+
+For all instrument types with delta temporality, agents MUST filter out zero values before exporting.
+E.g. if a counter does not change since the last export, it must not be exported.
 
 ## Aggregation
 
