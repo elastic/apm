@@ -15,4 +15,5 @@ The primary purpose of `sessions` are to provide insight into the series of user
 #### The session timeout period can be customized. 
 Default session timeout should be 30 minutes. This should only be done when the agent is configured, and shouldn't be updated in the middle of a session.
 
-
+#### Max session length
+Sessions will be limited to a maximum length of four (4) hours. This limitation will be implemented in the mobile agent.
