@@ -49,7 +49,10 @@ In addition to those described in [Metadata](./metadata.md), following metadata 
 | `service.framework.name` | `Azure Functions` | Constant value for the framework name. | |
 | `service.framework.version` | e.g. `~4` | Version of the Azure Functions runtime. | `FUNCTIONS_EXTENSION_VERSION` |
 | `service.runtime.name`| e.g. `dotnet-isolated` | The language worker runtime (see [here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings#functions_worker_runtime)). | `FUNCTIONS_WORKER_RUNTIME` |
-| `service.node.configured_name` | e.g. `25d4009bce1d ...` | Unique ID of the VM instance. | `WEBSITE_INSTANCE_ID` ([Azure docs](https://learn.microsoft.com/en-us/azure/app-service/reference-app-settings#scaling)) |
+| `service.node.configured_name` | e.g. `25d4009bce1d ...` [1] | Unique ID of the VM instance. | `WEBSITE_INSTANCE_ID` ([Azure docs](https://learn.microsoft.com/en-us/azure/app-service/reference-app-settings#scaling)) |
+
+[1] **Note** that `service.node.configured_name` can also be set via agent configuration. In that case, the Azure Functions
+instrumentation MUST override the existing value and MUST print a log message accordingly.
 
 ### Deriving cold starts
 
