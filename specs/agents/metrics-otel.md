@@ -1,14 +1,14 @@
 # OpenTelemetry Metrics API Support
 
 Agents SHOULD support collecting custom metrics via the OpenTelemetry Metrics API.
-This SHOULD be done by supplying a OpenTelemetry Metrics SDK compatible [MetricExporter](https://opentelemetry.io/docs/reference/specification/metrics/sdk/#metricexporter). If a pull based approach is preferred, a [MetricReader](https://opentelemetry.io/docs/reference/specification/metrics/sdk/#metricreader) can be used instead. This `MetricExporter/MetricReader` SHOULD transform the received metrics data to IntakeV2 metricsets and send them via the existing reporting mechanism.
+This SHOULD be done by supplying an OpenTelemetry Metrics SDK compatible [MetricExporter](https://opentelemetry.io/docs/reference/specification/metrics/sdk/#metricexporter). If a pull based approach is preferred, a [MetricReader](https://opentelemetry.io/docs/reference/specification/metrics/sdk/#metricreader) can be used instead. This `MetricExporter/MetricReader` SHOULD transform the received metrics data to IntakeV2 metricsets and send them via the existing reporting mechanism.
 
 ## Metric naming
 
 OpenTelemetry metric names are allowed to contain dots. This can lead to mapping problems in elasticsearch if for example metrics with the names `foo.bar` and `foo` are both ingested.
 Due to the nested object representation within metricsets, `foo` would need to be mapped as both an object and a number at the same time, which is not possible.
 
-To avoid such conflicts, agents MUST replace all dots in metric names with `_` upon export iff the `dedot_custom_metrics` configuration option is set to `true`:
+To avoid such conflicts, agents MUST replace all dots in metric names with `_` upon export if the `dedot_custom_metrics` configuration option is set to `true`:
 
 |                |           |
 |----------------|-----------|
@@ -17,7 +17,7 @@ To avoid such conflicts, agents MUST replace all dots in metric names with `_` u
 | Dynamic        | `true`    |
 | Central config | `false`   |
 
-Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics. If `dedot_custom_metrics` is disabled, agents MUST check `disable_metrics` for the non-dedoted metric name. Iff `dedot_custom_metrics` is enabled, agents MUST check `disable_metrics` for both the non-dedoted and the dedoted metric name: If either matches, the metric must be disabled. This allows disabling metrics based on both what arrives at elasticsearch as well as based on how the metrics are defined via the OpenTelemetry API.
+Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics. If `dedot_custom_metrics` is disabled, agents MUST check `disable_metrics` for the non-dedoted metric name. If `dedot_custom_metrics` is enabled, agents MUST check `disable_metrics` for both the non-dedoted and the dedoted metric name: If either matches, the metric must be disabled. This allows disabling metrics based on both what arrives at elasticsearch as well as based on how the metrics are defined via the OpenTelemetry API.
 
 ## Aggregation Temporality
 
@@ -87,7 +87,7 @@ Agents MUST allow users to configure the default histogram boundaries via the `c
 
 In the future, we might replace the default aggregation with one better suited for elasticsearch, e.g. HDRHistogram or T-Digest.
 
-Because users would need to take extra steps to prevent our exporter from using the preferred explicit bucket aggregation (by configuring SDK views), agents are not required to support any other histogram aggregation types. In other words, agents MAY ignore [ExponentialHistograms](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#exponentialhistogram) and [Summaries](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#summary-legacy). If a metric is ignored due to its aggregation, agents SHOULD emit a warning once with a message including the metric name.
+Because users would need to take extra steps to prevent our exporter from using the preferred explicit bucket aggregation (by configuring SDK views), agents are not required to support any other histogram aggregation types. In other words, agents MAY ignore [ExponentialHistograms](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#exponentialhistogram) and [Summaries](https://opentelemetry.io/docs/reference/specification/metrics/data-model/#summary-legacy). If a metric is ignored due to its aggregation, agents SHOULD emit a warning with a message including the metric name.
 
 However, agents MUST support explicit bucket histogram aggregations with custom boundaries provided by users via views.
 
