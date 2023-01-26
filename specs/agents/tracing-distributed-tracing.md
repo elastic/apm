@@ -172,14 +172,14 @@ Context](https://w3c.github.io/trace-context-binary/) standard.  Hereby, we reli
 We used the proprietary `elasticapmtraceparent` field name for the binary `traceparent`, `tracestate` was ignored.
 
 The available OpenTelemetry instrumentations however went a different route:
- * The binary header spec has been removed and the [issue](https://github.com/open-telemetry/opentelemetry-specification/issues/437) to readd it has not been touched for a long time
- * Instead, the OpenTelemetry instrumentations for e.g. Kafka use the textual `traceparent` and `tracestate` formats and encode the values via UTF8 to binary
+ * The binary header spec has been removed and the [issue](https://github.com/open-telemetry/opentelemetry-specification/issues/437) to re-add it has not been touched for a long time.
+ * Instead, the OpenTelemetry instrumentations for e.g. Kafka use the textual `traceparent` and `tracestate` formats and encode the values via UTF8 to binary.
 
 To maximize compatibility and not break traces, our agents need to support the textual `traceparent` and `tracestate` via UTF8 encoding as well.
-So, the following rules should be used do decode/encode context propagation headers:
+So, the following rules should be used to decode/encode context propagation headers:
 
 Encoding:
- * Add a `elasticapmtraceparent` with the binary specification above for backwards compatibility
+ * Add a `elasticapmtraceparent` header with the binary specification above for backwards compatibility
  * Add the textual `traceparent` and `tracestate` headers, encode their values via UTF8
   
 Decoding:
