@@ -134,8 +134,8 @@ If `use_path_as_transaction_name` is applicable and set to `true`, use `${event.
 
 ### Elastic Load Balancer (ELB)
 
-Elastic Load Balancer (ELB) can be attached directly to lambda, without the use
-of API Gateway. In this case the `event` object will be structured differently.
+An Application Load Balancer (ALB) -- a type of ELB -- can be targeted directly
+to lambda.
 
 The agent should use the information in the request and response objects to
 fill the HTTP context (`context.request` and `context.response`) fields in the
@@ -151,8 +151,9 @@ In addition the following fields should be set for ELB-based Lambda functions:
 Field | Value | Description | Source
 ---   | ---   | ---         | ---
 `type` | `request`| Transaction type: constant value for ELB. | -
-`name` | e.g. `GET /prod/proxy/{proxy+}` | Transaction name: Http method followed by a whitespace and the (resource) path. See section below. | -
-`transaction.result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error. If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#respond-to-load-balancer), then set to `HTTP Xxx` based on the status code, otherwise `success`. | Error or `response.statusCode`.
+`name` | e.g. `GET unknown route` | `{event.httpMethod} unknown route` An ALB acts as a gateway for any URL path, so to avoid high cardinality issues, "unknown route" should be used as described in [the HTTP Transactions spec](./tracing-instrumentation-http.md). The `use_path_as_transaction_name` config option should be honored. If a web framework is used in the Lambda function, it may provide a route name. | -
+`result` | `HTTP Xxx` / `success` | `HTTP 5xx` if there was a function error. If the [invocation response has a "statusCode" field](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html#respond-to-load-balancer) and it is an integer, then set to `HTTP Xxx` based on the status code, otherwise `HTTP 5xx`. ELB defaults to a "502 Bad Gateway" response if the function returns no or an invalid "statusCode" | Error or `response.statusCode`.
+`outcome` | `success` / `failure` | Set to `failure` if there was a function error, the response object does not contain an integer "statusCode", or the "statusCode" is `>= 500`. | -
 `faas.trigger.type` | `http` | Constant value for ELB. | -
 `context.service.origin.name` | e.g. `targetgroup` | ELB target group | `event.requestContext.elb.targetGroupArn` is formed as `arn:aws:elasticloadbalancing:region-code:account-id:targetgroup/target-group-name/target-group-id`, so use `targetGroupArn.split(':')[5].split('/')[1]` to get the `target-group-name`.
 `context.service.origin.id` | e.g. `arn:aws:elasticlo...65c45c6791a` | ELB target group ARN | `event.requestContext.elb.targetGroupArn` |
