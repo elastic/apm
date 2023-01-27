@@ -15,7 +15,7 @@
 #### load times
 | Name                                 | Type      | Units   | Description                                                           |
 |--------------------------------------|-----------|---------|-----------------------------------------------------------------------|
-| `application.launch.time`            | histogram | seconds | The amount of time spent launching the app                            |
+| `application.launch.time`            | histogram | milliseconds | The amount of time spent launching the app                            |
 
 | Labels | Values                                          | Description                                         |
 |--------|-------------------------------------------------|-----------------------------------------------------|
@@ -24,7 +24,7 @@
 #### responsiveness
 | Name                                   | Type      | Units   | Description                                                 |
 |----------------------------------------|-----------|---------|-------------------------------------------------------------|
-|  `application.responsiveness.hangtime` | histogram | seconds | The amount of time the applications has spent unresponsive. | 
+|  `application.responsiveness.hangtime` | histogram | millisseconds | The amount of time the applications has spent unresponsive. | 
  
 ### Application exit
 Traces application exit counts in both healthy and unhealthy (crashes) states
