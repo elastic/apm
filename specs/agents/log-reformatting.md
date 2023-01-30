@@ -99,6 +99,9 @@ A good example is in the Java agent, where `event.dataset` is set to
 `${service.name}.${appender.name}`, where `appender.name` is the name of the
 log appender.
 
+The `event.dataset` values need to remain compatible with [`data_stream.dataset`](https://www.elastic.co/guide/en/ecs/master/ecs-data_stream.html#field-data-stream-dataset)
+and thus have the same naming restrictions as index names.
+
 If an agent doesn't have reasonable options for this field, it should be set
 to `${service.name}`.
 
