@@ -5,19 +5,13 @@ This SHOULD be done by supplying an OpenTelemetry Metrics SDK compatible [Metric
 
 ## Metric naming
 
-OpenTelemetry metric names are allowed to contain dots. This can lead to mapping problems in elasticsearch if for example metrics with the names `foo.bar` and `foo` are both ingested.
+Agents MUST NOT alter/sanitize OpenTelemetry metric names. For example, agents MUST NOT de-dot metric names.
+Unfortunately, this can lead to mapping problems in elasticsearch (state: January 2023) if for example metrics with the names `foo.bar` and `foo` are both ingested.
 Due to the nested object representation within metricsets, `foo` would need to be mapped as both an object and a number at the same time, which is not possible.
 
-To avoid such conflicts, agents MUST replace all dots in metric names with `_` upon export if the `dedot_custom_metrics` configuration option is set to `true`:
+We plan on solving these conflicts on the APM-server side instead by adjusting the mapping of metricsets (Again, state of January 2023).
 
-|                |           |
-|----------------|-----------|
-| Type           | `boolean` |
-| Default        | `true`    |
-| Dynamic        | `true`    |
-| Central config | `false`   |
-
-Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics. If `dedot_custom_metrics` is disabled, agents MUST check `disable_metrics` for the non-dedoted metric name. If `dedot_custom_metrics` is enabled, agents MUST check `disable_metrics` for both the non-dedoted and the dedoted metric name: If either matches, the metric must be disabled. This allows disabling metrics based on both what arrives at elasticsearch as well as based on how the metrics are defined via the OpenTelemetry API.
+Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics.
 
 ## Aggregation Temporality
 
