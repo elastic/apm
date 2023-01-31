@@ -72,8 +72,10 @@ The span name should have the format: `<method> <host>`.
 | OTel Convention          | Elastic convention    | Example        | Required | Comment                            |
 |--------------------------|-----------------------|----------------| ---------| -----------------------------------|
 | [`http.method`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)    | `http.request.method` | `GET`, `POST`   | :white_check_mark: yes |                                     | 
+| [`http.status_code`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes) | `http.response.status_code` | `200`, `500` | :white_check_mark: yes | Also used to derive the `event.outcome` |
 | [`http.url`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)       | `url.original` and other HTTP-related fields. | `http://localhost:3000/images/products/OP-DRC-C1.jpg`  | :x: no| |
 | [`http.target`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)    |  ---                   | `/images/products/OP-DRC-C1.jpg` |  :x: no | Fallback field to derive HTTP-related fields if `http.url` field is not provided. |
 | [`http.scheme`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)    |  ---                  | `http`         | :x: no| Fallback field to derive HTTP-related fields if `http.url` field is not provided.|
 | [`net.peer.name`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)  |  ---                  | `localhost`    | :x: no| Fallback field to derive HTTP-related fields if `http.url` field is not provided.|
 | [`net.peer.port`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)  |  ---                  | `3000`          | :x: no| Fallback field to derive HTTP-related fields if `http.url` field is not provided. |
+
