@@ -4,37 +4,6 @@ This document describes event used by the Mobile SDKs using the [OpenTelementry 
 All events collected by the mobile agents should set the `event.domain` to `device`.
 Event names will be recording using the `event.name`
 
-### Application Lifecycle events 
-These event represents the occurrence of app entering the foreground or background or other application lifecycle states.
-The precise names of these events are still to be determined. They may mirror the lifecycle events their respective mobile platforms.
-
-| Name           | Type   | Values   | Description              |
-|----------------|--------|----------|--------------------------|
-| `event.name`   | String | tbd      | The name of the event.   |
-| `event.domain` | String | `device` | The domain of the event. | 
-
-
-
-### Application Non-Responsive (ANR)
-This event represents the occurrence of an 'ANR' error reported by the Android OS.
-
-#### Attributes
-| Name           | Type   | Value    | Description                                                     |
-|----------------|--------|----------|-----------------------------------------------------------------|
-| `event.name`   | String | `anr`    | The app's UI thread has been blocked for longer than it should. |
-| `event.domain` | String | `device` | The domain of the event.                                        | 
-
-### `Breadcrumbs`
-
-An event that allows customers to add events to a common `Event` that allows them to retrace users' steps. 
-
-#### Attributes
-| Name           | Type   | Value        | Description              |
-|----------------|--------|--------------|--------------------------|
-| `event.name`   | String | `breadcrumb` | The name of the event.   |
-| `event.domain` | String | `device`     | The domain of the event. | 
-              
-
 ### Crashes
 
 This event represent a crash event
