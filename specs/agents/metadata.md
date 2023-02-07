@@ -169,6 +169,9 @@ Java:
 - `profiler`: when the agent was installed via the CLR Profiler.
 - `startup-hook`: when the agent relies on the `DOTNET_STARTUP_HOOKS` mechanism to install the agent.
 
+Python:
+- `wrapper`: when the agent was invoked with the wrapper script, `elasticapm-run`
+
 ### Cloud Provider Metadata
 
 [Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
