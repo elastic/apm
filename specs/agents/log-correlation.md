@@ -6,17 +6,17 @@ logging that occurs within a span should add the fields `trace.id`, `span.id`, a
 
 By adding trace context to log records, users will be able to move between the APM UI and Logs UI.
 
-Logging frameworks and libraries may provide an MDC (Message Diagnostic Context) that allow to also
-reuse those fields in log message formats (for example in plain text).
+Logging frameworks and libraries may provide a way to inject key-value pairs in log messages,
+this allows to reuse those fields in log message formats (for example in plain text).
 
 Log correlation relies on two sets of fields:
-- [metadata fields](#metadata-fields)
+- [metadata fields](#service-correlation-fields)
   - They allow to build the per-service logs view in UI.
   - They are implicitly provided when using log-sending by the agent metadata.
   - When using ECS logging, they might be set by the application.
-- [per-log-event fields](#per-log-event-fields): `trace.id`, `transaction.id` and `error.id`
+- [per-log-event fields](#trace-correlation-fields): `trace.id`, `transaction.id` and `error.id`
   - They allow to build the per-trace/transaction/error logs view in UI.
-  - They are added to the MDC
+  - They are added to the log event
   - They must be written in each log event document
 
 The values for those fields can be set in two places:
@@ -54,7 +54,7 @@ documents through auto-discover feature (which captures logs from containers and
 
 They allow to build the per-trace/transaction/error logs view in UI.
 They allow to navigate from the log event to the trace/transaction/error in UI.
-They should added to the MDC.
+They should be added to the log event.
 They must be written in each log event document they relate to, either reformatted or sent by the agent.
 
 - `trace.id`
