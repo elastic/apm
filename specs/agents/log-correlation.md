@@ -26,6 +26,10 @@ Log correlation is implemented by adding the following fields to a log document:
   - allows to correlate with an Error.
   - should be added to the MDC
 
+In addition, the `container.id` can be used as a fallback when `service.name` is not avaiable on the log documents.
+However, the APM agents are not expected to set it. It is expected to be set by filebeat when ingesting log
+documents through auto-discover feature (which captures logs from containers and provides the value).
+
 The values for those fields can be set in two places:
 - when using [ecs-logging](https://github.com/elastic/ecs-logging) directly in the application
 - when the agent reformats a log event
