@@ -43,7 +43,7 @@ Also, the documentation should not mention the old log levels going forward.
 
 Agents may provide the following log-related features:
 
-- [Log correlation](log-correlation.md): inject current service/trace/transaction/error ID into logs.
+- [Log correlation](log-correlation.md): inject service metadata, trace IDs and error IDs in log events.
 - [Log reformatting](log-reformatting.md): reformat plain-text logs to ECS, equivalent to using [ecs logging](https://github.com/elastic/ecs-logging) 
 without modifying the application nor its dependencies.
 - [Log sending](log-sending.md): send logs directly to APM server.
