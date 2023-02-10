@@ -30,7 +30,7 @@ In case the values set in the application and agent configuration differ, the re
 messages won't correlate to the expected service in UI. In order to prevent such inconsistencies
 agents may issue a warning when there is a mis-configuration.
 
-### Metadata fields
+### Service correlation fields
 
 They allow to build the per-service logs view in UI.
 They are implicitly provided when using log-sending by the agent metadata.
@@ -50,7 +50,7 @@ In addition, the `container.id` can be used as a fallback when `service.name` is
 However, the APM agents are not expected to set it. It is expected to be set by filebeat when ingesting log
 documents through auto-discover feature (which captures logs from containers and provides the value).
 
-### Per log event fields
+### Trace correlation fields
 
 They allow to build the per-trace/transaction/error logs view in UI.
 They allow to navigate from the log event to the trace/transaction/error in UI.
