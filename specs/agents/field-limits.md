@@ -11,7 +11,7 @@ Some APM event fields are not limited in the APM server intake API schema.
 Agents SHOULD limit the maximum length of the following fields by truncating.
 
 - `transaction.context.request.body`, `error.context.request.body`
-- `transaction.context.message.body`, `span.context.message.body`, `error.context.message.body`
+- `transaction.context.message.body`, `error.context.message.body`
 - `span.context.db.statement`
 - `error.exception.message`
 - `error.log.message`
