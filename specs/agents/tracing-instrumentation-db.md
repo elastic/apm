@@ -226,7 +226,7 @@ Examples:
 |`name`| e.g. `SELECT FROM products` | For SQL operations we perform a limited parsing the statement, and extract the operation name and outer-most table involved (if any). See more details [here](https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA). |
 |`type`|`db`|
 |`subtype`| e.g. `oracle`, `mysql` | [see below](#database-subtype) |
-|`action`|`query`|
+|`action`| e.g. `query`, `connect`, `ping`, `prepare`, `exec` |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `instance-name`| [see below](#database-instance) |
 |`_.statement`| e.g. `SELECT * FROM products WHERE ...`| The full SQL statement. We store up to 10000 Unicode characters per database statement.  |
