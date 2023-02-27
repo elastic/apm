@@ -42,5 +42,5 @@ configured for the receiving APM server.
 
 ### Truncating field values
 
-When field values exceed the maximum allowed number of unicode characters, agents SHOULD truncate the valiues to fit the maximum allowed length, 
-replacing the last character of the eventual value with the ellipsis chracter (unicode character `U+2026`: "&#x2026;").
+When field values exceed the maximum allowed number of unicode characters, agents SHOULD truncate the values to fit the maximum allowed length, 
+replacing the last character of the eventual value with the ellipsis character (unicode character `U+2026`: "&#x2026;").
