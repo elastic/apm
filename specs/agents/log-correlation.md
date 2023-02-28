@@ -46,9 +46,11 @@ When using ECS logging, they might be set by the application in ECS logging conf
   - allows to filter/link log messages to a given service/environment.
   - must be provided even if there is no active transaction
 
-In addition, the `container.id` can be used as a fallback when `service.name` is not avaiable on the log documents.
-However, the APM agents are not expected to set it. It is expected to be set by filebeat when ingesting log
-documents through auto-discover feature (which captures logs from containers and provides the value).
+
+The `container.id` field can also be used as a fallback to provide service-level correlation in UI, however agents ARE NOT expected to set it:
+
+- log collector (filebeat) is expected to do that when ingesting logs.
+- all data sent through agent intake implicitly provides `container.id` through metadata, which also includes the log events that may be sent to apm-server.
 
 ### Trace correlation fields
 
