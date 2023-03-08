@@ -65,26 +65,17 @@ The following fields are required:
 
 ## Recommended fields
 
-The following fields are important for a good user experience in Kibana,
-but will not cause errors if they are omitted:
-
 ### `service.name`
 
-Agents should always populate `service.name` even if there is not an active transaction.
-
-When using [ecs-logging](https://github.com/elastic/ecs-logging) directly in the application, the logs are already
-written to ECS format, however the agent has to provide a fallback value if `service.name` is not set by the application.
-
-The `service.name` is used to be able to add a logs tab to the service view in
-the UI. This lets users quickly get a stream of all logs for a particular
-service.
+See [Log correlation](log-correlation.md)
 
 ### `service.version`
 
-Agents may populate the `service.version` if a value is set in the agent configuration.
+See [Log correlation](log-correlation.md)
 
-When using [ecs-logging](https://github.com/elastic/ecs-logging) directly in the application, the logs are already
-written to ECS format, however the agent should provide a fallback value if `service.version` is not set by the application.
+### `service.environment`
+
+See [Log correlation](log-correlation.md)
 
 ### `event.dataset`
 
