@@ -1,7 +1,7 @@
 ## Mobile Configuration
 
 This document describes the configurable parameters used in mobile agents. The ones supported
-by [central configuration](../configuration.md) ones can be set through Kibana's APM Settings.
+by [central configuration](../configuration.md) can be set through Kibana's APM Settings.
 
 ### `recording` configuration
 
