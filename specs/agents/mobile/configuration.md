@@ -1,12 +1,17 @@
 ## Mobile Configuration
 
-This document describes the [central configuration](../configuration.md) parameters used in mobile agents. These values
-can be set through Kibana's APM Settings.
+This document describes the configurable parameters used in mobile agents. The ones supported
+by [central configuration](../configuration.md) ones can be set through Kibana's APM Settings.
 
-### `enable_automatic_instrumentation` configuration
+### `recording` configuration
 
-Specifies if the agent should automatically trace its supported technologies. If set to `false`, only manually collected
-APM data will be sent over to the APM server.
+A boolean specifying if the agent should be recording or not. When recording, the agent instruments incoming HTTP
+requests, tracks errors and collects and sends metrics. When not recording, the agent works as a noop, not collecting
+data and not communicating with the APM sever, except for polling the central configuration endpoint. As this is a
+reversible switch, agent threads are not being killed when inactivated, but they will be mostly idle in this state, so
+the overhead should be negligible.
+
+You can use this setting to dynamically disable Elastic APM at runtime.
 
 |                |           |
 |----------------|-----------|
