@@ -44,4 +44,4 @@ This extended template ensures that we have a meta issue and tracking issues so 
 - [ ] Merge after 7 days passed without objections \
       To auto-merge the PR, add <code>/</code>`schedule YYYY-MM-DD` to the PR description.
 - [ ] [Create implementation issues through the meta issue template](https://github.com/elastic/apm/issues/new?assignees=&labels=meta%2C+apm-agents&template=apm-agents-meta.md) (this will automate issue creation for individual agents)
-- [ ] If this spec adds a new dynamic config option, [add it to central config](../specs/agents/configuration.md#adding-a-new-configuration-option).
+- [ ] If this spec adds a new dynamic config option, [add it to central config](https://github.com/elastic/apm/blob/main/specs/agents/configuration.md#adding-a-new-configuration-option).

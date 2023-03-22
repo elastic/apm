@@ -1,4 +1,4 @@
-# Log Onboarding
+# Log reformatting
 
 The Agents will be a critical part of log collection onboarding for their
 application logs. This is primarily accomplished via the `log_ecs_reformatting`
@@ -65,17 +65,17 @@ The following fields are required:
 
 ## Recommended fields
 
-The following fields are important for a good user experience in Kibana,
-but will not cause errors if they are omitted:
-
 ### `service.name`
 
-Agents should always populate `service.name` even if there is not an active
-transaction.
+See [Log correlation](log-correlation.md)
 
-The `service.name` is used to be able to add a logs tab to the service view in
-the UI. This lets users quickly get a stream of all logs for a particular
-service.
+### `service.version`
+
+See [Log correlation](log-correlation.md)
+
+### `service.environment`
+
+See [Log correlation](log-correlation.md)
 
 ### `event.dataset`
 
@@ -98,6 +98,7 @@ Some examples:
 - opbeans.checkout
 - opbeans.login
 - opbeans.audit
+
 ## Testing
 
 Due to differences in the possible Agent implementations of this feature, no

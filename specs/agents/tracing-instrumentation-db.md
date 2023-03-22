@@ -83,7 +83,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.port`|e.g. `443`| Not available in some cases. Only set if the actual connection is available. |
 |`_.service.name`| `s3` | DEPRECATED, use `service.target.{type,name}`
 |`_.service.type`|`storage`| DEPRECATED, use `service.target.{type,name}`
-|`_.service.resource`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons`| DEPRECATED, use `service.target.{type,name}` |
+|`_.service.resource`| e.g. `s3/my-bucket`, `s3/accesspoint/myendpointslashes`, or `s3/accesspoint:myendpointcolons`| DEPRECATED, use `service.target.{type,name}` |
 |`_.cloud.region`| e.g. `us-east-1` | The AWS region where the bucket is. |
 | __**service.target._**__ |<hr/>|<hr/>|
 |`_.type`| `s3` ||
@@ -226,7 +226,7 @@ Examples:
 |`name`| e.g. `SELECT FROM products` | For SQL operations we perform a limited parsing the statement, and extract the operation name and outer-most table involved (if any). See more details [here](https://docs.google.com/document/d/1sblkAP1NHqk4MtloUta7tXjDuI_l64sT2ZQ_UFHuytA). |
 |`type`|`db`|
 |`subtype`| e.g. `oracle`, `mysql` | [see below](#database-subtype) |
-|`action`|`query`|
+|`action`| e.g. `query`, `connect`, `ping`, `prepare`, `exec` |
 | __**context.db._**__  |<hr/>|<hr/>|
 |`_.instance`| e.g. `instance-name`| [see below](#database-instance) |
 |`_.statement`| e.g. `SELECT * FROM products WHERE ...`| The full SQL statement. We store up to 10000 Unicode characters per database statement.  |

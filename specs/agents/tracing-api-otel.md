@@ -5,6 +5,8 @@
 Agents MAY provide a bridge implementation of OpenTelemetry Tracing API following this specification.
 When available, implementation MUST be configurable and should be disabled by default when marked as `experimental`.
 
+Agents MAY add an explicit agent configuration to enable/disable the bridge. If an agent implements such a configuration, the configuration name MUST be `opentelemetry_bridge_enabled`.
+
 The bridge implementation relies on APM Server version 7.16 or later. Agents SHOULD recommend this minimum version to users in bridge documentation.
 
 Bridging here means that for each OTel span created with the API, a native span/transaction will be created and sent to APM server.

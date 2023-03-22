@@ -27,6 +27,12 @@ In order to help align all agents on this specification, changing `type` and `su
 to be a _breaking change_, but rather a _potentially breaking change_ if for example existing users rely on values to
 build visualizations. As a consequence, modification of those values is not limited to major versions.
 
+### Span Name
+
+Each span will have a `name`, which is a descriptive, low-cardinality string.
+
+If a span is created without a valid `name`, the string `"unnamed"` SHOULD be used.
+
 ### Span outcome
 
 The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates

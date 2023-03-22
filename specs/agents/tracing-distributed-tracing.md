@@ -163,15 +163,33 @@ binary fields be used. (See below for binary fields)
 
 ### Binary Fields
 
-Our implementation relies on the [W3C Binary Trace
-Context](https://w3c.github.io/trace-context-binary/) standard.  In order to
-make sure we are fully aligned, all agents are implementing the specification described in
-[this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
-
 Binary fields should only be used where strings are not allowed, such as in
-Kafka record headers. The field names should be `elasticapmtraceparent` (due
-to the lack of finalization for the binary trace context spec) and
-`tracestate`.
+Kafka record headers.
+
+Until the revision of this spec as of January 2023, our implementation relied on the [W3C Binary Trace
+Context](https://w3c.github.io/trace-context-binary/) standard.  Hereby, we relied on the specification described in
+[this commit](https://github.com/w3c/trace-context-binary/blob/571cafae56360d99c1f233e7df7d0009b44201fe/spec/20-binary-format.md).
+We used the proprietary `elasticapmtraceparent` field name for the binary `traceparent`, `tracestate` was ignored.
+
+The available OpenTelemetry instrumentations however went a different route:
+ * The binary header spec has been removed and the [issue](https://github.com/open-telemetry/opentelemetry-specification/issues/437) to re-add it has not been touched for a long time.
+ * Instead, the OpenTelemetry instrumentations for e.g. Kafka use the textual `traceparent` and `tracestate` formats and encode the values via UTF8 to binary.
+
+To maximize compatibility and not break traces, our agents need to support the textual `traceparent` and `tracestate` via UTF8 encoding as well.
+So, the following rules should be used to decode/encode context propagation headers:
+
+Encoding:
+ * Add a `elasticapmtraceparent` header with the binary specification above for backwards compatibility
+ * Add the textual `traceparent` and `tracestate` headers, encode their values via UTF8
+  
+Decoding:
+ * If a `traceparent` header is present, use the `traceparent` and `tracestate` headers as textual with UTF8 decoding of the values
+ * If no `traceparent` header is present, use the `elasticapmtraceparent` with the binary specification above. `tracestate` is ignored.
+
+Implementation note: The `traceparent` and `tracestate` specifications only allow ASCII characters. Therefore we don't need to use fully fledged UTF8 decoding, instead each byte can directly be interpreted as ASCII character.
+
+This implementation guarantees backwards compatibility with our older agents and compatibility with current OpenTelemetry instrumentations.
+We will eventually remove the `elasticapmtraceparent` entirely as soon as we can safely assume that most users have already upgraded all their agents.
 
 
 ### Legacy HTTP Header Name

@@ -136,6 +136,42 @@ For official Elastic agents, the agent name should just be the name of the langu
 
 Services running on AWS Lambda [require specific values](tracing-instrumentation-aws-lambda.md) for some of the above mentioned fields.
 
+#### Activation method
+
+Most of the APM Agents can be activated in several ways. Agents SHOULD collect information about the used activation method and send it in the `service.agent.activation_method` field within the metadata.
+
+The intention of this field is to drive telemetry so there is a way to know which activation methods are commonly used. This field MUST produce data with very low cardinality, therefore agents SHOULD use one of the values defined below.
+
+If the agent is unable to infer the activation method, it SHOULD send `unknown`.
+
+There are some well-known activation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.activation_method`:
+
+- `aws-lambda-layer`: when the agent was installed as a Lambda layer.
+- `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-mutating-webhook).
+- `env-attach`: when the agent is activated by setting some environment variables. Only use this if there is a single way to activate the agent via an environment variable. If the given runtime offers multiple environment variables to activate the agent, use more specific values to avoid ambiguity.
+- `fleet`: when the agent is activated via fleet.
+
+Cross agent activation methods defined above have higher priority than agent specific values below.
+If none of the above matches the activation method, agents define specific values for specific scenarios.
+
+Node.js:
+- `require`: when the agent is started via CommonJS `require('elastic-apm-node').start()` or `require('elastic-apm-node/start')`.
+- `import`: when the agent is started via ESM, e.g. `import 'elastic-apm-node/start.js'`.
+- `preload`: when the agent is started via the Node.js `--require` flag, e.g. `node -r elastic-apm-node/start ...`, without using `NODE_OPTIONS`.
+
+Java:
+- `javaagent-flag`: when the agent is attached via the `-javaagent` JVM flag.
+- `apm-agent-attach-cli`: when the agent is attached via the `apm-agent-attach-cli` tool.
+- `programmatic-self-attach`: when the agent is attached by manually calling the `ElasticApmAttacher` API in user code.
+
+.NET:
+- `nuget`: when the agent was installed via a NuGet package.
+- `profiler`: when the agent was installed via the CLR Profiler.
+- `startup-hook`: when the agent relies on the `DOTNET_STARTUP_HOOKS` mechanism to install the agent.
+
+Python:
+- `wrapper`: when the agent was invoked with the wrapper script, `elasticapm-run`
+
 ### Cloud Provider Metadata
 
 [Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
@@ -209,7 +245,7 @@ curl -X GET "http://metadata.google.internal/computeMetadata/v1/?recursive=true"
 
 From the returned metadata, the following fields are useful
 
-| Cloud metadata field  | AWS Metadata field  |
+| Cloud metadata field  | GCP Metadata field  |
 | --------------------  | ------------------- |
 | `instance.id`         | `instance.id`       |
 | `instance.name`       | `instance.name`     |
@@ -235,7 +271,7 @@ curl -X GET "http://169.254.169.254/metadata/instance/compute?api-version=2019-0
 
 From the returned metadata, the following fields are useful
 
-| Cloud metadata field  | AWS Metadata field  |
+| Cloud metadata field  | Azure Metadata field|
 | --------------------  | ------------------- |
 | `account.id`          | `subscriptionId`    |
 | `instance.id`         | `vmId`              |
@@ -274,6 +310,28 @@ Cloud metadata for Azure App Services is optional; it is up
 to each agent to determine whether it is useful to implement
 for their language ecosystem. See [azure_app_service_metadata specs](../../tests/agents/gherkin-specs/azure_app_service_metadata.feature)
 for scenarios and expected outcomes.
+
+##### Azure Functions
+
+Azure Functions running within a consumption/premium plan (see [Azure Functions hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale)) are a FaaS offering within Azure that do not have access
+to the internal [Azure metadata endpoint](#azure-vms). Metadata about an Azure Function can however be
+retrieved from environment variables.  
+**Note:** These environment variables slightly differ from those available to [Azure App Services](#azure_app_service-optional).
+
+| Cloud metadata field  | Environment variable |
+| --------------------  | ------------------- |
+| `account.id`          | Token `{subscription id}` from `WEBSITE_OWNER_NAME` |
+| `instance.name`       | `WEBSITE_SITE_NAME` |
+| `project.name`        | `WEBSITE_RESOURCE_GROUP` (fallback: `{resource group}` from `WEBSITE_OWNER_NAME`) |
+| `provider`            | azure               |
+| `region`              | `REGION_NAME`  (fallback: `{region}` from `WEBSITE_OWNER_NAME`) |
+| `service.name` | `functions` see the [ECS fields doc](https://www.elastic.co/guide/en/ecs/current/ecs-cloud.html#field-cloud-service-name). |
+
+The environment variable `WEBSITE_OWNER_NAME` has the following form:
+
+`{subscription id}+{resource group}-{region}webspace{.*}`
+
+Example: `d2cd53b3-acdc-4964-9563-3f5201556a81+wolfgangfaas_group-CentralUSwebspace-Linux`
 
 ### Global labels
 
