@@ -20,16 +20,21 @@ The precise names of these events are still to be determined. They may mirror th
 | Name                           | `lifecycle.state` Value | description                                | 
 |--------------------------------|-------------------------|--------------------------------------------|
 | applicationDidBecomeActive     | `active`                | The app has become "active"                |
-| applicationWillResignActive    | `inactive`              | THe app is about to become "inactive".     |
+| applicationWillResignActive    | `inactive`              | The app is about to become "inactive".     |
 | applicationDidEnterBackground  | `background`            | The app is now in the background.          |
 | applicationWillEnterForeground | `foreground`            | The app is about to enter the foreground.  |
 | applicationWillTerminate       | `terminate`             | The app is about to terminate.             |
 
 ##### Android
 
-| Name | `lifecycle.state` Value | description                                           | 
-|------|-------------------------|-------------------------------------------------------|
-|      |                         |                         |
+| Name                 | `lifecycle.state` Value | description                                    | 
+|----------------------|-------------------------|------------------------------------------------|
+| Application onCreate | `created`               | The app has been launched                      |
+| Application onStart  | `started`               | The app is about to be shown in the foreground |
+| Application onResume | `resumed`               | The app is in the foreground                   |
+| Application onPause  | `paused`                | The app is about to go into the background     |
+| Application onStop   | `stopped`               | The app is in the background                   |
+
 ### Crashes
 
 This event represent a crash event
