@@ -27,13 +27,13 @@ The precise names of these events are still to be determined. They may mirror th
 
 ##### Android
 
-| Name                 | `lifecycle.state` Value | description                                    | 
-|----------------------|-------------------------|------------------------------------------------|
-| Application onCreate | `created`               | The app has been launched                      |
-| Application onStart  | `started`               | The app is about to be shown in the foreground |
-| Application onResume | `resumed`               | The app is in the foreground                   |
-| Application onPause  | `paused`                | The app is about to go into the background     |
-| Application onStop   | `stopped`               | The app is in the background                   |
+| Name                 | `lifecycle.state` Value | description                                     | 
+|----------------------|-------------------------|-------------------------------------------------|
+| App process onCreate | `created`               | The app's process has been launched.            |
+| App process onStart  | `started`               | The app is about to be shown in the foreground. |
+| App process onResume | `resumed`               | The app is in the foreground.                   |
+| App process onPause  | `paused`                | The app is about to go into the background.     |
+| App process onStop   | `stopped`               | The app is in the background.                   |
 
 ### Crashes
 
