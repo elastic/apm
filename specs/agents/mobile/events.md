@@ -4,17 +4,6 @@ This document describes event used by the Mobile SDKs using the [OpenTelementry 
 All events collected by the mobile agents should set the `event.domain` to `device`.
 Event names will be recording using the `event.name`
 
-### Application Lifecycle events 
-These event represents the occurrence of app entering the foreground or background or other application lifecycle states.
-The precise names of these events are still to be determined. They may mirror the lifecycle events their respective mobile platforms.
-
-| Name           | Type   | Values   | Description              |
-|----------------|--------|----------|--------------------------|
-| `event.name`   | String | tbd      | The name of the event.   |
-| `event.domain` | String | `device` | The domain of the event. | 
-
-
-
 ### Application Non-Responsive (ANR)
 This event represents the occurrence of an 'ANR' error reported by the Android OS.
 
@@ -34,6 +23,36 @@ An event that allows customers to add events to a common `Event` that allows the
 | `event.name`   | String | `breadcrumb` | The name of the event.   |
 | `event.domain` | String | `device`     | The domain of the event. | 
               
+### Application Lifecycle events
+These event represents the occurrence of app entering the foreground or background or other application lifecycle states.
+The precise names of these events are still to be determined. They may mirror the lifecycle events their respective mobile platforms.
+
+| Name              | Type   | Values             | Description                                |
+|-------------------|--------|--------------------|--------------------------------------------|
+| `event.name`      | String | `lifecycle`        | The name of the event.                     |
+| `event.domain`    | String | `device`           | The domain of the event.                   | 
+| `lifecycle.state` | String | platform specific  | The state entered at the time of the event |
+
+#### `lifecycle.state` values
+
+##### iOS
+| Name                           | `lifecycle.state` Value | description                                | 
+|--------------------------------|-------------------------|--------------------------------------------|
+| applicationDidBecomeActive     | `active`                | The app has become "active"                |
+| applicationWillResignActive    | `inactive`              | The app is about to become "inactive".     |
+| applicationDidEnterBackground  | `background`            | The app is now in the background.          |
+| applicationWillEnterForeground | `foreground`            | The app is about to enter the foreground.  |
+| applicationWillTerminate       | `terminate`             | The app is about to terminate.             |
+
+##### Android
+
+| Name                 | `lifecycle.state` Value | description                                     | 
+|----------------------|-------------------------|-------------------------------------------------|
+| App process onCreate | `created`               | The app's process has been launched.            |
+| App process onStart  | `started`               | The app is about to be shown in the foreground. |
+| App process onResume | `resumed`               | The app is in the foreground.                   |
+| App process onPause  | `paused`                | The app is about to go into the background.     |
+| App process onStop   | `stopped`               | The app is in the background.                   |
 
 ### Crashes
 
