@@ -139,6 +139,7 @@ Services running on AWS Lambda [require specific values](tracing-instrumentation
 #### Activation method
 
 Most of the APM Agents can be activated in several ways. Agents SHOULD collect information about the used activation method and send it in the `service.agent.activation_method` field within the metadata.
+This field should only be sent when APM server version is at least `8.7.1`, and MUST be ommited in `8.7.0` due to a bug in APM server.
 
 The intention of this field is to drive telemetry so there is a way to know which activation methods are commonly used. This field MUST produce data with very low cardinality, therefore agents SHOULD use one of the values defined below.
 
