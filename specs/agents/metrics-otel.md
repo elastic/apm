@@ -135,7 +135,9 @@ The `sum`, `count`, `min` and `max` within the OpenTelemetry histogram data are 
 Conceptually, elastic metric labels keys correspond to [OpenTelemetry Attributes](https://opentelemetry.io/docs/reference/specification/common/#attribute).
 When exporting, the agents MUST convert the attributes to labels as described in this section and MUST group metrics with the same attributes and OpenTelemetry instrumentation scope together into a single metricset.
 
-Attribute keys MUST be sanitized before being used as label keys: Every occurrence of the characters `.`, `*` and `"` must be replaced with a single `_`.
+Attribute keys MUST NOT be modified. Potential sanitization will happen within the APM server, if any.
+APM servers pre version 7.11 will drop metricsets if the label keys contain any of the characters `.`, `*` or `"`, which are however allowed characters in OpenTelemetry.
+Therefore, agents SHOULD document that OpenTelemetry metrics might be dropped when using an APM Server pre version 7.11.
 
 The attribute values MUST NOT be modified and their type MUST be preserved. E.g. `strings` must remain `string`-labels, `booleans` must remain `boolean`-labels.
 Metricsets currently do not support array-valued labels, whereas OpenTelemetry attribute values can be arrays. For this reason, array-valued attributes MUST be ignored. Agents SHOULD emit a warning with a message containing the metric name when attributes are dropped because they are array-valued.
@@ -155,7 +157,7 @@ the following labels must be used for the resulting metricset:
 |  `foo_bar`    | `baz`           | `string`       |
 |  `testnum_`   | `42.42`         | `number`       |
 
-The OpenTelemetry specification allows the definition of metrics with the same name as long as they reside within a different instrumentation scope ([spec link](https://opentelemetry.io/docs/reference/specification/metrics/api/#get-a-meter)). In order to avoid conflicts, agents MUST add a mandatory label to the metricset with the key `otel_instrumentation_scope_name` and the corresponding instrumentation scope name as label value.
+The OpenTelemetry specification allows the definition of metrics with the same name as long as they reside within a different instrumentation scope ([spec link](https://opentelemetry.io/docs/reference/specification/metrics/api/#get-a-meter)). Agents MUST report metrics from different instrumentation scopes in separate metricsets to avoid naming conflicts at collection time. This separation MUST be done based on the instrumentation scope name and version. In the future, we might add dedicated intake fields to metricsets for differentiation them based on the instrumentation scope identifiers.
 
 ## Exporter Installation
 
@@ -169,7 +171,7 @@ We focus on two ways of how OpenTelemetry may be used by users:
 For **1.** we want to make sure that the existing user configuration is respected by our apm agents. Ideally, agents SHOULD just register an additional exporter to the existing OpenTelemetry Metrics SDK instance(s). If the agent and language capabilities allow it, the exporter registration SHOULD be done automatically without requiring code changes by the user. 
 
 For **2.** agents MAY automatically register an agent-provided SDK instance to bind the user provided OpenTelemetry API to, if this is possible in their language and does not cause too much overhead of any kind (e.g. implementation or agent package size).
-Agents MUST NOT override a user-provided global OpenTelemetry metrics SDK with their own SDK.
+Agents MUST NOT override a user-provided global OpenTelemetry metrics SDK with their own SDK or prevent the user from providing his own SDK instance in any means.
 For example the Java agent MUST NOT install an OpenTelemetry Metrics SDK instance in the [GlobalOpenTelemetry](https://www.javadoc.io/static/io.opentelemetry/opentelemetry-api/1.20.0/io/opentelemetry/api/GlobalOpenTelemetry.html) if it detects that another Metrics SDK has already been registered there.
 
 Agents MUST ensure that remaining metric data is properly flushed when the user application shuts down. for **1.**, the user is responsible for shutting down the SDK instance before their application terminates. This shutdown initiates a metrics flush, therefore no special actions needs to be taken by agents in this case. For **2.**, agents MUST initiate a proper shutdown of the agent provided SDK instance when the user application terminates, which automatically causes a flush.
