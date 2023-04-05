@@ -70,14 +70,7 @@ Because IntakeV2 histogram serialization skips empty buckets, we are free to use
 
 These boundaries are an exponential scale base `sqrt(2)` rounded to six significant figures.
 
-Agents MUST allow users to configure the default histogram boundaries via the `custom_metrics_histogram_boundaries` configuration option:
-
-|                |                                          |
-|----------------|------------------------------------------|
-| Type           | `double list`                            |
-| Default        | <see base `sqrt(2)` boundaries above>    |
-| Dynamic        | `false`                                  |
-| Central config | `false`                                  |
+Agents MUST allow users to configure the default histogram boundaries via the `custom_metrics_histogram_boundaries` configuration option (described in the section below).
 
 In the future, we might replace the default aggregation with one better suited for elasticsearch, e.g. HDRHistogram or T-Digest.
 
@@ -130,6 +123,17 @@ IntakeV2Histo convertBucketBoundaries(OtelHisto input) {
 The same algorithm is used by the APM server to convert OTLP histograms.
 The `sum`, `count`, `min` and `max` within the OpenTelemetry histogram data are discarded for now until we support them in IntakeV2 histograms.
 
+#### custom_metrics_histogram_boundaries configuration
+
+Defines the default bucket boundaries to use for OpenTelemetry histograms.
+
+|                |                                          |
+|----------------|------------------------------------------|
+| Type           | `double list`                            |
+| Default        | <see base `sqrt(2)` boundaries above>    |
+| Dynamic        | `false`                                  |
+| Central config | `false`                                  |
+
 ## Labels
 
 Conceptually, elastic metric labels keys correspond to [OpenTelemetry Attributes](https://opentelemetry.io/docs/reference/specification/common/#attribute).
@@ -174,4 +178,4 @@ For **2.** agents MAY automatically register an agent-provided SDK instance to b
 Agents MUST NOT override a user-provided global OpenTelemetry metrics SDK with their own SDK or prevent the user from providing his own SDK instance in any means.
 For example the Java agent MUST NOT install an OpenTelemetry Metrics SDK instance in the [GlobalOpenTelemetry](https://www.javadoc.io/static/io.opentelemetry/opentelemetry-api/1.20.0/io/opentelemetry/api/GlobalOpenTelemetry.html) if it detects that another Metrics SDK has already been registered there.
 
-Agents MUST ensure that remaining metric data is properly flushed when the user application shuts down. for **1.**, the user is responsible for shutting down the SDK instance before their application terminates. This shutdown initiates a metrics flush, therefore no special actions needs to be taken by agents in this case. For **2.**, agents MUST initiate a proper shutdown of the agent provided SDK instance when the user application terminates, which automatically causes a flush.
+Agents SHOULD ensure that remaining metric data is properly flushed when the user application shuts down. for **1.**, the user is responsible for shutting down the SDK instance before their application terminates. This shutdown initiates a metrics flush, therefore no special actions needs to be taken by agents in this case. For **2.**, agents SHOULD initiate a proper shutdown of the agent provided SDK instance when the user application terminates, which automatically causes a flush.
