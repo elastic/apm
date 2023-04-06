@@ -11,7 +11,7 @@ Due to the nested object representation within metricsets, `foo` would need to b
 
 We plan on solving these conflicts on the APM-server side instead by adjusting the mapping of metricsets (Again, state of January 2023).
 
-Agents MUST respect the `disable_metrics` configuration for OpenTelemetry metrics.
+If agents offer the capability to disable selected metrics (e.g. the `disable_metrics` configuration in case of java), it MUST be respected for OpenTelemetry metrics.
 
 ## Aggregation Temporality
 
