@@ -57,13 +57,13 @@ Here is a list of resource attributes that are relevant for our mobile agents:
 
 The following attributes do not have an OpenTelemetry semantic convention:
 
-| Attribute name                          | Elastic Convention         | Example                          | Required | Comment                            |
-|-----------------------------------------|----------------------------|----------------------------------| ---------| ---------------------------------|
-| `telemetry.sdk.elastic_export_timestamp`| N/A: only relevant for APM server.     | `1658149487000000000` | :white_check_mark: yes | This is required to deal with the time skew on mobile devices. Set this to the timestamp (in nanoseconds) when the span is exported in the OpenTelemetry span processer. |
-| `type` | `transaction.type` | `mobile` :interrobang: | :white_check_mark: yes | :heavy_exclamation_mark: Need to define new values for transactions resulting from mobile interactions. |
-| `session.id`         | :heavy_exclamation_mark: not mapped yet         | `opbeans-swift`                  | :x: no | Some id for a session. This is not specified in OTel, yet. | 
-| `visibility`                         | :heavy_exclamation_mark: not mapped yet         | `foreground/background` | :x: yes                | This will be needed to tell whether the signal happened when the app was visible or in the background. |
-
+| Attribute name                           | Elastic Convention                      | Example                 | Required                          | Comment                                                                                                                                                                  |
+|------------------------------------------|-----------------------------------------|-------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `telemetry.sdk.elastic_export_timestamp` | N/A: only relevant for APM server.      | `1658149487000000000`   | :white_check_mark: yes            | This is required to deal with the time skew on mobile devices. Set this to the timestamp (in nanoseconds) when the span is exported in the OpenTelemetry span processer. |
+| `type`                                   | `transaction.type`                      | `mobile` :interrobang:  | :white_check_mark: yes            | :heavy_exclamation_mark: Need to define new values for transactions resulting from mobile interactions.                                                                  |
+| `session.id`                             | :heavy_exclamation_mark: not mapped yet | `opbeans-swift`         | :x: no                            | Some id for a session. This is not specified in OTel, yet.                                                                                                               | 
+| `visibility`                             | :heavy_exclamation_mark: not mapped yet | `foreground/background` | :x: yes                           | This will be needed to tell whether the signal happened when the app was visible or in the background.                                                                   |
+| `service.build`                          | N/A                                     | `555`                   | For Android: `yes`, for iOS: `no` | This is the build number (or the versionCode for Android builds).                                                                                                        | 
 
 ### Attributes on outgoing HTTP spans 
 
