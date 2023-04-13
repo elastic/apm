@@ -211,7 +211,7 @@ Fetching of cloud metadata for services running as AWS Lambda functions follow a
 [Metadata about an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) can be retrieved from the internal metadata endpoint, `http://169.254.169.254`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
-the calls to the metada endpoint directly, without using the proxy.
+the calls to the metadata endpoint directly, without using the proxy.
 
 As an example with curl, first, an API token must be created
 
@@ -242,7 +242,7 @@ Metadata about a GCP machine instance can be retrieved from the
 metadata service, `http://metadata.google.internal`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
-the calls to the metada endpoint directly, without using the proxy.
+the calls to the metadata endpoint directly, without using the proxy.
 
 An example with curl
 
@@ -271,7 +271,7 @@ Metadata about an Azure VM can be retrieved from the internal metadata
 endpoint, `http://169.254.169.254`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
-the calls to the metada endpoint directly, without using the proxy.
+the calls to the metadata endpoint directly, without using the proxy.
 
 An example with curl
 
