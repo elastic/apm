@@ -212,6 +212,9 @@ Fetching of cloud metadata for services running as AWS Lambda functions follow a
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
 the calls to the metadata endpoint directly, without using the proxy.
+This is recommended as those HTTP calls could be caller-sensitive and have to be made directly
+ by the virtual machine where the APM agent executes, also, the `169.254.x.x` IP address range
+is reserved for "link-local" addresses that are not routed.
 
 As an example with curl, first, an API token must be created
 
@@ -243,6 +246,9 @@ metadata service, `http://metadata.google.internal`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
 the calls to the metadata endpoint directly, without using the proxy.
+This is recommended as those HTTP calls could be caller-sensitive and have to be made directly
+ by the virtual machine where the APM agent executes, also, the `169.254.x.x` IP address range
+is reserved for "link-local" addresses that are not routed.
 
 An example with curl
 
@@ -272,6 +278,9 @@ endpoint, `http://169.254.169.254`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
 the calls to the metadata endpoint directly, without using the proxy.
+This is recommended as those HTTP calls could be caller-sensitive and have to be made directly
+ by the virtual machine where the APM agent executes, also, the `169.254.x.x` IP address range
+is reserved for "link-local" addresses that are not routed.
 
 An example with curl
 
