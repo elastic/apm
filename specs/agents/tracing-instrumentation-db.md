@@ -90,7 +90,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.name`| e.g. `my-bucket`, `accesspoint/myendpointslashes`, or `accesspoint:myendpointcolons` | The bucket name, if available. The s3 API allows either the bucket name or an Access Point to be provided when referring to a bucket. Access Points can use either slashes or colons. When an Access Point is provided, the access point name preceded by accesspoint/ or accesspoint: should be extracted. For example, given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint/myendpointslashes`, the agent extracts `accesspoint/myendpointslashes`. Given an Access Point such as `arn:aws:s3:us-west-2:123456789012:accesspoint:myendpointcolons`, the agent extracts `accesspoint:myendpointcolons`. |
 | __**otel.attributes._**__ |<hr/>|<hr/>|
 |`_.aws.s3.bucket`| `my-bucket` | The bucket name, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435). |
-|`_["aws.s3.key"]`| `my/key/path` | The S3 object key, if applicable. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435). |
+|`_.aws.s3.key`| `my/key/path` | The S3 object key, if applicable. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435). |
 
 ### Cassandra
 
