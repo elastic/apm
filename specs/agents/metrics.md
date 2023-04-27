@@ -56,6 +56,14 @@ When capturing runtime metrics, keep in mind the end use-case: how will they be 
 
 Agents should record "breakdown metrics", which is a summarization of how much time is spent per span type/subtype in each transaction group. This is described in detail in the [Breakdown Graphs](https://docs.google.com/document/d/1-_LuC9zhmva0VvLgtI0KcHuLzNztPHbcM0ZdlcPUl64#heading=h.ondan294nbpt) document, so we do not repeat it here.
 
+### Agent Health and Overhead Metrics
+
+Agents SHOULD record metrics which give insight into the agent's health state. This is explained in detail in [this spec](metrics-health.md).
+
+### OpenTelemetry Metrics
+
+OpenTelemetry provides an API for collecting user defined metrics. Agents SHOULD allow custom metric collection via this API, this is described in detail in [this spec](metrics-otel.md).
+
 ## Shutdown behavior
 
 Agents should make an effort to flush any metrics before shutting down.
