@@ -350,6 +350,9 @@ Field | Value | Description | Source
 `context.cloud.origin.service.name` | `s3` | Constant value for S3. | -
 `context.cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
 `context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
+__**otel.attributes._**__ |<hr/>|<hr/>
+`_["aws.s3.bucket"]`| `mybucket` | S3 bucket name, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435) | `record.s3.bucket.name`
+`_["aws.s3.key"]`| `my/key/path` | S3 object key, if applicable. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435) | `record.s3.object.key`
 
 ## Data Flushing
 Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
