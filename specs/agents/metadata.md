@@ -1,6 +1,6 @@
 ## Metadata
 
-As mentioned above, the first "event" in each ND-JSON stream contains metadata to fold into subsequent events. The metadata that agents should collect includes are described in the following sub-sections.
+As mentioned above, the first "event" in each ND-JSON stream contains metadata to fold into subsequent events. The metadata that agents should collect are described in the following sub-sections.
 
  - service metadata
  - global labels (requires APM Server 7.2 or greater)
@@ -76,6 +76,24 @@ hostname if `configured_hostname` is not provided.
 
 Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
 use the new fields wherever applicable.
+
+#### Host domain name
+
+ECS 8.7 [updated](https://github.com/elastic/ecs/pull/2122) the definition of `host.name`, recommending using the 
+lowercase fully qualified domain name (FQDN) for the host name. All Elastic ECS producers should populate the 
+`host.name` field with the lowercased FQDN from here forward. This change is behind a 
+[feature flag](https://www.elastic.co/guide/en/fleet/current/elastic-agent-standalone-feature-flags.html#elastic-agent-standalone-feature-flag-settings) 
+on the Elastic agent to avoid breaking changes for users. Since APM agents do not know about the feature flag, 
+this decision must happen on the APM server. To support this, APM agents should collect and send the host domain name 
+(when available) to enable the APM server to construct the FQDN for `host.name` when the feature flag is enabled.
+
+When the `system.configured_hostname` is not set through the `ELASTIC_APM_HOSTNAME` config option, APM agents should 
+attempt to detect the host domain name, in addition to the hostname. When detected, the lowercase domain name of the 
+host should be used to set the `system.detected_domain_name` field. This will be combined with the `detected_hostname` 
+to form the final FQDN.
+
+When a `system.configured_hostname` is available, this will be preferred. It is the responsibility of the user to determine if 
+they wish to configure this with the FQDN or just the hostname.
 
 #### Container/Kubernetes metadata
 
