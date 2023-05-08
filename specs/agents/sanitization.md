@@ -41,8 +41,14 @@ they use to replace the value so long as it's consistent and does not reveal
 the value it has replaced. The replacement string SHOULD be `[REDACTED]`.
 
 Fields that MUST be sanitized are:
-- HTTP Request and Response headers (except [HTTP/2 pseudo-headers](https://datatracker.ietf.org/doc/html/rfc7540#section-8.1.2.3) which SHOULD NOT be redacted), and
-- form fields in an `application/x-www-form-urlencoded` request body.
+- HTTP Request and Response headers (except [HTTP/2 pseudo-headers](https://datatracker.ietf.org/doc/html/rfc7540#section-8.1.2.3) which SHOULD NOT be redacted),
+- form fields in an `application/x-www-form-urlencoded` request body, and
+- HTTP Request cookies.
+
+Additionally, if cookie headers are parsed into name/value pairs and reported
+to APM Server via the agent (for example, `transaction.context.request.cookies`), the
+values of these pairs MUST be sanitized and the cookie header removed or redacted.
+
 
 The query string and other captured request bodies (such as `application/json`)
 SHOULD NOT be sanitized.
