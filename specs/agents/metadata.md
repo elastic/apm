@@ -87,8 +87,7 @@ on the Elastic agent to avoid breaking changes for users. Since APM agents do no
 this decision must happen on the APM server. To support this, APM agents should collect and send the host domain name 
 (when available) to enable the APM server to construct the FQDN for `host.name` when the feature flag is enabled.
 
-When the `system.configured_hostname` is not set through the `ELASTIC_APM_HOSTNAME` config option, APM agents should 
-attempt to detect the host domain name, in addition to the hostname. When detected, the lowercase domain name of the 
+APM agents should attempt to detect the host domain name, in addition to the hostname. When detected, the lowercase domain name of the 
 host should be used to set the `system.detected_domain_name` field. This will be combined with the `detected_hostname` 
 to form the final FQDN.
 
