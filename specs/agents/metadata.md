@@ -77,6 +77,8 @@ hostname if `configured_hostname` is not provided.
 Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
 use the new fields wherever applicable.
 
+> **_NOTE:_** We recently established that the various agents handle hostnames differently, with some sending an FQDN (when available) and others (such as the .NET agent) sending a simple hostname. To avoid breaking consumers, agents should continue sending the hostname as they already do. Logic will be introduced to split the hostname from an FQDN, when required, based on the configured feature flag. See below in the "Host domain name" section for further details of the proposed logic.
+
 #### Host domain name
 
 ECS 8.7 [updated](https://github.com/elastic/ecs/pull/2122) the definition of `host.name`, recommending using the 
@@ -93,6 +95,8 @@ to form the final FQDN.
 
 When a `system.configured_hostname` is available, this will be preferred. It is the responsibility of the user to determine if 
 they wish to configure this with the FQDN or just the hostname.
+
+> **_NOTE:_** As some agents may already send an FQDN for the `detected_hostname` field, logic will be required to extract the required components. When the `detected_hostname` includes the `detected_domain_name`, the `detected_domain_name` string can be removed, along with any remaining separators, to determine the simple `hostname`. If required, the hostname and domain name can later be re-combined by the feature flag configuration. For agents that already send a simple hostname for `detected_hostname`, that hostname will not include the `detected_hostname` and can safely be combined with the `detected_domain_name` (if present) when the configuration requires an FQDN to be stored for ECS `host.name`.
 
 #### Container/Kubernetes metadata
 
