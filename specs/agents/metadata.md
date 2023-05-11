@@ -93,10 +93,10 @@ APM agents should attempt to detect the host domain name, in addition to the hos
 host should be used to set the `system.detected_domain_name` field. This will be combined with the `detected_hostname` 
 to form the final FQDN.
 
-When a `system.configured_hostname` is available, this will be preferred. It is the responsibility of the user to determine if 
+When a `system.configured_hostname` is configured, it is the responsibility of the user to determine if 
 they wish to configure this with the FQDN or just the hostname.
 
-> **_NOTE:_** As some agents may already send an FQDN for the `detected_hostname` field, logic will be required to extract the required components. When the `detected_hostname` includes the `detected_domain_name`, the `detected_domain_name` string can be removed, along with any remaining separators, to determine the simple `hostname`. If required, the hostname and domain name can later be re-combined by the feature flag configuration. For agents that already send a simple hostname for `detected_hostname`, that hostname will not include the `detected_hostname` and can safely be combined with the `detected_domain_name` (if present) when the configuration requires an FQDN to be stored for ECS `host.name`.
+> **_NOTE:_** As some agents may already send an FQDN for the `detected_hostname` field, logic will be required to extract the required components. When the `detected_hostname` includes the `detected_domain_name`, the `detected_domain_name` string can be removed, along with any remaining separators, to determine the simple `hostname`. If required, the hostname and domain name can later be re-combined by the feature flag configuration. For agents that already send a simple hostname for `detected_hostname`, that hostname will not include the domain name and can safely be combined with the `detected_domain_name` (if present) when the configuration requires an FQDN to be stored for ECS `host.name`.
 
 #### Container/Kubernetes metadata
 
