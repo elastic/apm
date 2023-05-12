@@ -96,6 +96,31 @@ to form the final FQDN.
 When a `system.configured_hostname` is configured, it is the responsibility of the user to determine if 
 they wish to configure this with the FQDN or just the hostname.
 
+**Detecting the domain name**
+
+Agents can detect the domain name using framework APIs, or OS system calls if necessary. 
+For example, the .NET agent implementation will use the .NET API, 
+`IPGlobalProperties.GetIPGlobalProperties().DomainName` to access the domain name 
+for the host. This is provided by Microsoft as a cross-platform API and is 
+therefore well-tested and supported.
+
+On Windows, this ultimately calls down into the native  `IpHlpApi.GetNetworkParams` 
+[function](https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getnetworkparams), 
+collecting the information it needs from the 
+`FIXED_INFO` [structure](https://learn.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-fixed_info_w2ksp1). 
+
+On Linux-based systems, it uses the `getdomainname()` [Linux system call](https://man7.org/linux/man-pages/man2/getdomainname.2.html), 
+and falls back to `uname` (sys/utsname.h) for other platforms such as Android. 
+
+On .NET, while likely unnecessary, a further fallback can be introduced by accessing 
+the static `Environment.UserDomainName` property. On Windows, this will 
+attempt to invoke the `GetUserNameExW` [function](https://learn.microsoft.com/en-us/windows/win32/api/secext/nf-secext-getusernameexw) 
+from `secext.h`, from which the username portion is then trimmed.
+
+When not detected through OS system calls, agents should include a final fallback, 
+checking the system environment variable `USERDOMAIN`, which on Windows will contain 
+the name of the Windows domain the user is currently logged on to.
+
 > **_NOTE:_** As some agents may already send an FQDN for the `detected_hostname` field, logic will be required to extract the required components. When the `detected_hostname` includes the `detected_domain_name`, the `detected_domain_name` string can be removed, along with any remaining separators, to determine the simple `hostname`. If required, the hostname and domain name can later be re-combined by the feature flag configuration. For agents that already send a simple hostname for `detected_hostname`, that hostname will not include the domain name and can safely be combined with the `detected_domain_name` (if present) when the configuration requires an FQDN to be stored for ECS `host.name`.
 
 #### Container/Kubernetes metadata
