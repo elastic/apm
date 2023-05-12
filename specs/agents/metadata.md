@@ -1,6 +1,6 @@
 ## Metadata
 
-As mentioned above, the first "event" in each ND-JSON stream contains metadata to fold into subsequent events. The metadata that agents should collect are described in the following sub-sections.
+As mentioned above, the first "event" in each ND-JSON stream contains metadata to fold into subsequent events. The metadata that agents should collect is described in the following sub-sections.
 
  - service metadata
  - global labels (requires APM Server 7.2 or greater)
