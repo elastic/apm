@@ -352,9 +352,42 @@ Field | Value | Description | Source
 `context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
 
 ## Data Flushing
-Lambda functions are immediately frozen as soon as the handler method ends. In case APM data is sent in an asyncronous way (as most of the agents do by default) data can get lost if not sent before the lambda function ends.
+Lambda functions are immediately frozen as soon as the handler method ends.
+Because APM data is sent in an asynchronous way, data can get lost if not sent
+before the lambda function ends.
 
-Therefore, the Lambda instrumentation has to ensure that data is flushed in a blocking way before the execution of the handler function ends.
+Therefore, the agents MUST ensure that data is flushed synchronously before the
+execution of the handler function ends.
 
-Some Lambda functions will use the custom-built Lambda extension that allows the agent to send its data locally. The extension asynchronously forwards the data it receives from the agent to the APM server so the Lambda function can return its result with minimal delay. In order for the extension to know when it can flush its data, it must receive a signal indicating that the lambda function has completed. There are two possible signals: one is via a subscription to the AWS Lambda Logs API and the other is an agent intake request with the query param `flushed=true`. A signal from the agent is preferrable because there is an inherent delay with the sending of the Logs API signal.
-Therefore, the agent must send its final intake request at the end of the function invocation with the query param `flushed=true`. In case there is no more data to send at the end of the function invocation, the agent must send an empty intake request with this query param.
+Instrumented lambda functions should use the custom-built [Lambda extension][1]
+that allows the agent to send its data to `localhost`. The extension
+asynchronously forwards the data it receives from the agent to the APM server
+so the Lambda function can return its result with minimal delay. In order for
+the extension to know when it can flush its data, it must receive a signal
+indicating that the lambda function has completed. There are two possible
+signals: one is via a subscription to the AWS Lambda Logs API and the other is
+an agent intake request with the query param `flushed=true`. A signal from the
+agent is preferable because there is an inherent delay with the sending of the
+Logs API signal.  Therefore, the agent must send its final intake request at
+the end of the function invocation with the query param `flushed=true`. In case
+there is no more data to send at the end of the function invocation, the agent
+must send an empty intake request with this query param.
+
+[1]: https://github.com/elastic/apm-aws-lambda
+
+If the `ELASTIC_APM_LAMBDA_APM_SERVER` environment variable is defined,
+instrumented lambda functions should register a "partial transaction" with the
+lambda extension as soon as the transaction is started.  This allows the lambda
+extension to create and send a proxy transaction document even if the lambda
+function times out and is unable to send the transaction document itself. The
+process is as follows:
+
+At the start of the transaction, the agent will encode and immediately send the
+newly-created transaction to the extension at the `/register/transaction`
+endpoint. The first line of the ndjson payload should be the metadata, if
+possible. The second line should be the transaction json blob. The request
+should have the header `x-elastic-aws-request-id` (the lambda invocation's
+request ID) and the Content-Type should be
+`application/vnd.elastic.apm.transaction+ndjson`.  If the extension returns
+anything other than a 200 HTTP code, the agent should stop sending partial
+transaction registrations for future invocations.
