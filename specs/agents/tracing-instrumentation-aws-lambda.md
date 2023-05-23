@@ -384,10 +384,10 @@ process is as follows:
 
 At the start of the transaction, the agent will encode and immediately send the
 newly-created transaction to the extension at the `/register/transaction`
-endpoint. The first line of the ndjson payload should be the metadata, if
-possible. The second line should be the transaction json blob. The request
-should have the header `x-elastic-aws-request-id` (the lambda invocation's
-request ID) and the Content-Type should be
+endpoint via a `POST` request. The first line of the ndjson payload should be
+the metadata. The second line should be the transaction json blob. The request
+MUST have the header `x-elastic-aws-request-id` (the lambda invocation's
+request ID) and the Content-Type MUST be
 `application/vnd.elastic.apm.transaction+ndjson`.  If the extension returns
-anything other than a 200 HTTP code, the agent should stop sending partial
+anything other than a 200 HTTP code, the agent MUST stop sending partial
 transaction registrations for future invocations.
