@@ -350,7 +350,7 @@ Field | Value | Description | Source
 `context.cloud.origin.service.name` | `s3` | Constant value for S3. | -
 `context.cloud.origin.region` | e.g. `us-east-1` | S3 bucket region. | `record.awsRegion`
 `context.cloud.origin.provider` | `aws` | Use `aws` as constant value. | -
-__**otel.attributes._**__ |<hr/>|<hr/>
+__**otel.attributes._**__ |<hr/>|<hr/>|<hr/>
 `_["aws.s3.bucket"]`| `mybucket` | S3 bucket name, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435). Note: this must be a single dotted string key in the `otel.attributes` mapping -- for example `{"otel": {"attributes": {"aws.s3.bucket": "mybucket"}}}` -- and *not* a nested object. | `record.s3.bucket.name`
 `_["aws.s3.key"]`| `my/key/path` | S3 object key, if applicable. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.20.0/semantic_conventions/trace/instrumentation/aws-sdk.yml#L435). Note: this must be a single dotted string key in the `otel.attributes` mapping and *not* a nested object. | `record.s3.object.key`
 
