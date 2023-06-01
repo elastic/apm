@@ -33,6 +33,16 @@ Each span will have a `name`, which is a descriptive, low-cardinality string.
 
 If a span is created without a valid `name`, the string `"unnamed"` SHOULD be used.
 
+### Span `sync`
+
+Span execution within a transaction or span can be synchronous (the caller waits for completion), or asynchronous (the caller does not wait
+for completion).
+
+In UI
+- when `sync` field is not present or `null`, we assume it's the platform default and no badge is shown.
+- when `sync` field is set to `true`, a `blocking` badge is shown in traces.
+- when `sync` field is set to `false`, an `async` badge is shown in traces.
+
 ### Span outcome
 
 The `outcome` property denotes whether the span represents a success or failure, it is used to compute error rates
