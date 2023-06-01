@@ -221,7 +221,7 @@ if (a['db.system']) {
         netName = parseNetName(a['messaging.url']);
     }
     serviceTargetType = subtype;
-    serviceTargetName = a['messaging.destination'] || netName || null;
+    serviceTargetName = a['messaging.destination'] || null;
 
 } else if (a['rpc.system']) {
     type = 'external';
