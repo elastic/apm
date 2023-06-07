@@ -217,9 +217,6 @@ if (a['db.system']) {
     type = 'messaging';
     subtype = a['messaging.system'];
 
-    if (!netName && a['messaging.url']) {
-        netName = parseNetName(a['messaging.url']);
-    }
     serviceTargetType = subtype;
     serviceTargetName = a['messaging.destination'] || null;
 
