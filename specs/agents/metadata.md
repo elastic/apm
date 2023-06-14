@@ -37,10 +37,13 @@ if os == windows
   hostname = exec "cmd /c hostname"                   // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("COMPUTERNAME")
+  domain = env.get("USERDNSDOMAIN")
+  if (domain != null && domain.length >0)
+    hostname += "." + domain
 else 
   hostname = exec "uname -n"                          // or any equivalent *
   if (hostname == null || hostname.length == 0)
-    hostname = exec "hostname"                        // or any equivalent *
+    hostname = exec "hostname --fqdn"                 // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
@@ -58,8 +61,11 @@ or equal to `U+0020` (space).
 
 Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
 proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
-Metricbeat). For example, if the agent uses an API that produces the FQDN, this value is likely to mismatch hostname 
+Metricbeat). For example, if the agent uses an API that produces host name (not FQDN), this value is likely to mismatch hostname 
 reported by other clients.
+
+Starting from APM Server 8.9, APM agents should report the fully qualified domain name (FQDN). Before 8.9 APM agents
+should report only the host name (first part of FQDN until the first dot `.`).
 
 In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
 can be used as a manual fallback.
