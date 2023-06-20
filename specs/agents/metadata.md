@@ -25,47 +25,34 @@ System metadata relates to the host/container in which the service being monitor
 #### Hostname
 
 This hostname reported by the agent is mapped by the APM Server to the 
-[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname), which should 
-typically contain what the `hostname` command returns on the host machine. However, since we rely on this field for 
-our integration with beats data, we should attempt to follow a similar logic to the `os.Hostname()` Go API, which beats 
-relies one. While `os.Hostname()` contains some complex OS-specific logic to cover all sorts of edge cases, our 
-algorithm should be simpler. It relies on the execution of external commands with a fallback to standard environment 
-variables. Agents SHOULD implement this hostname discovery algorithm wherever possible:
+[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname).
+
+Agents SHOULD return the lower-cased FQDN whenever possible, which might require a DNS query.
+
+Agents SHOULD implement this hostname discovery algorithm wherever possible:
 ```
 var hostname;
 if os == windows
-  hostname = exec "cmd /c hostname"                   // or any equivalent *
+  hostname = exec "powershell.exe [System.Net.Dns]::GetHostEntry($env:computerName).HostName" // or any equivalent *
+  if (hostname == null || hostname.length == 0)
+    hostname = exec "cmd.exe /c hostname"               // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("COMPUTERNAME")
-  domain = env.get("USERDNSDOMAIN")
-  if (domain != null && domain.length >0)
-    hostname += "." + domain
 else 
-  hostname = exec "uname -n"                          // or any equivalent *
-  if (hostname == null || hostname.length == 0)
-    hostname = exec "hostname -f"                     // or any equivalent *
+  hostname = exec "hostname -f"                         // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOST")
 
 if hostname != null
-  hostname = hostname.trim()                          // see details below **
+  hostname = hostname.toLowerCase().trim()              // see details below **
 ```
 `*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
-may be replaced with language-specific APIs that provide the equivalent result. The main consideration when choosing 
-what to use is to avoid hostname discovery that relies on DNS lookup.
+may be replaced with language-specific APIs that provide the equivalent result.
 
 `**` in this case, `trim()` refers to the removal of all leading and trailing characters of which codepoint is less-than
-or equal to `U+0020` (space).
-
-Agents MAY use alternative approaches, but those need to generally conform to the basic concept. Failing to discover the 
-proper hostname may cause failure in correlation between APM traces and data reported by other clients (e.g. 
-Metricbeat). For example, if the agent uses an API that produces host name (not FQDN), this value is likely to mismatch hostname 
-reported by other clients.
-
-Starting from APM Server 8.9, APM agents should report the fully qualified domain name (FQDN). Before 8.9 APM agents
-should report only the host name (first part of FQDN until the first dot `.`).
+or equal to `U+0020` (space), the `toLowerCase()` refers to the replacement of characters in `A-Z` with their `a-z` equivalents.
 
 In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
 can be used as a manual fallback.
