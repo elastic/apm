@@ -43,7 +43,7 @@ if os == windows
 else 
   hostname = exec "uname -n"                          // or any equivalent *
   if (hostname == null || hostname.length == 0)
-    hostname = exec "hostname --fqdn"                 // or any equivalent *
+    hostname = exec "hostname -f"                     // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
