@@ -24,8 +24,9 @@ System metadata relates to the host/container in which the service being monitor
 
 #### Hostname
 
-This hostname reported by the agent is mapped by the APM Server to the 
-[`host.hostname` ECS field](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname).
+The hostname value(s) reported by the agent are mapped by APM Server to the ECS
+[`host.hostname`](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname) and
+[`host.name`](https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-name) fields.
 
 Agents SHOULD return the lower-cased FQDN whenever possible, which might require a DNS query.
 
@@ -92,7 +93,7 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
     If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores 
     (`_`) to hyphens (`-`) in the pod UID.
     If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the 
-    hostname to the pod name. Finally, we record the basename as the container ID without any further checks.
+    _short_ hostname (not FQDN) to the pod name. Finally, we record the basename as the container ID without any further checks.
 
  4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular 
  expressions:
