@@ -27,6 +27,6 @@ Unselect (remove lines or uncheck the boxes) lines if you don't want to create s
 - [x] apm-agent-python
 - [x] apm-agent-go
 - [x] apm-agent-php
-- [x] apm-agent-ruby
+- [ ] apm-agent-ruby
 
 <!---repos-end--->
