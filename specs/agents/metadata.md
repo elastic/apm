@@ -112,6 +112,17 @@ If the Kubernetes pod name is not the hostname, it can be overridden by the `KUB
 
 *Note:* [cgroup_parsing.json](../../tests/agents/json-specs/cgroup_parsing.json) provides test cases for parsing cgroup lines.
 
+With cgroups v2, the `/proc/self/cgroup does not contain the container ID and we have to parse the `/proc/self/mounts` with the following algorithm:
+
+ 1. filter the line containing `/etc/hostname` to retrieve the file mount that provides the host name to the container.
+
+ 2. split the line on spaces and take the 3rd element containing the host path.
+
+ 3. extract the container ID from file path by using a regular expression matching a 64 character hexadecimal ID.
+
+*Note:* [mounts_parsing.json](../../tests/agents/json-specs/múnts_parsing.json) provides a test case for parsing mounts lines.
+
+
 ### Process metadata
 
 Process level metadata relates to the process running the service being monitored:
