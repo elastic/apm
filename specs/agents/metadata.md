@@ -112,7 +112,7 @@ If the Kubernetes pod name is not the hostname, it can be overridden by the `KUB
 
 *Note:* [cgroup_parsing.json](../../tests/agents/json-specs/cgroup_parsing.json) provides test cases for parsing cgroup lines.
 
-With cgroups v2, the `/proc/self/cgroup` does not contain the container ID and we have to parse the `/proc/self/mounts` with the following algorithm:
+With cgroups v2, the `/proc/self/cgroup` contains only `0::/` and does not contain the container ID and we have to parse the `/proc/self/mounts` with the following algorithm as a fallback.
 
  1. filter the line containing `/etc/hostname` to retrieve the file mount that provides the host name to the container.
 
