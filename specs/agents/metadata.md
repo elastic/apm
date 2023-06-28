@@ -110,9 +110,7 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
 If the Kubernetes pod name is not the hostname, it can be overridden by the `KUBERNETES_POD_NAME` environment variable, using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/). In a similar manner, you can inform the agent of the node name and namespace, using the environment variables `KUBERNETES_NODE_NAME` and `KUBERNETES_NAMESPACE`.
 
-*Note:* [cgroup_parsing.json](../../tests/agents/json-specs/cgroup_parsing.json) provides test cases for parsing cgroup lines.
-
-With cgroups v2, the `/proc/self/cgroup` contains only `0::/` and does not contain the container ID and we have to parse the `/proc/self/mounts` with the following algorithm as a fallback.
+With cgroups v2, the `/proc/self/cgroup` contains only `0::/` and does not contain the container ID and we have to parse the `/proc/self/mountinfo` with the following algorithm as a fallback.
 
  1. filter the line containing `/etc/hostname` to retrieve the file mount that provides the host name to the container.
 
@@ -120,8 +118,7 @@ With cgroups v2, the `/proc/self/cgroup` contains only `0::/` and does not conta
 
  3. extract the container ID from file path by using a regular expression matching a 64 character hexadecimal ID.
 
-*Note:* [mounts_parsing.json](../../tests/agents/json-specs/mounts_parsing.json) provides a test case for parsing mounts lines.
-
+*Note:* [container_metadata_discovery.json](../../tests/agents/json-specs/container_metadata_discovery.json) provides test cases for parsing `/self/proc/*` files.
 
 ### Process metadata
 
