@@ -70,7 +70,7 @@ The following fields are relevant for database and datastore spans. Where possib
 |`_.type`| `dynamodb` ||
 |`_.name`| e.g. `us-east-1` | Use same value as `context.db.instance` |
 | __**otel.attributes._**__ |<hr/>|<hr/>|
-|`_["aws.dynamodb.table_names"]`| `[ MyTable ]` | The table names, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.23.0/specification/trace/semantic_conventions/instrumentation/aws-sdk.md). Note: this must be a single dotted string key in the `otel.attributes` mapping -- for example `{"otel": {"attributes": {"aws.dynamodb.table_names": "[ MyTable ]"}}}` -- and *not* a nested object. |
+|`_["aws.dynamodb.table_names"]`| `[ MyTable ]` | The table names, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.23.0/specification/trace/semantic_conventions/instrumentation/aws-sdk.md). Note: this must be a single dotted string key in the `otel.attributes` mapping -- for example `{"otel": {"attributes": {"aws.dynamodb.table_names": [ MyTable ]}}}` -- and *not* a nested object. |
 |`_["aws.dynamodb.projection"]`| `Field1, Field2` | The value of the `ProjectionExpression` request parameter, if available. See [OTel Semantic Conventions](https://github.com/open-telemetry/opentelemetry-specification/blob/v1.23.0/specification/trace/semantic_conventions/instrumentation/aws-sdk.md). Note: this must be a single dotted string key in the `otel.attributes` mapping -- for example `{"otel": {"attributes": {"aws.dynamodb.projection": "Field1, Field2"}}}` -- and *not* a nested object. |
 
 ### AWS S3
