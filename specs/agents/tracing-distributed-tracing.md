@@ -191,6 +191,63 @@ Implementation note: The `traceparent` and `tracestate` specifications only allo
 This implementation guarantees backwards compatibility with our older agents and compatibility with current OpenTelemetry instrumentations.
 We will eventually remove the `elasticapmtraceparent` entirely as soon as we can safely assume that most users have already upgraded all their agents.
 
+### Baggage
+
+To propagate distributed context, we implement the [W3C Baggage](https://www.w3.org/TR/baggage/) specification.
+
+Agents MUST parse, validate, and attach the `baggage` header according [to the W3C specification](https://www.w3.org/TR/baggage/).
+
+In addition to the W3C specification, agents also SHOULD offer users 2 ways to use the values propagated via baggage:
+- Offer an Baggage API to manually manipulate and read baggage values.
+- Offer baggage related configuration to automatically store baggage values on events.
+
+#### Baggage API
+
+Agents SHOULD offer an API with the following functionalities:
+- Adding a new baggage item
+- Changing an existing baggage item
+- Removing an existing baggage item
+- Reading a specific baggage item
+- Reading all baggage items
+
+In case the given language already offers this API as port of the standard library, the agent MUST integrate with the existing library and it MUST avoid adding a proprietary API. In case there is no such API in the standard library, the agent MUST add this API to the proprietary agent API.
+
+#### Baggage related configurations
+
+The following configurations enable users to automatically store baggage items on a given event without any code change. Baggage items with matching keys are always stored as labels.
+
+`baggage_to_attach_on_transactions` configuration
+
+A list of baggage keys which are automatically attached to the transaction. When a transaction is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created transaction as a label.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | empty list|
+| Dynamic        | `true` |
+| Central config | `true` |
+
+`baggage_to_attach_on_spans` configuration
+
+A list of baggage keys which are automatically attached to the span. When a span is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created span as a label.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | empty list|
+| Dynamic        | `true` |
+| Central config | `true` |
+
+`baggage_to_attach_on_errors` configuration
+
+A list of baggage keys which are automatically attached to the error. When an error is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created error  as a label.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | empty list|
+| Dynamic        | `true` |
+| Central config | `true` |
 
 ### Legacy HTTP Header Name
 
