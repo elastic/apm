@@ -214,35 +214,13 @@ This API MUST offer the following functionalities:
 - Reading a specific baggage item
 - Reading all baggage items
 
-#### Baggage related configurations
+#### Baggage related configuration
 
-The following configurations enable users to automatically store baggage items on a given event without any code change. Baggage items with matching keys are stored in `otel.attributes`, except on errors.
+The following configuration enables users to automatically store baggage items on a given event without any code change. Baggage items with matching keys are stored in `otel.attributes`, except on errors, since there is no `otel.attributes` on errors. Keys of baggage items lifted by the agent from baggage into attributes/labels MUST be prefixed with `baggage.`.
 
-`baggage_to_attach_on_transactions` configuration
+`baggage_to_attach` configuration
 
-A list of baggage keys which are automatically attached to the transaction. When a transaction is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created transaction as an item in `otel.attributes`.
-
-|                |   |
-|----------------|---|
-| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `*`    |
-| Dynamic        | `true` |
-| Central config | `true` |
-
-`baggage_to_attach_on_spans` configuration
-
-A list of baggage keys which are automatically attached to the span. When a span is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created span as an item in `otel.attributes`.
-
-|                |   |
-|----------------|---|
-| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
-| Default        | `*`    |
-| Dynamic        | `true` |
-| Central config | `true` |
-
-`baggage_to_attach_on_errors` configuration
-
-A list of baggage keys which are automatically attached to the error. When an error is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created error  as a label.
+A list of baggage keys which are automatically attached to the current event (transaction, span, or error). When the event is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created event with a prefix `baggage.`. In case of transactions and spans, the agent MUST send this data in `otel.attributes`, in case of errors the agent MUST send the data in labels.
 
 |                |   |
 |----------------|---|
