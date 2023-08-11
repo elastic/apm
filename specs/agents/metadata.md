@@ -41,7 +41,7 @@ if os == windows
     hostname = exec "cmd.exe /c hostname"               // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("COMPUTERNAME")
-else 
+else
   hostname = exec "hostname -f"                         // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOSTNAME")
@@ -51,26 +51,26 @@ else
 if hostname != null
   hostname = hostname.toLowerCase().trim()              // see details below **
 ```
-`*` this algorithm is using external commands in order to be OS-specific and language-independent, however these 
+`*` this algorithm is using external commands in order to be OS-specific and language-independent, however these
 may be replaced with language-specific APIs that provide the equivalent result.
 
 `**` in this case, `trim()` refers to the removal of all leading and trailing characters of which codepoint is less-than
 or equal to `U+0020` (space), the `toLowerCase()` refers to the replacement of characters in `A-Z` with their `a-z` equivalents.
 
-In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that 
+In addition to auto-discovery of the hostname, agents SHOULD also expose the `ELASTIC_APM_HOSTNAME` config option that
 can be used as a manual fallback.
 
-Up to APM Server 7.4, only the `system.hostname` field was used for this purpose. Agents communicating with 
-APM Server of these versions MUST set `system.hostname` with the value of `ELASTIC_APM_HOSTNAME`, if such is manually 
+Up to APM Server 7.4, only the `system.hostname` field was used for this purpose. Agents communicating with
+APM Server of these versions MUST set `system.hostname` with the value of `ELASTIC_APM_HOSTNAME`, if such is manually
 configured. Otherwise, agents MUST set it with the automatically-discovered hostname.
 
 Since APM Server 7.4, `system.hostname` field is deprecated in favour of two newer fields:
-- `system.configured_hostname` - it should only be sent when configured by the user through the `ELASTIC_APM_HOSTNAME` 
+- `system.configured_hostname` - it should only be sent when configured by the user through the `ELASTIC_APM_HOSTNAME`
 config option. If provided, it is used by the APM Server as the event's hostname.
-- `system.detected_hostname` - the hostname automatically detected by the APM agent. It will be used as the event's 
+- `system.detected_hostname` - the hostname automatically detected by the APM agent. It will be used as the event's
 hostname if `configured_hostname` is not provided.
 
-Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should 
+Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should
 use the new fields wherever applicable.
 
 #### Container/Kubernetes metadata
@@ -78,24 +78,24 @@ use the new fields wherever applicable.
 On Linux, the container ID and some of the Kubernetes metadata can be extracted by parsing `/proc/self/cgroup`. For each line in the file, we split the line according to the format "hierarchy-ID:controller-list:cgroup-path", extracting the "cgroup-path" part. We then attempt to extract information according to the following algorithm:
 
  1. Split the path into `dirname` and `basename`:
-    - split based on the last occurrence of the colon character, if such exists, in order to support paths of containers 
-    created by [containerd-cri](https://github.com/containerd/cri), where the path part takes the form: 
+    - split based on the last occurrence of the colon character, if such exists, in order to support paths of containers
+    created by [containerd-cri](https://github.com/containerd/cri), where the path part takes the form:
     `<dirname>:cri-containerd:<container-ID>`
     - if colon char is not found within the path, the split is done based on the last occurrence of the slash character
 
- 2. If the `basename` ends with ".scope", check for a hyphen and remove everything up to and including that. This allows 
+ 2. If the `basename` ends with ".scope", check for a hyphen and remove everything up to and including that. This allows
  us to match `.../docker-<container-id>.scope` as well as `.../<container-id>`.
 
  3. Attempt to extract the Kubernetes pod UID from the `dirname` by matching one of the following regular expressions:
      - `(?:^/kubepods[\\S]*/pod([^/]+)$)`
      - `(?:kubepods[^/]*-pod([^/]+)\.slice)`
 
-    If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores 
+    If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores
     (`_`) to hyphens (`-`) in the pod UID.
-    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the 
+    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the
     _short_ hostname (not FQDN) to the pod name. Finally, we record the basename as the container ID without any further checks.
 
- 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular 
+ 4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular
  expressions:
 
     - `^[[:xdigit:]]{64}$`
@@ -246,7 +246,7 @@ From the returned metadata, the following fields are useful
 
 #### GCP metadata
 
-Metadata about a GCP machine instance can be retrieved from the 
+Metadata about a GCP machine instance can be retrieved from the
 metadata service, `http://metadata.google.internal`.
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
@@ -339,7 +339,7 @@ for scenarios and expected outcomes.
 
 Azure Functions running within a consumption/premium plan (see [Azure Functions hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale)) are a FaaS offering within Azure that do not have access
 to the internal [Azure metadata endpoint](#azure-vms). Metadata about an Azure Function can however be
-retrieved from environment variables.  
+retrieved from environment variables.
 **Note:** These environment variables slightly differ from those available to [Azure App Services](#azure_app_service-optional).
 
 | Cloud metadata field  | Environment variable |
@@ -361,5 +361,5 @@ Example: `d2cd53b3-acdc-4964-9563-3f5201556a81+wolfgangfaas_group-CentralUSwebsp
 
 Events sent by the agents can have labels associated, which may be useful for custom aggregations, or document-level access control. It is possible to add "global labels" to the metadata, which are labels that will be applied to all events sent by an agent. These are only understood by APM Server 7.2 or greater.
 
-Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated 
+Global labels can be specified via the environment variable `ELASTIC_APM_GLOBAL_LABELS`, formatted as a comma-separated
 list of `key=value` pairs.
