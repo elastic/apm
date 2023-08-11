@@ -181,7 +181,7 @@ So, the following rules should be used to decode/encode context propagation head
 Encoding:
  * Add a `elasticapmtraceparent` header with the binary specification above for backwards compatibility
  * Add the textual `traceparent` and `tracestate` headers, encode their values via UTF8
-  
+
 Decoding:
  * If a `traceparent` header is present, use the `traceparent` and `tracestate` headers as textual with UTF8 decoding of the values
  * If no `traceparent` header is present, use the `elasticapmtraceparent` with the binary specification above. `tracestate` is ignored.
@@ -191,6 +191,43 @@ Implementation note: The `traceparent` and `tracestate` specifications only allo
 This implementation guarantees backwards compatibility with our older agents and compatibility with current OpenTelemetry instrumentations.
 We will eventually remove the `elasticapmtraceparent` entirely as soon as we can safely assume that most users have already upgraded all their agents.
 
+### Baggage
+
+To propagate distributed context, we implement the [W3C Baggage](https://www.w3.org/TR/baggage/) specification.
+
+Agents MUST parse, validate, and attach the `baggage` header according [to the W3C specification](https://www.w3.org/TR/baggage/).
+
+In addition to the W3C specification, agents also SHOULD offer users 2 ways to use the values propagated via baggage:
+- Offer a Baggage API to manually manipulate and read baggage values - this is preferable the OpenTelemetry API.
+- Offer baggage related configuration to automatically store baggage values on events.
+
+#### Baggage API
+
+Agents SHOULD integrate with the existing OpenTelemetry API. Users should be able to use the OpenTelemetry API to interact with the baggage maintained by the agent. The primary way to interact with baggage SHOULD be the OpenTelemetry API.
+
+In case using the OpenTelemetry API isn't feasible in a given language, the agent SHOULD extend the proprietary agent API to interact with baggage.
+
+This API MUST offer the following functionalities:
+- Adding a new baggage item
+- Changing an existing baggage item
+- Removing an existing baggage item
+- Reading a specific baggage item
+- Reading all baggage items
+
+#### Baggage related configuration
+
+The following configuration enables users to automatically store baggage items on a given event without any code change. Baggage items with matching keys are stored in `otel.attributes`, except on errors, since there is no `otel.attributes` on errors. Keys of baggage items lifted by the agent from baggage into attributes/labels MUST be prefixed with `baggage.`.
+
+`baggage_to_attach` configuration
+
+A list of baggage keys which are automatically attached to the current event (transaction, span, or error). When the event is created, the agent iterates through all baggage items currently available and stores the ones with keys that match one of the items from the configured wildcard matcher list on the newly created event with a prefix `baggage.`. In case of transactions and spans, the agent MUST send this data in `otel.attributes`, in case of errors the agent MUST send the data in labels.
+
+|                |   |
+|----------------|---|
+| Type           | `List<`[`WildcardMatcher`](../../tests/agents/json-specs/wildcard_matcher_tests.json)`>` |
+| Default        | `*`    |
+| Dynamic        | `true` |
+| Central config | `true` |
 
 ### Legacy HTTP Header Name
 
