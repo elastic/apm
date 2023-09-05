@@ -247,7 +247,7 @@ From the returned metadata, the following fields are useful
 #### GCP metadata
 
 Metadata about a GCP machine instance can be retrieved from the
-metadata service, `http://metadata.google.internal`.
+metadata service, [documented here](https://cloud.google.com/compute/docs/metadata/default-metadata-values).
 
 In the case where a proxy is configured on the application, the agents SHOULD attempt to make
 the calls to the metadata endpoint directly, without using the proxy.
@@ -265,14 +265,19 @@ From the returned metadata, the following fields are useful
 
 | Cloud metadata field  | GCP Metadata field  |
 | --------------------  | ------------------- |
-| `instance.id`         | `instance.id`       |
+| `instance.id`         | `instance.id` as a string [1] |
 | `instance.name`       | `instance.name`     |
-| `project.id`          | `project.numericProjectId` as a string |
-| `project.name`        | `project.projectId` |
+| `project.id`          | `project.projectId` [2] |
 | `availability_zone`   | last part of `instance.zone`, split by `/`  |
 | `machine.type`        | last part of `instance.machineType`, split by `/` |
 | `provider`            | gcp                 |
-| `region`              | last part of `instance.zone`, split by `-`            |
+| `region`              | last part of `instance.zone` split by '/', then remove the last '-'-delimited part (e.g., `us-west1` from `projects/123456789012/zones/us-west1-b`)|
+
+[1]: Beware JSON parsing the `instance.id` field from the HTTP response body, because it is formatted as an integer that is larger [JavaScript's `Number.MAX_SAFE_INTEGER`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER). It may require native support for or explicit usage of BigInt types.
+[2]: Google cloud project identifiers are [described here](https://cloud.google.com/resource-manager/docs/creating-managing-projects#before_you_begin).
+
+(For comparison and consistency, here is the equivalent collection code for
+[beats](https://github.com/elastic/beats/blob/aa5da2847957fa62687e0b4e7777c86fe7c05f6c/libbeat/processors/add_cloud_metadata/provider_google_gce.go#L45-L153).)
 
 #### Azure metadata
 
