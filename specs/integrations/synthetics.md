@@ -54,12 +54,12 @@ Example of the tracing information added to the ES documents for two steps in th
 ```json
 // Step - homepage
 {"type":"step/end","journey":{"name":"elastic e2e"},"step":{"name":"home page","index":1,"status":"failed","duration":{"us":17382122}}, "trace.id": "xxx"}
-{"type":"journey/network_info","journey":{"name":"elastic e2e",},"step":{"name":"home page","index":1},"http":{"request":{"url":"http://www.elastic.co/","method":"GET"}},"trace.id": "t1", "transaction.id": "tr1"}
+{"type":"journey/network_info","journey":{"name":"elastic e2e"},"step":{"name":"home page","index":1},"http":{"request":{"url":"http://www.elastic.co/","method":"GET"}},"trace.id": "t1", "transaction.id": "tr1"}
 
 
 // Step - blog page
 {"type":"step/end","journey":{"name":"elastic e2e"},"step":{"name":"blog page","index":2,"status":"failed","duration":{"us":17382122}}, "trace.id": "xxx"}
-{"type":"journey/network_info","journey":{"name":"elastic e2e",},"step":{"name":"blog page","index":2},"http":{"request":{"url":"http://www.elastic.co/blog","method":"GET"}},"trace.id": "t1", "transaction.id": "tr2"}
+{"type":"journey/network_info","journey":{"name":"elastic e2e"},"step":{"name":"blog page","index":2},"http":{"request":{"url":"http://www.elastic.co/blog","method":"GET"}},"trace.id": "t1", "transaction.id": "tr2"}
 ```
 
 With this tracing information available in the ES documents for each step's network requests, the Synthetics UI can link back to the individual backend transactions on the APM.
@@ -115,5 +115,5 @@ Trace Explorer view can be linked back to the Synthetics waterfall view.
 
 - `/app/synthetics/link-to/<trace.id>`
   - links back to the explicit browser waterfall step on the Synthetics UI, and
-    it follows the format /monitor/:monitorId/test-run/:runId/step/:stepIndex.
+    it follows the format `/monitor/:monitorId/test-run/:runId/step/:stepIndex`.
   - `runId` is internal to the Synthetics side which is also available on ES step documents. 
