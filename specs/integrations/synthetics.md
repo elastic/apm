@@ -114,7 +114,6 @@ However, this property would need special handling in our agents and wouldn't be
 When a trace is confirmed to be originated from Synthetics-based monitors, the
 Trace Explorer view can be linked back to the Synthetics waterfall view.
 
-- `/app/synthetics/link-to/<trace.id>`
+- `/app/synthetics/link-to/<trace.id>:span.id`
   - links back to the explicit browser waterfall step on the Synthetics UI, and
-    it follows the format `/monitor/:monitorId/test-run/:runId/step/:stepIndex`.
-  - `runId` is internal to the Synthetics side which is also available on ES step documents. 
+    it follows the format `/monitor/:monitorId/test-run/:runId/step/:stepIndex#:spanId`.
