@@ -62,7 +62,7 @@ Example of the tracing information added to the ES documents for two steps in th
 {"type":"journey/network_info","journey":{"name":"elastic e2e"},"step":{"name":"blog page","index":2},"http":{"request":{"url":"http://www.elastic.co/blog","method":"GET"}},"trace.id": "t2", "span.id": "s2"}
 ```
 
-With this tracing information available in the ES documents for each step's network requests, the Synthetics UI can link back to the individual backend transactions on the APM.
+With this tracing information available in the ES documents for each step's network requests, the Synthetics UI can link back to the individual backend transactions in APM.
 
 #### HTTP Checks
 
@@ -87,7 +87,7 @@ other tracing related information to the ES documents.
 
 It's important to note that there is no dedicated waterfall information for the HTTP checks in the Synthetics UI. Consequently, the linking here will directly take you to the APM transaction if the backend is also traced by Elastic APM or OTEL (OpenTelemetry)-based agents.
 
-**NOTE: The correlation remain applicable even if downstream services are traced by OpenTelemetry (OTEL)-based agents. This ensures a consistent and seamless tracing experience regardless of the underlying tracing infrastructure.**
+**NOTE: The correlation remain applicable even if downstream services are traced by OpenTelemetry (OTel)-based agents. This ensures a consistent and seamless tracing experience regardless of the underlying tracing infrastructure.**
 
 ### Identifying Synthetics trace
 
