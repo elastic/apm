@@ -27,9 +27,7 @@ monitor execution.
 
 #### Browser checks
 
-When executing a Synthetics journey with APM tracing enabled for specific URLs
-using the --apm_tracing_urls flag, the Synthetics agent takes the following
-actions:
+When executing a Synthetics journey with tracing enabled for all outgoing requests `**/*` or for specific URLs with the --apm_tracing_urls flag, the Synthetics agent takes the following actions:
 
 1. Adds the traceparent header to each matching outgoing request.
 2. Includes trace.id and parent.id in all the Step Elasticsearch (ES) documents for the journey.
@@ -85,34 +83,29 @@ other tracing related information to the ES documents.
 {"event":{"action":"monitor.run"},"monitor":{"id":"test-http","type":"http","status":"up","duration":{"ms":112}}, "trace.id": "t1", "span.id": "s1"}
 ```
 
-It's important to note that there is no dedicated waterfall information for the HTTP checks in the Synthetics UI. Consequently, the linking here will directly take you to the APM transaction if the backend is also traced by Elastic APM or OTEL (OpenTelemetry)-based agents.
+It's important to note that there is no dedicated waterfall information for the HTTP checks in the Synthetics UI. Consequently, the linking here will directly take you to the transaction if the backend is also traced by Elastic APM or OTel (OpenTelemetry)-based agents. This works similar to the Browser checks where the network request is directly linked to the transaction.
 
 **NOTE: The correlation remain applicable even if downstream services are traced by OpenTelemetry (OTel)-based agents. This ensures a consistent and seamless tracing experience regardless of the underlying tracing infrastructure.**
 
 ### Identifying Synthetics trace
 
-Synthetics monitor executions creates `rootless traces` as these traces are not
-reported to the APM server. To overcome this limitation on the APM UI, we need
-to identify the synthetics traces and explicity link them to the Synthetics
-waterfall view. 
+When tracing is enabled on the Synthetics monitors, the agent appends the `Elastic/Synthetics` to the HTTP `User-Agent` header for all outgoing requests. Tracing UI can use this information to identify the traces that are originated from
+Synthetics using the following approaches.
 
-- `http.headers.user-agent`:
-  - Contains `Elastic/Synthetics` for all outgoing requests from Synthetis based monitors.
+- Elastic APM agents
+  - The information is stored in `http.headers.user-agent`
+- OTel agents
+  - The information is stored in `user_agent.original`
+
+UI will check both of these fields to identify the Synthetics traces and will
+prefer `user_agent.original` if both are present.
 
 There is a limitation with this approach
 - users can override the `User-Agent` header in the monitor configuration which
-  might lead to users seeing only partial traces on the APM UI.
-
-We can also add a foolproof solution by introducing vendor specific `tracestate`
-property.
-However, this property would need special handling in our agents and wouldn't be recognized by vanilla OpenTelemetry agents.
-
-- `tracestate`:
-  - Contains `es:origin=synthetics` for all outgoing requests from Synthetis based monitors.
-
+  might lead to users seeing only partial traces on APM UI.
 
 When a trace is confirmed to be originated from Synthetics-based monitors, the
-Trace Explorer view can be linked back to the Synthetics waterfall view.
+Trace Explorer view can be linked back to the Synthetics waterfall.
 
 - `/app/synthetics/link-to/<trace.id>:span.id`
   - links back to the explicit browser waterfall step on the Synthetics UI, and
