@@ -120,11 +120,6 @@ stack traces.
 A non-default value for this configuration option should override any value
 set for the deprecated `span_frames_min_duration`.
 
-#### Stack traces with OpenTelemetry agents
-
-Agents that are based on OpenTelemetry should use the `elastic.span.stack_trace` attribute to store the
-span stack trace. The exception should be stored in plain text using the usual text format for the platform.
-
 ### Exit spans
 
 Exit spans are spans that describe a call to an external service,
