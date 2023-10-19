@@ -95,6 +95,10 @@ spans that are slower than a specified duration, using the config variable
 `span_stack_trace_min_duration`. (Previously
 `span_frames_min_duration`.)
 
+Agents based on OpenTelemetry should capture this in a span attribute: `elastic.span.stack_trace`.
+Stack trace should be stored in plain text using the usual text format of the platform using the same format
+as [`exception.stactkrace` attribute](https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/#stacktrace-representation).
+
 #### `span_stack_trace_min_duration` configuration
 
 Sets the minimum duration of a span for which stack frames/traces will be
