@@ -13,9 +13,9 @@
 
 ### Application Metrics
 #### load times
-| Name                                 | Type      | Units   | Description                                                           |
-|--------------------------------------|-----------|---------|-----------------------------------------------------------------------|
-| `application.launch.time`            | histogram | milliseconds | The amount of time spent launching the app                            |
+| Name                                 | Type                           | Units   | Description                                                           |
+|--------------------------------------|--------------------------------|---------|-----------------------------------------------------------------------|
+| `application.launch.time`            | histogram(iOS), gauge(Android) | milliseconds | The amount of time spent launching the app                            |
 
 | Labels | Values                                          | Description                                         |
 |--------|-------------------------------------------------|-----------------------------------------------------|
