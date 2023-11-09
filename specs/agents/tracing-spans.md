@@ -95,7 +95,7 @@ spans that are slower than a specified duration, using the config variable
 `span_stack_trace_min_duration`. (Previously
 `span_frames_min_duration`.)
 
-Agents based on OpenTelemetry should capture this using the semantic conventions attribute: `code.stacktrace` [added in 1.24.0](
+Agents based on OpenTelemetry should capture this using the `code.stacktrace` semantic conventions attribute [added in 1.24.0](
 https://github.com/open-telemetry/semantic-conventions/pull/435).
 
 #### `span_stack_trace_min_duration` configuration
