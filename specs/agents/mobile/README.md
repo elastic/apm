@@ -5,7 +5,7 @@ General documentation for the mobile apm agents can be found in [Getting started
 The mobile specific docs can be found:
 
 * [iOS Agent](https://www.elastic.co/guide/en/apm/agent/swift/0.x/intro.html)
-* Android Agent (TBD)
+* [Android Agent](https://www.elastic.co/guide/en/apm/agent/android/current/index.html)
 
 ## Open Telementry
 The mobile agents are the first agents at Elastic to be built on top of Open-Telementry. 
