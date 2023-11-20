@@ -47,6 +47,8 @@ else
     hostname = env.get("HOSTNAME")
   if (hostname == null || hostname.length == 0)
     hostname = env.get("HOST")
+  if (hostname == null || hostname.length == 0)
+    hostname = readfile("/etc/hostname")                // or any equivalent *
 
 if hostname != null
   hostname = hostname.toLowerCase().trim()              // see details below **
