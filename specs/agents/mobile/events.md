@@ -1,9 +1,12 @@
 ## Mobile Events
 
+Status: [Experimental](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/document-status.md)
+
 This document describes event used by the Mobile SDKs using the [OpenTelementry Event Api](https://github.com/open-telemetry/opentelemetry-specification/blob/0a4c6656d1ac1261cfe426b964fd63b1c302877d/specification/logs/event-api.md).
 All events collected by the mobile agents should set the `event.domain` to `device`.
-Event names will be recording using the `event.name`
+Event names will be recording using the `event.name`.
 
+Due to the dependency on OpenTelemetry's events API this document's contents are subject to change and considered [experimental](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/document-status.md).
 ### Application Lifecycle events
 These event represents the occurrence of app entering the foreground or background or other application lifecycle states.
 The precise names of these events are still to be determined. They may mirror the lifecycle events their respective mobile platforms.

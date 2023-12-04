@@ -1,10 +1,14 @@
 # Session 
 
+Status: [Experimental](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/document-status.md)
+
 ### Overview
 A `session` is a collection of `logs`, `events`, `transactions` and `spans` (`LETS`) associated with a specific device within a specific period of time. 
 A `session` is represented by a unique identify that is attached to `LETS` as an attribute. 
 
 The primary purpose of `sessions` are to provide insight into the series of user actions or events that lead up to a critical error or crash. Sessions also provide a means to quantify application usage.
+
+This document depends on the Open Telemetry semantic convention for [session](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/general/session.md). Due to the dependency on Open Telemetry's events API this document's contents are subject to change and considered [experimental](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/document-status.md).
 
 ### How a session operates
 - All `LETS` will have a `session` identifier attached as an attribute using the name `session.id`.
