@@ -94,8 +94,8 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
     If there is a match to either expression, the capturing group contains the pod ID. We then unescape underscores
     (`_`) to hyphens (`-`) in the pod UID.
-    If we match a pod UID then we record the hostname as the pod name since, by default, Kubernetes will set the
-    _short_ hostname (not FQDN) to the pod name. Finally, we record the basename as the container ID without any further checks.
+    If we match a pod UID then we set the pod name to the hostname, as that's the default in Kubernetes.
+    Finally, we record the basename as the container ID without any further checks.
 
  4. If we did not match a Kubernetes pod UID above, then we check if the basename matches one of the following regular
  expressions:
@@ -106,7 +106,9 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
  If we match, then the basename is assumed to be a container ID.
 
-If the Kubernetes pod name is not the hostname, it can be overridden by the `KUBERNETES_POD_NAME` environment variable, using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/). In a similar manner, you can inform the agent of the node name and namespace, using the environment variables `KUBERNETES_NODE_NAME` and `KUBERNETES_NAMESPACE`.
+Sometimes the `KUBERNETES_POD_NAME` is set using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/),
+so we set the pod name to its value if it exists.
+In a similar manner, you can inform the agent of the node name, namespace, and pod UID, using the environment variables `KUBERNETES_NODE_NAME`, `KUBERNETES_NAMESPACE`, and `KUBERNETES_POD_UID`.
 
 With cgroups v2, the `/proc/self/cgroup` contains only `0::/` and does not contain the container ID and we have to parse the `/proc/self/mountinfo` with the following algorithm as a fallback.
 
