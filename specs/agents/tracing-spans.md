@@ -178,3 +178,22 @@ This may result in [transaction `span_count` values](handling-huge-traces/tracin
 being low. Agents do not need to wait for children to end before reporting a
 parent.
 
+### Inferred Spans
+
+Agents MAY support so-called inferred spans: Inferred spans are spans which are not created using instrumentation, but derived from profiling data.
+E.g. when a transaction is active on a thread, the agent will periodically fetch stacktraces for the given thread.
+Based on these stacktraces, the agent tries to infer spans in addition to the ones captured via normal instrumentation.
+
+Inferred spans can be parents of normal spans. Given the following example:
+ * Transaction `A` has a child span `C`
+ * The span `B` is inferred to be a child of `A`, and `B` is the new parent of `C`
+ * Resulting trace: `A` → `B` → `C`
+
+Agents MAY perform the span inference delayed. As a result, the spans `A` and `C` might have already been sent at the time `B` is created.
+The problem in this case is that `C` is sent with `A` as parent, whereas the actual parent will be `B`.
+
+For this reason, inferred spans can use the following mechanism to override the parent-child relationship for spans which have already been sent:
+ * When reporting via IntakeV2, the `child_ids` attribute can be used  (`B.child_ids=[spanIdOf(C)]`)
+ * When reporting via OTLP, inferred spans should add span-links to their children for which they want to override the relationship. These links must have the `elastic.is_child` attribute set to `true`.
+
+The UI will then correct the parent-child relationships when displaying the trace.
