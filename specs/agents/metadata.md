@@ -157,7 +157,7 @@ If the agent is unable to infer the activation method, it SHOULD send `unknown`.
 There are some well-known activation methods which can be used by multiple agents. In those cases, agents SHOULD send the following values in `service.agent.activation_method`:
 
 - `aws-lambda-layer`: when the agent was installed as a Lambda layer.
-- `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-mutating-webhook).
+- `k8s-attach`: when the agent is attached via [the K8s webhook](https://github.com/elastic/apm-k8s-attacher).
 - `env-attach`: when the agent is activated by setting some environment variables. Only use this if there is a single way to activate the agent via an environment variable. If the given runtime offers multiple environment variables to activate the agent, use more specific values to avoid ambiguity.
 - `fleet`: when the agent is activated via fleet.
 
