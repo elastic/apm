@@ -38,8 +38,6 @@ Here is a list of resource attributes that are relevant for our mobile agents:
 | [`device.manufacturer`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/)     | `device.manufacturer`             | `Apple`, `Samsung`                     | :x: no  |  This information is potentially not directly available on the device and needs to be derived / mapped from `device.model.identifier`. In this case, the APM server should do the mapping. |   
 | [`process.runtime.name`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/process/#process-runtimes) | `service.runtime.name`            | `Android Runtime`                      | :x: no | Use `Android Runtime` for Android. For iOS use `iOS`. |
 | [`process.runtime.version`](https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/process/#process-runtimes) | `service.runtime.version`         | `2.0.1`                                | :x: no | Use the Dalvik version for Android (`System.getProperty("java.vm.version")`). For iOS use the version of iOS. |
-| `session.id`                             | `session.id`                       | `A73DC41E-DF18-4BB4-ABC0-F0000FD95653` | :x: no                            |                                                                                                               | 
-
 
 ### Common Span attributes
 | OTel Convention                         | Elastic Convention         | Example                          | Required | Comment                            |
@@ -80,3 +78,10 @@ The span name should have the format: `<method> <host>`.
 | [`net.peer.name`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)  |  ---                  | `localhost`    | :x: no| Fallback field to derive HTTP-related fields if `http.url` field is not provided.|
 | [`net.peer.port`](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/)  |  ---                  | `3000`          | :x: no| Fallback field to derive HTTP-related fields if `http.url` field is not provided. |
 
+### Other Attributes
+
+The following OTel attributes do not fall under the category span or resource attributes. 
+
+| OTel Convention        | Elastic Convention                | Example                                | Required | Comment                              |
+|------------------------|-----------------------------------|----------------------------------------| ---------|--------------------------------------|
+| `session.id`                             | `session.id`                       | `A73DC41E-DF18-4BB4-ABC0-F0000FD95653` | :x: no                            | [Elastic session spec](./session.md) | 
