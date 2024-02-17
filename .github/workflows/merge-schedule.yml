@@ -9,6 +9,9 @@ on:
     # At 6pm EOB
     - cron: 0 18 * * *
 
+permissions:
+  contents: read
+
 jobs:
   merge_schedule:
     runs-on: ubuntu-latest
