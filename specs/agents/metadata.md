@@ -36,7 +36,7 @@ var hostname;
 if os == windows
   // https://stackoverflow.com/questions/12268885/powershell-get-fqdn-hostname
   // https://learn.microsoft.com/en-us/dotnet/api/system.net.dns.gethostentry
-  hostname = exec "powershell.exe [System.Net.Dns]::GetHostEntry($env:computerName).HostName" // or any equivalent *
+  hostname = exec "powershell.exe -NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command [System.Net.Dns]::GetHostEntry($env:computerName).HostName" // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = exec "cmd.exe /c hostname"               // or any equivalent *
   if (hostname == null || hostname.length == 0)
