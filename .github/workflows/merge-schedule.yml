@@ -10,7 +10,7 @@ on:
     - cron: 0 18 * * *
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   merge_schedule:
