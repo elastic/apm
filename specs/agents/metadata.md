@@ -81,7 +81,7 @@ use the new fields wherever applicable.
 Agents MAY collect the `host.id` as an unique identifier for the host.
 If they collect it, it MUST be conformant to the [OpenTelemetry SemConv for `host.id`](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/).
 
-If the agent performs correlation of it's spans/transactions with universal profiling data, it MUST send the `host.id` (see the [profiling integration spec](universal-profiling-integration.md#profiler-registration-message)). The agent MAY solely rely on the `host.id` provided by the profiling host agent in that case.
+If the agent performs correlation of its spans/transactions with universal profiling data, it MUST send the `host.id` (see the [profiling integration spec](universal-profiling-integration.md#profiler-registration-message)) as part of the metadata. The agent MAY solely rely on the `host.id` provided by the profiling host agent in that case.
 
 #### Container/Kubernetes metadata
 
