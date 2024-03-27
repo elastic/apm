@@ -203,6 +203,6 @@ stack-trace-id        | uint8[16]
 count                 | uint16
 
 * *trace-id*: The APM W3C trace id of the trace which was active for the given profiling samples
-* *transaction-id*: The APM W3C transaction id of the transaction which was active for the given profiling samples
+* *transaction-id*: The APM W3C span id of the transaction which was active for the given profiling samples
 * *stack-trace-id*: The unique ID for the stacktrace captured assigned by the profiler. This ID is stored in elasticsearch in base64 URL safe encoding by the universal profiling solution.
 * The number of samples observed since the last report for the (*trace-id*, *transaction-id*, *stack-trace-id*) combination.
