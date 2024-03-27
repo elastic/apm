@@ -189,7 +189,7 @@ Inferred spans can be parents of normal spans. Given the following example:
  * The span `B` is inferred to be a child of `A`, and `B` is the new parent of `C`
  * Resulting trace: `A` → `B` → `C`
 
-Agents MAY perform the span inference delayed. As a result, the spans `A` and `C` might have already been sent at the time `B` is created.
+Agents MAY perform the span inference after the transaction or child spans were ended. As a result, the spans `A` and `C` might have already been sent at the time `B` is created.
 The problem in this case is that `C` is sent with `A` as parent, whereas the actual parent will be `B`.
 
 For this reason, inferred spans can use the following mechanism to override the parent-child relationship for spans which have already been sent:
