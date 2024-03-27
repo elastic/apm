@@ -83,6 +83,8 @@ transaction-id        | uint8[8]
 * *span-id*: The W3C trace id of the currently active span
 * *transaction-id*: The W3C span id of the currently active transaction (=the local root span)
 
+APM-agents MAY start populating the thread-local storage only after receiving a host agent [registration message](#profiler-registration-message)
+
 ### Concurrency-safe Updates
 
 The profiler might interrupt a thread and take a profiling sample while that thread is in the process of updating the contents of the shared thread local storage. Fortunately, we have the following guarantees about this interruption:
@@ -136,10 +138,6 @@ And here how to read a messages in a non-blocking way:
 
 ```c
 size_t readProfilerSocketMessages(uint8_t* outputBuffer, size_t bufferSize) {
-    if(profilerSocket == -1) {
-        return raiseExceptionAndReturn(jniEnv, -1, "No profiler socket active!");
-    }
-
     int n = recv(profilerSocket, outputBuffer, bufferSize, 0);
     if (n == -1) {
         if(errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -173,6 +171,23 @@ All messages have the following layout:
 * *message-type* : An ID uniquely identifying the type (and therefore payload structure) of the message.
 * *minor-version* : The version number for the given *message-type*. This value is incremented when new fields are added to the payload while preserving the *message-type* (non breaking changes). For breaking changes a new *message-type* must be used.
 
+## Profiler Registration Message
+
+Whenever the profiling host agent starts communicating for the first time with a process running an APM Agent, it MUST send this message.
+This message is used to let the APM-agent know that a profiler is actually active on the current host. Note that an APM-agent may receive this message zero, one or several times: this may happen if no host agent is active, if one is active or if a host agent is restarted during the lifetime of the APM-agent respectively.
+
+The *message-type* is `2` and the current *minor-version* is `1`.
+
+The payload layout is as follows:
+Name                  | Data type 
+--------------------- | -------------
+samples-delay-ms      | uint32
+host-id               | utf8-str
+
+* *samples-delay-ms*: A sane upper bound of the usual time taken in milliseconds by the profiling host agent between the collection of a stacktrace and it being written to the apm-agent via the [messaging socket](#cpu-profiler-trace-correlation-message). The APM-agent will assume that all profiling data related to a span has been written to the socket if a span ended at least the provided duration ago. Note that this value doesn't need to be a hard a guarantee, but it should be the 99% case so that profiling data isn't distorted in the expected case.
+* *host-id*: The [`host.id` resource attribute](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/) used for the profiling data by this profiling host agent. If an APM-agent is already sending a `host.id` it MUST print a warning if the `host.id` is different and otherwise ignore the value received by the host agent. A mismatch will lead to certain correlation features (e.g. cost and CO2 consumption) not working. If an agent does not collect the `host.id` by itself, it MUST start sending the `host.id` after receiving it from the profiler host agent to ensure aforementioned correlation features work correctly.
+
+
 ## CPU Profiler Trace Correlation Message
 
 Whenever the profiler is able to correlate a taken CPU stacktrace sample with an APM trace (see [this section](#thread-local-storage-layout)). It sends the ID of the stacktrace back to the APM agent.
@@ -188,6 +203,6 @@ stack-trace-id        | uint8[16]
 count                 | uint16
 
 * *trace-id*: The APM W3C trace id of the trace which was active for the given profiling samples
-* *trace-id*: The APM W3C transaction id of the transaction which was active for the given profiling samples
+* *transaction-id*: The APM W3C span id of the transaction which was active for the given profiling samples
 * *stack-trace-id*: The unique ID for the stacktrace captured assigned by the profiler. This ID is stored in elasticsearch in base64 URL safe encoding by the universal profiling solution.
 * The number of samples observed since the last report for the (*trace-id*, *transaction-id*, *stack-trace-id*) combination.

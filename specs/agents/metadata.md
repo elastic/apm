@@ -13,6 +13,7 @@ The process for proposing new metadata fields is detailed
 System metadata relates to the host/container in which the service being monitored is running:
 
  - hostname
+ - host.id
  - architecture
  - operating system
  - container ID
@@ -74,6 +75,13 @@ hostname if `configured_hostname` is not provided.
 
 Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should
 use the new fields wherever applicable.
+
+#### Host.id
+
+APM agents MAY collect the `host.id` as an unique identifier for the host.
+If they collect it, it MUST be conformant to the [OpenTelemetry SemConv for `host.id`](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/).
+
+If the APM agent performs correlation of its spans/transactions with universal profiling data, it MUST send the `host.id` (see the [profiling integration spec](universal-profiling-integration.md#profiler-registration-message)) as part of the metadata. The APM agent MAY solely rely on the `host.id` provided by the profiling host agent in that case.
 
 #### Container/Kubernetes metadata
 
