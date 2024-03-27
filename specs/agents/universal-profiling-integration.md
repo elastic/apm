@@ -31,6 +31,12 @@ The `thread_local` variables must be compiled with the `TLSDESC` model in order 
  * ARM64: `-ftls-model=global-dynamic -mtls-dialect=desc`
  * x86_64: `-ftls-model=global-dynamic -mtls-dialect=gnu2`
 
+The library file name MUST match the following regular expression to be picked up by the profiler:
+
+```regexp
+.*/elastic-jvmti-linux-([\w-]*)\.so
+```
+
 ## General Memory Layout
 
 The shared memory always uses the native endianess of the current platform for multi-byte numbers.
