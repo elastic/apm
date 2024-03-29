@@ -9,7 +9,7 @@ If you come across something weird or find something missing, please add it or a
 
 # Introduction
 
-The [Getting started with APM](https://www.elastic.co/guide/en/apm/get-started/current/overview.html) provides an overview to understand the big picture architecture.
+The [Getting started with APM](https://www.elastic.co/guide/en/observability/current/apm.html) provides an overview to understand the big picture architecture.
 
 Your agent will be talking to the APM Server using HTTP, sending data to it as JSON or ND-JSON. There are multiple categories of data that each agent captures and sends to the APM Server:
 
@@ -17,7 +17,7 @@ Your agent will be talking to the APM Server using HTTP, sending data to it as J
   - Errors/exceptions (i.e. for error tracking)
   - Metrics (host process-level metrics, and language/runtime-specific metrics)
 
-You can find details about each of these in the [APM Data Model](https://www.elastic.co/guide/en/apm/get-started/current/apm-data-model.html) documentation. The [Intake API](https://www.elastic.co/guide/en/apm/server/current/intake-api.html) documentation describes the wire format expected by APM Server. APM Server converts the data into Elasticsearch documents, and then the APM UI in Kibana provides visualisations over that data, as well as enabling you to dig into the data in an interactive way.
+You can find details about each of these in the [APM Data Model](https://www.elastic.co/guide/en/observability/current/apm-data-model.html) documentation. The [Intake API](https://www.elastic.co/guide/en/observability/current/intake-api.html) documentation describes the wire format expected by APM Server. APM Server converts the data into Elasticsearch documents, and then the APM UI in Kibana provides visualisations over that data, as well as enabling you to dig into the data in an interactive way.
 
 # Guiding Philosophy
 
