@@ -39,12 +39,35 @@ When using ECS logging, they might be set by the application in ECS logging conf
 - `service.name`:
   - used to filter/link log messages to a given service.
   - must be provided even if there is no active transaction
+  - Configuration source (in order of precedence):
+    - Configured value
+    - `ELASTIC_APM_SERVICE_NAME`
+    - `OTEL_SERVICE_NAME`
+    - `OTEL_RESOURCE_ATTRIBUTES` value for `service.name`
+    - Default from Elastic Agent (if available)
 - `service.version`:
   - only used for service metadata correlation
   - must be provided even if there is no active transaction
+  - Configuration source (in order of precedence):
+    - Configured value
+    - `ELASTIC_APM_SERVICE_VERSION`
+    - `OTEL_RESOURCE_ATTRIBUTES` value for `service.version`
+    - Default from Elastic Agent (if available)
 - `service.environment`:
   - allows to filter/link log messages to a given service/environment.
   - must be provided even if there is no active transaction
+  - Configuration source (in order of precedence):
+    - Configured value
+    - `ELASTIC_APM_ENVIRONMENT`
+    - `OTEL_RESOURCE_ATTRIBUTES` value for `deployment.environment`
+    - Default from Elastic Agent (if available)
+- `service.node.name`:
+  - must be provided even if there is no active transaction
+  - Configuration source (in order of precedence):
+    - Configured value
+    - `ELASTIC_APM_SERVICE_NODE_NAME`
+    - `OTEL_RESOURCE_ATTRIBUTES` value for `service.instance.id`
+    - Default from Elastic Agent (if available)
 
 
 The `container.id` field can also be used as a fallback to provide service-level correlation in UI, however agents ARE NOT expected to set it:
