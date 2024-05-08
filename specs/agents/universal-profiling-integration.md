@@ -43,10 +43,10 @@ The shared memory always uses the native endianess of the current platform for m
 Strings are always UTF-8 length encoded:
 ```
 ┌─────────────────┬──────────────────────────┐
-│ length : uint32 │ utf8-str : uint8[length] │
+│ length : uint32 │ utf8-buf : uint8[length] │
 └─────────────────┴──────────────────────────┘
 ```
-`utf8-str` is not null-terminated, the length is already defined by the `length` field.
+`utf8-buf` is not null-terminated, the length is already defined by the `length` field.
 In the remainder of the document the type `utf8-str` is used to denote the encoding shown above.
 
 ## Process Storage Layout
