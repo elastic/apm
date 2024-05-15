@@ -42,7 +42,7 @@ Configuration namespace: `ELASTIC_OTEL_INFERRED_SPANS_*`
 
 ### System metrics
 
-Those metrics are usually captured using the collector running locally but in case where no collector is present, or a centralized
+These metrics are usually captured using the collector running locally but in case where no collector is present, or a centralized
 collector is used then the user might opt in to also collect those.
 
 Those metrics are not captured by default to prevent duplicated metrics when they are also captured by a collector.
