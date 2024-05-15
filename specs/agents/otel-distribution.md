@@ -9,7 +9,7 @@ _Vanilla OpenTelemetry Distribution_.
 
 ## General guidelines
 
-Those statements are guiding principles of the Elastic OpenTelemetry distributions, they should be considered more as advice than strict rules.
+These statements are guiding principles of the Elastic OpenTelemetry distributions, they should be considered more as advice than strict rules.
 
 Elastic OpenTelemetry distribution SHOULD ideally:
 - behave as drop-in replacements of their upstream counterparts
