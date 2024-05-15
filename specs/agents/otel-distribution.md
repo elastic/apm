@@ -23,19 +23,27 @@ When doing so, user-configuration should remain consistent with vanilla distribu
 - explicit user configuration SHOULD remain effective
 - overriden default configuration MUST have the ability to be restored to upstream default
 
-Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL` or `elastic.otel`.
-For example, the #inferred-spans feature is configured with `ELASTIC_OTEL_INFERRED_SPANS_*`
+Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL_`.
+For example, the [inferred spans](#inferred-spans) feature is configured with `ELASTIC_OTEL_INFERRED_SPANS_*`.
+
+Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}|` to be consistent with
+the upstream `OTEL_${platform}_` prefix.
+
+For simplicity the configuration in this specification will use the "environment variable" syntax, some platforms like Java
+might also support other ways to configure.
 
 ## Features
 
 ### Inferred spans
 
-TODO: add link to supported platforms and respective implementations
+Supported platforms: [Java](https://github.com/elastic/elastic-otel-java/tree/main/inferred-spans)
+
+Configuration namespace: `ELASTIC_OTEL_INFERRED_SPANS_*`
 
 ### System metrics
 
 Those metrics are usually captured using the collector running locally but in case where no collector is present, or a centralized
-collector is used then the user might opt-in to also collect those.
+collector is used then the user might opt in to also collect those.
 
 Those metrics are not captured by default to prevent duplicated metrics when they are also captured by a collector.
 
@@ -44,4 +52,14 @@ TODO : add the configuration option name to enable those
 
 ### Cloud resource attributes
 
-TODO: add link to supported platforms and respective implementations
+Supported platforms: Java
+
+The cloud resource attributes ([semconv](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)) provide equivalent 
+attributes to the [cloud provider metadata](metadata.md#cloud-provider-metadata), which are usually provided
+through a metadata HTTP(s) endpoint accessible from the application.
+
+Elastic OpenTelemetry distribution SHOULD capture those by default as it helps onboarding experience.
+Users MUST be able to disable this default to minimize application startup overhead or if those attributes are provided through the collector.
+
+Elastic distribution MUST extend the `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED` option to support the `false` value 
+to allow disabling providers.
