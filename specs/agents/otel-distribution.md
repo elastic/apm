@@ -26,7 +26,7 @@ When doing so, user-configuration should remain consistent with vanilla distribu
 Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL_`.
 For example, the [inferred spans](#inferred-spans) feature is configured with `ELASTIC_OTEL_INFERRED_SPANS_*`.
 
-Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}|` to be consistent with
+Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}_` to be consistent with
 the upstream `OTEL_${platform}_` prefix.
 
 For simplicity the configuration in this specification will use the "environment variable" syntax, some platforms like Java
