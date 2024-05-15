@@ -14,14 +14,14 @@ Those statements are guiding principles of the Elastic OpenTelemetry distributio
 Elastic OpenTelemetry distribution SHOULD ideally:
 - behave as drop-in replacements of their upstream counterparts
 - provide a simple setup and favor onboarding experience (aka "things should work by default").
-- avoid capturing potentially confusing data (see #system-metrics example below).
+- avoid capturing potentially confusing data (see [system metrics](#system-metrics) example below).
 
 ## Configuration
 
 Elastic OpenTelemetry distributions MAY override the default configuration.
 When doing so, user-configuration should remain consistent with vanilla distribution:
 - explicit user configuration SHOULD remain effective
-- overriden default configuration SHOULD be revertable through configuration
+- overriden default configuration MUST have the ability to be restored to upstream default
 
 Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL` or `elastic.otel`.
 For example, the #inferred-spans feature is configured with `ELASTIC_OTEL_INFERRED_SPANS_*`
@@ -41,3 +41,7 @@ Those metrics are not captured by default to prevent duplicated metrics when the
 
 TODO : add link to supported platforms and respective implementations
 TODO : add the configuration option name to enable those
+
+### Cloud resource attributes
+
+TODO: add link to supported platforms and respective implementations
