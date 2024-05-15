@@ -45,7 +45,7 @@ Configuration namespace: `ELASTIC_OTEL_INFERRED_SPANS_*`
 These metrics are usually captured using the collector running locally but in case where no collector is present, or a centralized
 collector is used then the user might opt in to also collect those.
 
-Those metrics are not captured by default to prevent duplicated metrics when they are also captured by a collector.
+These metrics are not captured by default in order to prevent duplicated metrics when they are also captured by a collector.
 
 TODO : add link to supported platforms and respective implementations
 TODO : add the configuration option name to enable those
@@ -58,7 +58,7 @@ The cloud resource attributes ([semconv](https://opentelemetry.io/docs/specs/sem
 attributes to the [cloud provider metadata](metadata.md#cloud-provider-metadata), which are usually provided
 through a metadata HTTP(s) endpoint accessible from the application.
 
-Elastic OpenTelemetry distribution SHOULD capture those by default as it helps onboarding experience.
+Elastic OpenTelemetry distributions SHOULD capture those by default for a better onboarding experience.
 Users MUST be able to disable this default to minimize application startup overhead or if those attributes are provided through the collector.
 
 Elastic distribution MUST extend the `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED` option to support the `false` value 
