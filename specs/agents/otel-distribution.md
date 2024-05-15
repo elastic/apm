@@ -61,5 +61,4 @@ through a metadata HTTP(s) endpoint accessible from the application.
 Elastic OpenTelemetry distributions SHOULD capture those by default for a better onboarding experience.
 Users MUST be able to disable this default to minimize application startup overhead or if those attributes are provided through the collector.
 
-Elastic distribution MUST extend the `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED` option to support the `false` value 
-to allow disabling providers.
+Elastic distribution MUST allow resource providers to be disabled through explicit configuration by supporting `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED=false`.
