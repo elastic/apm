@@ -57,11 +57,15 @@ TODO : add the configuration option name to enable those
 
 Supported platforms: Java
 
-The cloud resource attributes ([semconv](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)) provide equivalent 
-attributes to the [cloud provider metadata](metadata.md#cloud-provider-metadata), which are usually provided
-through a metadata HTTP(s) endpoint accessible from the application.
+The cloud resource attributes ([semconv](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)) is a subset of
+the [resource attributes](https://opentelemetry.io/docs/specs/semconv/resource/) providing equivalent attributes to the
+[cloud provider metadata](metadata.md#cloud-provider-metadata).
+Those attributes are usually provided through a metadata HTTP(s) endpoint accessible from the application.
 
 Elastic OpenTelemetry distributions SHOULD capture those by default for a better onboarding experience.
 Users MUST be able to disable this default to minimize application startup overhead or if those attributes are provided through the collector.
 
-Elastic distribution MUST allow resource providers to be disabled through explicit configuration by supporting `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED=false`.
+Elastic distribution MUST allow to opt out of this behavior through explicit configuration.
+Implementation is currently platform specific:
+- Java: `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED=false`
+- NodeJS: `OTEL_NODE_RESOURCE_DETECTORS` ([doc](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node/#usage-auto-instrumentation))
