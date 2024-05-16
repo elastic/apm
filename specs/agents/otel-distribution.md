@@ -40,7 +40,7 @@ Supported platforms: [Java](https://github.com/elastic/elastic-otel-java/tree/ma
 
 Configuration to enable: `ELASTIC_OTEL_INFERRED_SPANS_ENABLED`
 
-While the implementation is Java-only for now, it should probably have been using `ELASTIC_OTEL_JAVA_INFERRED_SPANS_ENABLED`
+Note: While the implementation is Java-only for now, it should probably have been using `ELASTIC_OTEL_JAVA_INFERRED_SPANS_ENABLED`
 instead, but we plan to fix this inconsistency once it has been contributed upstream.
 
 ### System metrics
