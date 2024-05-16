@@ -24,7 +24,7 @@ When doing so, user-configuration should remain consistent with vanilla distribu
 - overriden default configuration MUST have the ability to be restored to upstream default
 
 Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL_`.
-For example, the [inferred spans](#inferred-spans) feature is enabled with `ELASTIC_OTEL_INFERRED_SPANS_ENABLED`.
+For example, the [universal profiling integration](#universal-profiling-integration) can be enabled with `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_ENABLED`.
 
 Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}_` to be consistent with
 the upstream `OTEL_${platform}_` prefix.
@@ -69,3 +69,9 @@ Elastic distribution MUST allow to opt out of this behavior through explicit con
 Implementation is currently platform specific:
 - Java: `OTEL_RESOURCE_PROVIDERS_${provider}_ENABLED=false`
 - NodeJS: `OTEL_NODE_RESOURCE_DETECTORS` ([doc](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node/#usage-auto-instrumentation))
+
+### Universal profiling integration
+
+Supported platforms: [Java](https://github.com/elastic/elastic-otel-java/tree/main/universal-profiling-integration)
+
+Configuration to enable: `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_ENABLED`
