@@ -24,7 +24,7 @@ When doing so, user-configuration should remain consistent with vanilla distribu
 - overriden default configuration MUST have the ability to be restored to upstream default
 
 Elastic specific configuration items MUST be prefixed with `ELASTIC_OTEL_`.
-For example, the [inferred spans](#inferred-spans) feature is configured with `ELASTIC_OTEL_INFERRED_SPANS_*`.
+For example, the [inferred spans](#inferred-spans) feature is enabled with `ELASTIC_OTEL_INFERRED_SPANS_ENABLED`.
 
 Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}_` to be consistent with
 the upstream `OTEL_${platform}_` prefix.
@@ -38,7 +38,10 @@ might also support other ways to configure.
 
 Supported platforms: [Java](https://github.com/elastic/elastic-otel-java/tree/main/inferred-spans)
 
-Configuration namespace: `ELASTIC_OTEL_INFERRED_SPANS_*`
+Configuration to enable: `ELASTIC_OTEL_INFERRED_SPANS_ENABLED`
+
+While the implementation is Java-only for now, it should probably have been using `ELASTIC_OTEL_JAVA_INFERRED_SPANS_ENABLED`
+instead, but we plan to fix this inconsistency once it has been contributed upstream.
 
 ### System metrics
 
