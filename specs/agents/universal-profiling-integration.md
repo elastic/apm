@@ -212,3 +212,54 @@ count                 | uint16
 * *transaction-id*: The APM W3C span id of the transaction which was active for the given profiling samples
 * *stack-trace-id*: The unique ID for the stacktrace captured assigned by the profiler. This ID is stored in elasticsearch in base64 URL safe encoding by the universal profiling solution.
 * The number of samples observed since the last report for the (*trace-id*, *transaction-id*, *stack-trace-id*) combination.
+
+
+# APM Agent output of correlation data
+
+## Correlation Attribute
+
+APM Agents will receive the IDs of stacktraces which occurred during transactions via [correlation messages](#cpu-profiler-trace-correlation-message).
+If the correlation feature is enabled, agents SHOULD store the received IDs of stacktraces as `elastic.profiler_stack_trace_ids` OpenTelemetry span attribute on the transaction:
+
+ * The type of the `elastic.profiler_stack_trace_ids` MUST be string-array
+ * The stacktrace-IDs MUST be provided as base64 URL-safe encoded strings without padding
+ * The order of elements in the array is not relevant
+ * The counts of stacktrace-IDs must be preserved: If a stacktrace occurred *n* times for a given transaction, its ID must appear exactly *n* times in `elastic.profiler_stack_trace_ids` of that transaction
+
+The APM intake will store `elastic.profiler_stack_trace_ids` as `transaction.profiler_stack_trace_ids` on transaction documents with the special `counted_keyword` mapping type, ensuring duplicates are preserved.
+
+For example, if for a single transaction the following correlation messages are received
+
+* (stack-trace-ID: 0x60b420bb3851d9d47acb933dbe70399b, count: 2)
+* (stack-trace-ID: 0x4c9326bb9805fa8f85882c12eae724ce, count: 1)
+* (stack-trace-ID: 0x60b420bb3851d9d47acb933dbe70399b, count: 1)
+
+the resulting transaction MUST have the OpenTelemetry attribute `elastic.profiler_stack_trace_ids` with a value of `[YLQguzhR2dR6y5M9vnA5mw, YLQguzhR2dR6y5M9vnA5mw, TJMmu5gF-o-FiCwS6uckzg, YLQguzhR2dR6y5M9vnA5mw]`.
+
+Note that the [correlation messages](#cpu-profiler-trace-correlation-message) will arrive delayed relative to when they were sampled due to the processing delay of the profiling host agent and the transfer over the domain socket. APM agents therefore MUST defer sending ended transactions until they are relatively confident that all correlation messages for the transaction have arrived.
+
+ * When a [profiler registration message](#profiler-registration-message) has been received, APM agents SHOULD use the duration from that message as delay for transactions
+ * If no [profiler registration message](#profiler-registration-message) has been received yet, APM agents SHOULD use a default of one second as reasonable default delay.
+ * If the correlation feature is not enabled, APM agents MUST NOT defer sending ended transactions
+ * Non-Transaction spans (non local-roots) and unsampled transactions MUST NOT be deferred
+
+Typically, this deferral would be implemented by putting transactions with a timestamp into a fixed-size FIFO queue when they end.
+The head of the queue is removed, once the delay has elapsed and the corresponding transaction is only then forwarded to the exporter.
+If a transaction cannot be buffered because the queue is full, it MUST be forwarded to the exporter immediately instead of being dropped.
+In this case, agents SHOULD print a warning about profiling correlation data potentially being inaccurate/incomplete.
+
+## Configuration Options
+
+OpenTelemetry based agents SHOULD use the following configuration options:
+
+ * `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_ENABLED`: `true`, `false`, `auto` (optional)
+  
+   Defines whether the correlation feature is enabled or disabled. APM agents MAY optionally implement the `auto` mode: Hereby, the APM agent will open the correlation socket, but will not perform any correlation and won't buffer spans until a [profiler registration message](#profiler-registration-message) has been received. If `auto` is supported, APM agents SHOULD use it as default, as it provides a zero-configuration experience to end users. Otherwise the default SHOULD be `false`.
+
+ * `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_SOCKET_DIR`
+
+   Defines the directory in which the socket-file for communication with the profiler will be created. Should have a reasonable default (e.g. a temp dir). 
+
+ * `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_BUFFER_SIZE`
+
+   The size of the FIFO queue [used to buffer transactions](#correlation-attribute) until all correlation data has arrived. Should have a reasonable default to sustain typical transaction per second rates while not occupying too much memory in edge cases (e.g. 8096).
