@@ -29,6 +29,10 @@ For example, the [universal profiling integration](#universal-profiling-integrat
 Elastic and platform specific configuration items must be prefixed with `ELASTIC_OTEL_${platform}_` to be consistent with
 the upstream `OTEL_${platform}_` prefix.
 
+When introducing new features, the decision between starting with platform-specific or general namespace is made on a feature by feature case:
+- feature can be aligned cross-platform even if implemented only in only one: use `ELASTIC_OTEL_` prefix, for example [System metrics](#system-metrics).
+- feature that we know will be platform-specific: use `ELASTIC_OTEL_${platform}_` prefix.
+
 For simplicity the configuration in this specification will use the "environment variable" syntax, some platforms like Java
 might also support other ways to configure.
 
