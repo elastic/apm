@@ -78,4 +78,4 @@ Implementation is currently platform specific:
 
 Supported platforms: [Java](https://github.com/elastic/elastic-otel-java/tree/main/universal-profiling-integration)
 
-Configuration to enable: `ELASTIC_OTEL_UNIVERSAL_PROFILING_INTEGRATION_ENABLED`
+For the configuration options see [this section](universal-profiling-integration.md#configuration-options).
