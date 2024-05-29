@@ -234,7 +234,7 @@ For example, if for a single transaction the following correlation messages are 
 * (stack-trace-ID: 0x4c9326bb9805fa8f85882c12eae724ce, count: 1)
 * (stack-trace-ID: 0x60b420bb3851d9d47acb933dbe70399b, count: 1)
 
-the resulting transaction MUST have the OpenTelemetry attribute `elastic.profiler_stack_trace_ids` with a value of `[YLQguzhR2dR6y5M9vnA5mw, YLQguzhR2dR6y5M9vnA5mw, TJMmu5gF-o-FiCwS6uckzg, YLQguzhR2dR6y5M9vnA5mw]`.
+the resulting transaction MUST have the OpenTelemetry attribute `elastic.profiler_stack_trace_ids` with a value of (elements in any order) `[YLQguzhR2dR6y5M9vnA5mw, YLQguzhR2dR6y5M9vnA5mw, TJMmu5gF-o-FiCwS6uckzg, YLQguzhR2dR6y5M9vnA5mw]`.
 
 Note that the [correlation messages](#cpu-profiler-trace-correlation-message) will arrive delayed relative to when they were sampled due to the processing delay of the profiling host agent and the transfer over the domain socket. APM agents therefore MUST defer sending ended transactions until they are relatively confident that all correlation messages for the transaction have arrived.
 
