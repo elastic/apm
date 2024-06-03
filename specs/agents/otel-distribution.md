@@ -76,7 +76,7 @@ Intake currently reads these attributes and uses them to populate the `agent.Nam
 
 The semantic conventions also [define two experimental attributes](https://opentelemetry.io/docs/specs/semconv/resource/#telemetry-sdk-experimental) to identify the distribution:
 
-- `telemetry.distro.name`: must be set to `elatic`
+- `telemetry.distro.name`: must be set to `elastic`
 - `telemetry.distro.version`: must reflect the distribution version
 
 Distributions SHOULD set these attributes with appropriate values.
