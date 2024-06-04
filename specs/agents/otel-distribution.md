@@ -54,8 +54,9 @@ collector is used then the user might opt in to also collect those.
 
 These metrics are not captured by default in order to prevent duplicated metrics when they are also captured by a collector.
 
+Configuration to enable: `ELASTIC_OTEL_SYSTEM_METRICS_ENABLED`
+
 TODO : add link to supported platforms and respective implementations
-TODO : add the configuration option name to enable those
 
 ### Cloud resource attributes
 
