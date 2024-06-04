@@ -45,7 +45,7 @@ Per the [OpenTelemetry Specification](https://github.com/open-telemetry/opentele
 Elastic distributions SHOULD configure a customized `User-Agent` header when possible[^1].
 This allows data exported from a vanilla SDK and an Elastic distribution to be easily distinguished.
 
-[^1]: Some OpenTelemetry SDKs (e.g. .NET) do not provide a mechanism to modify the `User-Agent` header. In this case, we accept their default._
+[^1]: Some OpenTelemetry SDKs (e.g. .NET) do not provide a mechanism to modify the `User-Agent` header. In this case, we accept their default.
 
 To conform with [RFC7231](https://datatracker.ietf.org/doc/html/rfc7231#section-5.5.3), the existing SDK `User-Agent` should be preceded by a product identifier and version for the Elastic distribution.
 
