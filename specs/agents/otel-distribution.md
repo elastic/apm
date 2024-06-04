@@ -36,6 +36,51 @@ When introducing new features, the decision between starting with platform-speci
 For simplicity the configuration in this specification will use the "environment variable" syntax, some platforms like Java
 might also support other ways to configure.
 
+## Identification
+
+### User Agent headers
+
+Per the [OpenTelemetry Specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/exporter.md#user-agent), OpenTelemetry SDKs are expected to send a `User-Agent` header when exporting data to a backend. At a minimum, this header SHOULD identify the exporter, the language of its implementation, and the version of the exporter.
+
+Elastic distributions SHOULD configure a customized `User-Agent` header when possible[^1].
+This allows data exported from a vanilla SDK and an Elastic distribution to be easily distinguished.
+
+[^1]: Some OpenTelemetry SDKs (e.g. .NET) do not provide a mechanism to modify the `User-Agent` header. In this case, we accept their default.
+
+To conform with [RFC7231](https://datatracker.ietf.org/doc/html/rfc7231#section-5.5.3), the existing SDK `User-Agent` should be preceded by a product identifier and version for the Elastic distribution.
+
+```
+<repo-name>/<version> <existing-otel-sdk-user-agent>
+```
+
+For example, in the .NET distribution, the `User-Agent` header would be configured as follows:
+
+```
+elastic-otel-dotnet/1.0.0 OTel-OTLP-Exporter-Dotnet/1.6.0
+```
+
+### Telemetry resource attributes
+
+Per the [semantic conventions](https://opentelemetry.io/docs/specs/semconv/resource/#telemetry-sdk), SDKs are expected to include the following resource attributes on captured signals. These are used to identify the SDK where the data was captured and should not be modified.
+
+- `telemetry.sdk.name`
+- `telemetry.sdk.version`
+- `telemetry.sdk.language`
+
+In the above attributes, the name and version should be the OTel SDK name and version.
+The language should be the primary language that the SDK is intended for.
+It is expected that the OpenTelemetry SDK sets these values.
+Our distros should set them, only if the SDK code does not do so automatically.
+
+Intake currently reads these attributes and uses them to populate the `agent.Name` and `agent.Version` fields.
+
+The semantic conventions also [define two experimental attributes](https://opentelemetry.io/docs/specs/semconv/resource/#telemetry-sdk-experimental) to identify the distribution:
+
+- `telemetry.distro.name`: must be set to `elastic`
+- `telemetry.distro.version`: must reflect the distribution version
+
+Distributions SHOULD set these attributes with appropriate values.
+
 ## Features
 
 ### Inferred spans
