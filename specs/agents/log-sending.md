@@ -57,5 +57,5 @@ When the agent starts, agent log events might require some limited buffering unt
 This allows to capture the early log messages when the agent initializes which often provide details about the agent
 setup and configuration which are required for support.
 
-For the `event.dataset` field, the `${service.name}.apm-agent` value should be used to allow keeping application logs
+For the `event.dataset` field, the `${service.name}.apm_agent` value should be used to allow keeping application logs
 and agent logs separate if needed.
