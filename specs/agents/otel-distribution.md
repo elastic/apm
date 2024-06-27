@@ -94,14 +94,14 @@ instead, but we plan to fix this inconsistency once it has been contributed upst
 
 ### System metrics
 
+Supported platforms: Python
+
 These metrics are usually captured using the collector running locally but in case where no collector is present, or a centralized
 collector is used then the user might opt in to also collect those.
 
 These metrics are not captured by default in order to prevent duplicated metrics when they are also captured by a collector.
 
 Configuration to enable: `ELASTIC_OTEL_SYSTEM_METRICS_ENABLED`
-
-TODO : add link to supported platforms and respective implementations
 
 ### Cloud resource attributes
 
