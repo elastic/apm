@@ -110,7 +110,7 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
     - `^[[:xdigit:]]{64}$`
     - `^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4,}$`
-    - `^[[:xdigit:]]{32}-[[:digit:]]{9,10}$` (AWS ECS/Fargate environments)
+    - `^[[:xdigit:]]{32}-[[:digit:]]{1,10}$` (AWS ECS/Fargate environments)
 
  If we match, then the basename is assumed to be a container ID.
 
