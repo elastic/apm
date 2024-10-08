@@ -10,6 +10,17 @@ jobs:
   meta-issue-handler:
     runs-on: ubuntu-latest
     steps:
+    - name: Get token
+      id: get_token
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      with:
+        app_id: ${{ secrets.OBS_AUTOMATION_APP_ID }}
+        private_key: ${{ secrets.OBS_AUTOMATION_APP_PEM }}
+        permissions: >-
+          {
+            "issues": "write",
+            "members": "read"
+          }
     - name: Check team membership for user
       uses: elastic/get-user-teams-membership@1.1.0
       id: checkUserMember
@@ -18,13 +29,13 @@ jobs:
         team: 'apm'
         usernamesToExclude: |
           apmmachine
-        GITHUB_TOKEN: ${{ secrets.APM_TECH_USER_TOKEN }}
+        GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
     - name: Create sub issues
       if: steps.checkUserMember.outputs.isTeamMember == 'true' && contains(github.event.issue.labels.*.name, 'meta') && contains(github.event.issue.labels.*.name, 'apm-agents')
       uses: elastic/gh-action-meta-subissues-creator@1.0.2
       id: create_sub_issues
       with:
-        token: "${{ secrets.APM_TECH_USER_TOKEN }}"
+        token: ${{ steps.get_token.outputs.token }}
         metaIssue: "${{ toJSON(github.event.issue) }}"
         bodyRegex: "(.*)(<!---repos-start--->.*<!---repos-end--->)(.*)"
         labelsToExclude: "meta,apm-agents"
