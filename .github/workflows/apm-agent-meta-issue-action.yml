@@ -26,7 +26,7 @@ jobs:
       id: checkUserMember
       with:
         username: ${{ github.actor }}
-        team: 'apm'
+        team: 'observability'
         usernamesToExclude: |
           apmmachine
         GITHUB_TOKEN: ${{ steps.get_token.outputs.token }}
