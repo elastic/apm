@@ -179,10 +179,10 @@ All messages have the following layout:
 
 ## Profiler Registration Message
 
-Whenever the profiling host agent starts communicating for the first time with a process running an APM Agent, it MUST send this message.
-This message is used to let the APM-agent know that a profiler is actually active on the current host. Note that an APM-agent may receive this message zero, one or several times: this may happen if no host agent is active, if one is active or if a host agent is restarted during the lifetime of the APM-agent respectively.
+Whenever the profiling agent starts communicating for the first time with a process running an APM Agent, it MUST send this message.
+This message is used to let the APM-agent know that a profiler is actually active on the current host. Note that an APM-agent may receive this message zero, one or several times: this may happen if no profiling agent is active, if one is active or if a profiling agent is restarted during the lifetime of the APM-agent respectively.
 
-The *message-type* is `2` and the current *minor-version* is `1`.
+The *message-type* is `2` and the current *minor-version* is `2`.
 
 The payload layout is as follows:
 Name                  | Data type 
@@ -190,8 +190,8 @@ Name                  | Data type
 samples-delay-ms      | uint32
 host-id               | utf8-str
 
-* *samples-delay-ms*: A sane upper bound of the usual time taken in milliseconds by the profiling host agent between the collection of a stacktrace and it being written to the apm-agent via the [messaging socket](#cpu-profiler-trace-correlation-message). The APM-agent will assume that all profiling data related to a span has been written to the socket if a span ended at least the provided duration ago. Note that this value doesn't need to be a hard a guarantee, but it should be the 99% case so that profiling data isn't distorted in the expected case.
-* *host-id*: The [`host.id` resource attribute](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/) used for the profiling data by this profiling host agent. If an APM-agent is already sending a `host.id` it MUST print a warning if the `host.id` is different and otherwise ignore the value received by the host agent. A mismatch will lead to certain correlation features (e.g. cost and CO2 consumption) not working. If an agent does not collect the `host.id` by itself, it MUST start sending the `host.id` after receiving it from the profiler host agent to ensure aforementioned correlation features work correctly.
+* *samples-delay-ms*: A sane upper bound of the usual time taken in milliseconds by the profiling agent between the collection of a stacktrace and it being written to the apm-agent via the [messaging socket](#cpu-profiler-trace-correlation-message). The APM-agent will assume that all profiling data related to a span has been written to the socket if a span ended at least the provided duration ago. Note that this value doesn't need to be a hard a guarantee, but it should be the 99% case so that profiling data isn't distorted in the expected case.
+* *host-id*: The [`host.id` resource attribute](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/) is an optional argument used to correlate profiling data by the profiling agent. If an APM-agent is already sending a `host.id` it MUST print a warning if the `host.id` is different and otherwise ignore the value received by the profiling agent. A mismatch will lead to certain correlation features (e.g. cost and CO2 consumption) not working. If an APM-agent does not collect the `host.id` by itself, it MUST start sending the `host.id` after receiving it from the profiling agent to ensure aforementioned correlation features work correctly.
 
 
 ## CPU Profiler Trace Correlation Message
@@ -236,7 +236,7 @@ For example, if for a single transaction the following correlation messages are 
 
 the resulting transaction MUST have the OpenTelemetry attribute `elastic.profiler_stack_trace_ids` with a value of (elements in any order) `[YLQguzhR2dR6y5M9vnA5mw, YLQguzhR2dR6y5M9vnA5mw, TJMmu5gF-o-FiCwS6uckzg, YLQguzhR2dR6y5M9vnA5mw]`.
 
-Note that the [correlation messages](#cpu-profiler-trace-correlation-message) will arrive delayed relative to when they were sampled due to the processing delay of the profiling host agent and the transfer over the domain socket. APM agents therefore MUST defer sending ended transactions until they are relatively confident that all correlation messages for the transaction have arrived.
+Note that the [correlation messages](#cpu-profiler-trace-correlation-message) will arrive delayed relative to when they were sampled due to the processing delay of the profiling agent and the transfer over the domain socket. APM agents therefore MUST defer sending ended transactions until they are relatively confident that all correlation messages for the transaction have arrived.
 
  * When a [profiler registration message](#profiler-registration-message) has been received, APM agents SHOULD use the duration from that message as delay for transactions
  * If no [profiler registration message](#profiler-registration-message) has been received yet, APM agents SHOULD use a default of one second as reasonable default delay.
