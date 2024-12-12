@@ -182,7 +182,7 @@ All messages have the following layout:
 Whenever the profiling agent starts communicating for the first time with a process running an APM Agent, it MUST send this message.
 This message is used to let the APM-agent know that a profiler is actually active on the current host. Note that an APM-agent may receive this message zero, one or several times: this may happen if no profiling agent is active, if one is active or if a profiling agent is restarted during the lifetime of the APM-agent respectively.
 
-The *message-type* is `2` and the current *minor-version* is `2`.
+The *message-type* is `2` and the current *minor-version* is `1`.
 
 The payload layout is as follows:
 Name                  | Data type 
