@@ -20,7 +20,7 @@ jobs:
           echo "::set-output name=files::$(git diff --name-only HEAD^1 HEAD | grep .puml | xargs)"
 
       - name: Generate SVG Diagrams
-        uses: holowinski/plantuml-github-action@4313057c5689e84119ace1c22416d5158da9e5ee
+        uses: holowinski/plantuml-github-action@5ef932f0db4aa76e232fbf19f440248dd102b1d3
         with:
           args: -v -tsvg ${{steps.getfile.outputs.files}}
 
