@@ -25,7 +25,7 @@ jobs:
           args: -v -tsvg ${{steps.getfile.outputs.files}}
 
       - name: Push Local Changes
-        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           commit_message: "Generate SVG files for PlantUML diagrams"
           branch: ${{ github.head_ref }}
