@@ -192,7 +192,7 @@ Python:
 
 ### Cloud Provider Metadata
 
-[Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
+[Cloud provider metadata](https://github.com/elastic/apm-data/blob/main/input/elasticapm/docs/spec/v2/metadata.json)
 is collected from local cloud provider metadata services:
 
 - availability_zone
