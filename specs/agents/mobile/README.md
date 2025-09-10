@@ -10,7 +10,7 @@ The mobile specific docs can be found:
 ## OpenTelemetry
 
 The mobile agents are the first agents at Elastic to be built on top of Open-Telementry. 
-A large portion of the mobile agents' functionality can be attributed to the [opentelementry-swift](https://github.com/open-telemetry/opentelemetry-swift) and [opentelementry-java](https://github.com/open-telemtry/opentelemetry-java) packages.
+A large portion of the mobile agents' functionality can be attributed to the [opentelementry-swift](https://github.com/open-telemetry/opentelemetry-swift) and [opentelemetry-java](https://github.com/open-telemetry/opentelemetry-java) packages.
 
 The Open-Telemetry libraries adhere to the semantic conventions outlined in [opentelementry-specifications](https://github.com/open-telemetry/opentelemetry-specification). 
 However, the Elastic mobile agents don't set every attribute defined (many only apply to server type monitoring). Additionally, these Open Telementry attributes will be remapped to Elastic specific terms. 
