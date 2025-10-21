@@ -30,7 +30,7 @@ Agents MUST provide a minimum default configuration of
 for the `sanitize_field_names` configuration value.  Agent's MAY include the
 following extra fields in their default configuration to avoid breaking changes
 
-    ['pw','pass','connect.sid']
+    ['pw','pass','connect.sid','cookie']
 
 ## Sanitizing Values
 
