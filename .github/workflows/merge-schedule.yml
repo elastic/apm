@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: write
+  checks: write
+  pull-requests: write
 
 jobs:
   merge_schedule:
