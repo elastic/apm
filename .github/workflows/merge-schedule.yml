@@ -10,10 +10,14 @@ on:
     - cron: 0 18 * * *
 
 permissions:
-  contents: write
+  contents: none
 
 jobs:
   merge_schedule:
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: gr2m/merge-schedule-action@a9b6ddcf1282dfd66907bda8e7941dff59f03bad # v2.7.0
