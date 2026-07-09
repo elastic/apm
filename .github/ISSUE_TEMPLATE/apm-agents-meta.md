@@ -21,12 +21,17 @@ Unselect (remove lines or uncheck the boxes) lines if you don't want to create s
 - [x] Spec issue
 
 ## Create APM Agent issues?
-- [x] apm-agent-java
-- [x] apm-agent-dotnet
-- [x] apm-agent-nodejs
-- [x] apm-agent-python
-- [x] apm-agent-go
-- [x] apm-agent-php
+- [x] elastic-otel-java
+- [x] elastic-otel-dotnet
+- [x] elastic-otel-node
+- [x] elastic-otel-python
+- [x] elastic-otel-php
+- [ ] apm-agent-java
+- [ ] apm-agent-dotnet
+- [ ] apm-agent-nodejs
+- [ ] apm-agent-python
+- [ ] apm-agent-go
+- [ ] apm-agent-php
 - [ ] apm-agent-ruby
 
 <!---repos-end--->

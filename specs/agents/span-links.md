@@ -35,5 +35,5 @@ If provided, the API and semantics SHOULD be compatible with the
 [OpenTelemetry specification on specifying span links](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#specifying-links). A compatible API will facilitate
 [OpenTelemetry bridge](trace-api-otel.md) support. OpenTelemetry requirements:
 
-- The public API MUST NOT allow adding span links *after* span creation.
+- The public API SHOULD allow adding span links *after* span creation.
 - Links SHOULD preserve the order in which they are set.

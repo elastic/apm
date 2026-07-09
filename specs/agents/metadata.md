@@ -13,6 +13,7 @@ The process for proposing new metadata fields is detailed
 System metadata relates to the host/container in which the service being monitored is running:
 
  - hostname
+ - host.id
  - architecture
  - operating system
  - container ID
@@ -36,7 +37,7 @@ var hostname;
 if os == windows
   // https://stackoverflow.com/questions/12268885/powershell-get-fqdn-hostname
   // https://learn.microsoft.com/en-us/dotnet/api/system.net.dns.gethostentry
-  hostname = exec "powershell.exe [System.Net.Dns]::GetHostEntry($env:computerName).HostName" // or any equivalent *
+  hostname = exec "powershell.exe -NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command [System.Net.Dns]::GetHostEntry($env:computerName).HostName" // or any equivalent *
   if (hostname == null || hostname.length == 0)
     hostname = exec "cmd.exe /c hostname"               // or any equivalent *
   if (hostname == null || hostname.length == 0)
@@ -75,6 +76,13 @@ hostname if `configured_hostname` is not provided.
 Agents that are APM-Server-version-aware, or that are compatible only with versions >= 7.4, should
 use the new fields wherever applicable.
 
+#### Host.id
+
+APM agents MAY collect the `host.id` as an unique identifier for the host.
+If they collect it, it MUST be conformant to the [OpenTelemetry SemConv for `host.id`](https://opentelemetry.io/docs/specs/semconv/attributes-registry/host/).
+
+If the APM agent performs correlation of its spans/transactions with universal profiling data, it MUST send the `host.id` (see the [profiling integration spec](universal-profiling-integration.md#profiler-registration-message)) as part of the metadata. The APM agent MAY solely rely on the `host.id` provided by the profiling host agent in that case.
+
 #### Container/Kubernetes metadata
 
 On Linux, the container ID and some of the Kubernetes metadata can be extracted by parsing `/proc/self/cgroup`. For each line in the file, we split the line according to the format "hierarchy-ID:controller-list:cgroup-path", extracting the "cgroup-path" part. We then attempt to extract information according to the following algorithm:
@@ -102,7 +110,7 @@ On Linux, the container ID and some of the Kubernetes metadata can be extracted 
 
     - `^[[:xdigit:]]{64}$`
     - `^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4,}$`
-    - `^[[:xdigit:]]{32}-[[:digit:]]{10}$` (AWS ECS/Fargate environments)
+    - `^[[:xdigit:]]{32}-[[:digit:]]{1,10}$` (AWS ECS/Fargate environments)
 
  If we match, then the basename is assumed to be a container ID.
 
@@ -184,7 +192,7 @@ Python:
 
 ### Cloud Provider Metadata
 
-[Cloud provider metadata](https://github.com/elastic/apm-server/blob/main/docs/spec/v2/metadata.json)
+[Cloud provider metadata](https://github.com/elastic/apm-data/blob/main/input/elasticapm/docs/spec/v2/metadata.json)
 is collected from local cloud provider metadata services:
 
 - availability_zone

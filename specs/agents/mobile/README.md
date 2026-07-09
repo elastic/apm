@@ -7,15 +7,15 @@ The mobile specific docs can be found:
 * [iOS Agent](https://www.elastic.co/guide/en/apm/agent/swift/0.x/intro.html)
 * [Android Agent](https://www.elastic.co/guide/en/apm/agent/android/current/index.html)
 
-## Open Telementry
+## OpenTelemetry
+
 The mobile agents are the first agents at Elastic to be built on top of Open-Telementry. 
-A large portion of the mobile agents' functionality can be attributed to the [opentelementry-swift](https://github.com/open-telemetry/opentelemetry-swift) and [opentelementry-java](https://github.com/open-telemtry/opentelemetry-java) packages.
+A large portion of the mobile agents' functionality can be attributed to the [opentelementry-swift](https://github.com/open-telemetry/opentelemetry-swift) and [opentelemetry-java](https://github.com/open-telemetry/opentelemetry-java) packages.
 
 The Open-Telemetry libraries adhere to the semantic conventions outlined in [opentelementry-specifications](https://github.com/open-telemetry/opentelemetry-specification). 
 However, the Elastic mobile agents don't set every attribute defined (many only apply to server type monitoring). Additionally, these Open Telementry attributes will be remapped to Elastic specific terms. 
 
 ## Semantic Conventions and APM Server Mappings
-
 
 ### Resource Attributes 
 Here is a list of resource attributes that are relevant for our mobile agents:
