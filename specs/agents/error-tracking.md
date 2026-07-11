@@ -24,7 +24,10 @@ Agents MUST NOT buffer errors to ensure consistency as this comes at the expense
 
 ### Impact on the `outcome`
 
-Tracking an error that's related to a transaction does not impact its `outcome`.
 A transaction might have multiple errors associated to it but still return with a 2xx status code.
-Hence, the status code is a more reliable signal for the outcome of the transaction.
-This, in turn, means that the `outcome` is always specific to the protocol.
+Hence, the status code is a more reliable signal for the outcome of the transaction. In case of well known protocols (e.g. HTTP, gRPC) the agent sets the `outcome` based on the status code.
+This, in turn, means that the `outcome` is specific to the protocol in most cases.
+
+For transactions and spans that do not represent a call in a well known protocol, the agent sets `outcome` to `failure` when at least 1 error occurred on the given transaction/span.
+
+For more details, see [transaction outcome specification](tracing-transactions.md#transaction-outcome) and [span outcome specification](tracing-spans.md#span-outcome).
